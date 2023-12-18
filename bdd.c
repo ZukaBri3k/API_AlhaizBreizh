@@ -2,7 +2,7 @@
 #include <stdio.h>
 
 int main() {
-    const char *conninfo = "host=localhost port=5432 dbname=sae user=postgres password=vae4ua9phuch4Cef";
+    const char *conninfo = "host=postgresdb port=5432 dbname=sae user=sae password=vae4ua9phuch4Cef";
     PGconn *conn = PQconnectdb(conninfo);
     
     if (PQstatus(conn) != CONNECTION_OK) {
