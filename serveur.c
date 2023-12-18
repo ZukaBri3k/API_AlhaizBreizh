@@ -12,7 +12,7 @@
 
 #define BUFFER_SIZE 1024
 
-void afficherHeure() {
+void afficherHeure(FILE *logs) {
 
     int h, min, s, day, mois, an;
     time_t now = time(NULL);
@@ -25,14 +25,15 @@ void afficherHeure() {
         mois = local->tm_mon + 1;     
         an = local->tm_year + 1900;  
     // Afficher la date courante
-    printf("[%02d-%02d-%d]--", day, mois, an);
-    printf("[%02d:%02d:%02d] > ", h, min, s);
+    fprintf(logs, "[%02d-%02d-%d]--", day, mois, an);
+    fprintf(logs, "[%02d:%02d:%02d] > ", h, min, s);
 }
 
 int main(int argc, char* argv[]) {
 
     int PORT = 8080;
     bool VERBOSE = false;
+    FILE *logs = open("logs.txt", 'a');
 
     //traitement des options longues
     int opt;
@@ -80,18 +81,18 @@ int main(int argc, char* argv[]) {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PORT);
     ret = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
-    (VERBOSE) ? (afficherHeure(), printf("bind=%d\n", ret)) : 0;  
+    (VERBOSE) ? (afficherHeure(), fprintf(logs, "bind=%d\n", ret)) : 0;  
 
     ret = listen(sock, 1);
-    (VERBOSE) ? (afficherHeure(), printf("listen=%d\n", ret)) : 0;
+    (VERBOSE) ? (afficherHeure(), fprintf(logs, "listen=%d\n", ret)) : 0;
 
     //affichage du démarrage
     afficherHeure();
-    printf("Serveur démarré sur le port %d\n", PORT);
+    fprintf(logs, "Serveur démarré sur le port %d\n", PORT);
 
     size = sizeof(conn_addr);
     cnx = accept(sock, (struct sockaddr *)&conn_addr, (socklen_t *)&size);
-    (VERBOSE) ? (afficherHeure(), printf("accept=%d\n", ret)) : 0;
+    (VERBOSE) ? (afficherHeure(), fprintf(logs, "accept=%d\n", ret)) : 0;
 
     char buffer[BUFFER_SIZE];
     int res;
@@ -100,11 +101,12 @@ int main(int argc, char* argv[]) {
     {
         res = read(cnx, buffer, BUFFER_SIZE-1);
         buffer[res] = '\0';
-        (VERBOSE) ? (afficherHeure(), printf("request(lenght=%d) : %s", res, buffer)) : 0;
+        (VERBOSE) ? (afficherHeure(), fprintf(logs, "request(lenght=%d) : %s", res, buffer)) : 0;
     } while (strcmp(buffer, "exit\r\n\0") != 0);
     
     //affichage de fermeture du serveur
     afficherHeure();
-    printf("close\n");
+    fprintf(logs, "close\n");
+    close(logs);
 
 }
