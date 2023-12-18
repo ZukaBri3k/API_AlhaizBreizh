@@ -36,8 +36,8 @@ int main() {
 
     do
     {
-        buffer[0] = '\0';
         res = read(cnx, buffer, BUFFER_SIZE-1);
+        buffer[res] = '\0';
         printf("read=%d, msg=%s\n", res, buffer);
     } while (strcmp(buffer, "exit\n\r") != 0);
     printf("close\n");
