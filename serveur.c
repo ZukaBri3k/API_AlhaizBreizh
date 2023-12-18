@@ -39,7 +39,7 @@ int main() {
         res = read(cnx, buffer, BUFFER_SIZE-1);
         buffer[res] = '\0';
         printf("read=%d, msg=%s\n", res, buffer);
-    } while (strcmp(buffer, "exit\n\r") != 0);
+    } while (strcmp(buffer, "exit\n\r\0") != 0);
     printf("close\n");
 
 }
