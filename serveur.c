@@ -107,6 +107,6 @@ int main(int argc, char* argv[]) {
     //affichage de fermeture du serveur
     afficherHeure(logs);
     fprintf(logs, "close\n");
-    close(logs);
+    fclose(logs);
 
 }
