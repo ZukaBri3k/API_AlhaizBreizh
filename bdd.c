@@ -2,8 +2,15 @@
 #include <stdio.h>
 
 int main() {
-    const char *conninfo = "host=postgresdb port=5432 dbname=sae user=sae password=vae4ua9phuch4Cef";
-    PGconn *conn = PQconnectdb(conninfo);
+    const char *pghost = "postgresdb";
+    const char *pgport = "5432";
+    const char *pgoptions = NULL;
+    const char *pgtty = NULL;
+    const char *name_bdd = "sae";
+    const char *connexion = "sae";
+    const char *pwd = "vae4ua9phuch4Cef";
+    
+    PGconn *conn(pghost, pgport, pgoptions, pgtty, name_bdd, connexion, pwd);
     
     if (PQstatus(conn) != CONNECTION_OK) {
         fprintf(stderr, "Erreur lors de la connexion à la base de données : %s\n", PQerrorMessage(conn));
