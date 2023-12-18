@@ -27,6 +27,9 @@ void afficherHeure(FILE *logs) {
     // Afficher la date courante
     fprintf(logs, "[%02d-%02d-%d]--", day, mois, an);
     fprintf(logs, "[%02d:%02d:%02d] > ", h, min, s);
+
+    printf("[%02d-%02d-%d]--", day, mois, an);
+    printf("[%02d:%02d:%02d] > ", h, min, s);
 }
 
 int main(int argc, char* argv[]) {
@@ -81,18 +84,19 @@ int main(int argc, char* argv[]) {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PORT);
     ret = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
-    (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "bind=%d\n", ret)) : 0;  
+    (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "bind=%d\n", ret), printf("bind=%d\n", ret)) : 0;  
 
     ret = listen(sock, 1);
-    (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "listen=%d\n", ret)) : 0;
+    (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "listen=%d\n", ret), printf("listen=%d\n", ret)) : 0;
 
     //affichage du démarrage
     afficherHeure(logs);
     fprintf(logs, "Serveur démarré sur le port %d\n", PORT);
+    printf("Serveur démarré sur le port %d\n", PORT);
 
     size = sizeof(conn_addr);
     cnx = accept(sock, (struct sockaddr *)&conn_addr, (socklen_t *)&size);
-    (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "accept=%d\n", ret)) : 0;
+    (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "accept=%d\n", ret), printf("accept=%d\n", ret)) : 0;
 
     char buffer[BUFFER_SIZE];
     int res;
@@ -101,12 +105,13 @@ int main(int argc, char* argv[]) {
     {
         res = read(cnx, buffer, BUFFER_SIZE-1);
         buffer[res] = '\0';
-        (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "request(lenght=%d) : %s", res, buffer)) : 0;
+        (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "request(lenght=%d) : %s", res, buffer), printf("request(lenght=%d) : %s", res, buffer)) : 0;
     } while (strcmp(buffer, "exit\r\n\0") != 0);
     
     //affichage de fermeture du serveur
     afficherHeure(logs);
     fprintf(logs, "close\n");
+    printf("close\n");
     fclose(logs);
 
 }
