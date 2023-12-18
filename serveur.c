@@ -17,7 +17,7 @@ int main() {
     struct sockaddr_in conn_addr;
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
-    addr.sin_addr.s_addr = inet_addr("site-sae-ubisoufte.bigpapoo.com");
+    addr.sin_addr.s_addr = inet_addr("51.77.222.112");
     addr.sin_family = AF_INET;
     addr.sin_port = htons(8080);
     ret = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
