@@ -6,11 +6,41 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <getopt.h>
 
 #define BUFFER_SIZE 1024
 
 int main(int argc, char* argv[]) {
-    const int PORT = argc > 1 ? atoi(argv[1]) : 8080;
+
+    int PORT = 8080;
+
+    //traitement des options longues
+    int opt;
+    int option_index = 0;
+
+    //liste des options longues
+    struct option long_options[] = {
+        {"help", no_argument, NULL, 'h'},
+        {"port", required_argument, NULL, 'p'},
+    };
+
+
+    //parcours de toutes les options
+    while((opt = getopt_long(argc, argv, ":p:h", long_options, &option_index)) != -1) 
+    { 
+        switch(opt)
+        { 
+            case 'p': 
+                //si une option de port est donnée
+                printf("port: %s\n", optarg);
+                PORT = atoi(optarg);
+                break;
+            case 'h':
+                //renvoie l'aide
+                printf("help\n");
+                break;
+        }
+    }
 
     int sock;
     int ret;
