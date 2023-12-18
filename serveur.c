@@ -33,7 +33,7 @@ int main(int argc, char* argv[]) {
 
     int PORT = 8080;
     bool VERBOSE = false;
-    FILE *logs = fopen("logs.txt", 'a');
+    FILE *logs = fopen("logs.txt", "a");
 
     //traitement des options longues
     int opt;
