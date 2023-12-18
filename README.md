@@ -16,7 +16,7 @@ Au moment de lancer le script `serveur.c` plusieur options sont disponibles :
 
 ### Se connecter à l'API
 
-Une fois le programme `serveur.c` lancé, pour se connecter à l'API du côté du client il suffit de taper cette commande :
+Une fois le programme `serveur.c` lancé, pour se connecter à l'API du côté du client il suffit de taper cette commande :  
 `telnet site-sae-ubisoufte.bigpapoo.com <port>`
 > [!NOTE]
 > `<port>` à remplacer par 8080 si aucun port spécifié au démarrage du script `serveur.c` sinon le remplacer par le port spécifié.
