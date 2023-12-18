@@ -32,7 +32,7 @@ int main() {
     printf("accept=%d\n", ret);
 
     char buffer[BUFFER_SIZE];
-    int res = read(cnx, buffer, BUFFER_SIZE);
+    int res = read(cnx, buffer, BUFFER_SIZE-1);
     printf("read=%d, msg=%s\n", res, buffer);
 
 }
