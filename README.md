@@ -6,6 +6,7 @@
 
 Au moment de lancer le script *serveur.c* plusieur options sont disponibles :
 
+| | |
 |--- | :-: |
 |`-p` ou `--port` | Cette option permet de spécifier le port sur lequel le serveur va écouter les requêtes clientes. |
 > [!NOTE]
