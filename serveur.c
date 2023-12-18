@@ -47,7 +47,7 @@ int main(int argc, char* argv[]) {
 
 
     //parcours de toutes les options
-    while((opt = getopt_long(argc, argv, ":p:h", long_options, &option_index)) != -1) 
+    while((opt = getopt_long(argc, argv, ":p:", long_options, &option_index)) != -1) 
     { 
         switch(opt)
         { 
@@ -81,25 +81,29 @@ int main(int argc, char* argv[]) {
     addr.sin_port = htons(PORT);
     ret = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
     (VERBOSE) ? (afficherHeure(), printf("bind=%d\n", ret)) : 0;  
+
     ret = listen(sock, 1);
+    (VERBOSE) ? (afficherHeure(), printf("listen=%d\n", ret)) : 0;
+
+    //affichage du démarrage
     afficherHeure();
-    printf("listen=%d\n", ret);
+    printf("Serveur démarré sur le port %d\n", PORT);
+
     size = sizeof(conn_addr);
     cnx = accept(sock, (struct sockaddr *)&conn_addr, (socklen_t *)&size);
-    afficherHeure();
-    printf("accept=%d\n", ret);
+    (VERBOSE) ? (afficherHeure(), printf("accept=%d\n", ret)) : 0;
 
     char buffer[BUFFER_SIZE];
     int res;
-    afficherHeure();
-    printf("Serveur démarré sur le port %d\n", PORT);
+
     do
     {
         res = read(cnx, buffer, BUFFER_SIZE-1);
         buffer[res] = '\0';
-        afficherHeure();
-        printf("read=%d, msg=%s", res, buffer);
+        (VERBOSE) ? (afficherHeure(), printf("request(lenght=%d) : %s", res, buffer)) : 0;
     } while (strcmp(buffer, "exit\r\n\0") != 0);
+    
+    //affichage de fermeture du serveur
     afficherHeure();
     printf("close\n");
 
