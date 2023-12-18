@@ -7,10 +7,10 @@
 #include <unistd.h>
 #include <string.h>
 
-#define PORT 8080
 #define BUFFER_SIZE 1024
 
-int main() {
+int main(int argc, char* argv[]) {
+    const int PORT = argc > 1 ? atoi(argv[1]) : 8080;
 
     int sock;
     int ret;
@@ -33,7 +33,7 @@ int main() {
 
     char buffer[BUFFER_SIZE];
     int res;
-
+    printf("Serveur démarré sur le port %d\n", PORT);
     do
     {
         res = read(cnx, buffer, BUFFER_SIZE-1);
