@@ -15,7 +15,7 @@
 void afficherHeure() {
 
     int h, min, s, day, mois, an;
-    time_t now;
+    time_t now = time(NULL);
 
     struct tm *local = localtime(&now);
         h = local->tm_hour;        
