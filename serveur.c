@@ -80,7 +80,7 @@ int main(int argc, char* argv[]) {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PORT);
     ret = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
-    (VERBOSE) ? (afficherHeure(); printf("bind=%d\n", ret);) : 0;  
+    (VERBOSE) ? (afficherHeure(), printf("bind=%d\n", ret)) :;  
     ret = listen(sock, 1);
     afficherHeure();
     printf("listen=%d\n", ret);
