@@ -4,7 +4,7 @@
 
 ### Option de lancement
 
-Au moment de lancer le script *serveur.c* plusieur options sont disponibles :
+Au moment de lancer le script `serveur.c` plusieur options sont disponibles :
 
 | | |
 |--- | :-: |
