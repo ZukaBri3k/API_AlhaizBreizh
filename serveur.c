@@ -13,6 +13,10 @@
 #define BUFFER_SIZE 1024
 
 void afficherHeure() {
+
+    int h, min, s, day, mois, an;
+    time_t now;
+
     struct tm *local = localtime(&now);
         h = local->tm_hour;        
         min = local->tm_min;       
@@ -28,7 +32,7 @@ void afficherHeure() {
 int main(int argc, char* argv[]) {
 
     int PORT = 8080;
-    boolean VERBOSE = false;
+    bool VERBOSE = false;
 
     //traitement des options longues
     int opt;
