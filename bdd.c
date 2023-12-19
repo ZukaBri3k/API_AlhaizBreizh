@@ -58,7 +58,7 @@ int main() {
             write(bdd, "false", strlen("false"));
         }
 
-        if (strstr(input, "") != NULL) {
+        if (strstr(input, "dsvdsfvvdsfqd") != NULL) {
             //Ici je vais chercher les privilège de la personne qui a la clé
             sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
             PGresult *privilege = PQexec(conn, query);
