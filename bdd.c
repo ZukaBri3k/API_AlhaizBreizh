@@ -49,8 +49,10 @@ int main() {
             PGresult *id_res = PQexec(conn, query);
             if (PQntuples(id_res) > 0) {
                 write(bdd, "true", strlen("true"));
+                printf("Clé reçu et est bonne\n");
             } else {
                 write(bdd, "false", strlen("false"));
+                printf("Clé reçu et est mauvaise\n");
             }
             //Je verifie si il y a une personne avec cette clé
             //Si il n'y a pas de personne avec cette clé alors on envoie false
