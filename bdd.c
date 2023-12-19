@@ -77,7 +77,7 @@ int main() {
             sprintf(query, "SELECT nom_pers FROM personnes WHERE id = %s", id_str);
             PGresult *res = PQexec(conn, query);
 
-
+            printf("Id de la personne a la clé %s : %s\n", cle, id_str);
             //Je verifie si il y'a bien quelqu'un avec cette id
             if (PQntuples(res) > 0) {
                 printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
