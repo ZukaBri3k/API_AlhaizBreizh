@@ -49,9 +49,9 @@ int main() {
         //Je verifie si il y'a bien quelqu'un avec cette id
         if (PQntuples(res) > 0) {
             printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
-            printf("Privilege de la personne a l'id %s : %s\n", id_str, privilege);
+            printf("Privilege de la personne a l'id %s : %s\n", id_str, PQgetvalue(privilege, 0, 0));
             //Je verifie si la personne a des privilège
-            if (strcmp(PQgetvalue(privilege, 0, 0), "true") == 0) {
+            if (strcmp(PQgetvalue(privilege, 0, 0), "t") == 0) {
                 printf("La personne a l'id %s a des privilège\n", id_str);
             } else {
                 printf("La personne a l'id %s n'a pas de privilège\n", id_str);
