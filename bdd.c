@@ -29,34 +29,42 @@ int main() {
         return 1;
     }
 
-
+    //Ici je vais chercher l'id de la personne qui a la clé
     sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
     PGresult *id_res = PQexec(conn, query);
 
+    //Ici je vais chercher les privilège de la personne qui a la clé
+    sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
+    PGresult *privilege = PQexec(conn, query);
+
+    //Je verifie si il y a une personne avec cette clé
     if (PQntuples(id_res) > 0) {
         char *id_str = PQgetvalue(id_res, 0, 0);
+        //Ici je vais chercher le nom de la personne qui a la clé
         sprintf(query, "SELECT nom_pers FROM personnes WHERE id = %s", id_str);
         PGresult *res = PQexec(conn, query);
+
+        //Je verifie si il y'a bien quelqu'un avec cette id
         if (PQntuples(res) > 0) {
             printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
+            printf("Privilege de la personne a l'id %s : %s\n", id_str, PQgetvalue(privilege, 0, 0));
+            //Je verifie si la personne a des privilège
+            if (PQgetvalue(privilege, 0, 0) == "1") {
+                printf("La personne a l'id %s a des privilège\n", id_str);
+            } else {
+                printf("La personne a l'id %s n'a pas de privilège\n", id_str);
+            }
+        //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur
         } else {
             printf("Aucune personne trouvée avec l'id %s\n", id_str);
         }
+    //Si il n'y a pas de personne avec cette clé alors on affiche un message d'erreur
     } else {
         printf("Aucune clé trouvée correspondant à '%s'\n", cle);
     }
 
     PQclear(id_res);
-
-
-    /* sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
-    PGresult *id = PQexec(conn, query);
-    char *id_str = PQgetvalue(id, 0, 0);
-    sprintf(query, "SELECT nom_pers FROM personnes WHERE id_personnes = '%s'", id_str);
-    PGresult *res = PQexec(conn, query);
-    printf("Nom de la personne a l'id 1 : %s\n", PQgetvalue(res, 0, 0)); */
-
-    //PQclear(res);
+    PQclear(privilege);
     PQfinish(conn);
 
     return 0;
