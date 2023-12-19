@@ -28,8 +28,8 @@ int main() {
         return 1;
     }
 
-    PGresult *id = PQexec(conn, ("SELECT id_personnes FROM cle where cle = %s", cle));
-    PGresult *res = PQexec(conn, ("SELECT nom FROM personnes where id_personnes = %s", id));
+    PGresult *id = PQexec(conn, ("SELECT id_personnes FROM cle where cle = %s", &cle));
+    PGresult *res = PQexec(conn, ("SELECT nom FROM personnes where id_personnes = %s", &id));
     printf("Nom de la personne a l'id 0 : %s\n", res);
 
     PQclear(res);
