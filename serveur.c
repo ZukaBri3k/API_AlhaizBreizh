@@ -41,7 +41,7 @@ int main(int argc, char* argv[]) {
 
     //declaration des tubes
     int serveur2bdd = open("serveur2bdd", O_WRONLY);
-
+    int bdd2serveur = open("bdd2serveur", O_RDONLY);
     //traitement des options longues
     int opt;
     int option_index = 0;
@@ -128,7 +128,6 @@ int main(int argc, char* argv[]) {
 
         char buffer[BUFFER_SIZE];
         int res;
-        char cle[20] = "1234\r\n\0";
         char msgClient[100];
 
             //on demande saisir sa clé api
@@ -151,9 +150,11 @@ int main(int argc, char* argv[]) {
                 fprintf(logs, "Clé API saisie : %s", buffer);
                 printf("Clé API saisie : %s", buffer);
             }
-            res = write(serveur2bdd, buffer, strlen(buffer));       
+            res = write(serveur2bdd, buffer, strlen(buffer));
+            res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
+            buffer[res] = '\0';   
 
-            if(strcmp(buffer, cle) != 0) {
+            if(strcmp(buffer, 'true\0') != 0) {
                 //si la clé n'est pas bonne
                 strcpy(msgClient, "Clé API incorrecte fermeture de la session\n\0");
 
