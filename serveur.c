@@ -150,7 +150,11 @@ int main(int argc, char* argv[]) {
                 fprintf(logs, "Clé API saisie : %s", buffer);
                 printf("Clé API saisie : %s", buffer);
             }
+
+            //ecriture de la clé dans le tube
             res = write(serveur2bdd, buffer, strlen(buffer));
+
+            //récupération de la clé depuis le tube
             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
             buffer[res] = '\0';   
 
@@ -199,6 +203,12 @@ int main(int argc, char* argv[]) {
                             afficherHeure(logs);
                             fprintf(logs, "request(lenght=%d) : %s", res, buffer);
                             printf("request(lenght=%d) : %s", res, buffer);
+                            res = write(serveur2bdd, buffer, strlen(buffer));
+
+                            res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
+                            afficherHeure(logs);
+                            fprintf(logs, "response(lenght=%d) : %s", res, buffer);
+                            printf("response(lenght=%d) : %s", res, buffer);
                         }
                     }
                     
@@ -213,6 +223,8 @@ int main(int argc, char* argv[]) {
                     fprintf(logs, "Fermeture de la session\n");
                 }
                 fclose(logs);
+                close(serveur2bdd);
+                close(bdd2serveur);
             }
         
     }
