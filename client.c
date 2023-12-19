@@ -37,7 +37,7 @@ int main(int argc, char* argv[]) {
     }
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
-    addr.sin_addr.s_addr = inet_addr("0.0.0.0");
+    addr.sin_addr.s_addr = inet_addr("51.77.222.112");
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PORT);
     cnx = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
