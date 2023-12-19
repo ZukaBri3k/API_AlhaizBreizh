@@ -22,7 +22,7 @@ void readReadmeFile() {
     fclose(file);
 }
 
-int main() {
+int main(int argc) {
     int PORT = 8080;
     int sock;
     int ret;
@@ -39,7 +39,7 @@ int main() {
     };
 
     //parcours de toutes les options
-    while((opt = getopt_long(argc, argv, ":p:n", long_options, &option_index)) != -1) 
+    while((opt = getopt_long(argc, ":p", long_options, &option_index)) != -1) 
     { 
         switch(opt)
         { 
