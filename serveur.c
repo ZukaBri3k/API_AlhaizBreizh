@@ -132,7 +132,21 @@ int main(int argc, char* argv[]) {
                 do {
                     res = read(cnx, buffer, BUFFER_SIZE-1);
                     buffer[res] = '\0';
-                    (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "request(lenght=%d) : %s", res, buffer), printf("request(lenght=%d) : %s", res, buffer)) : 0;
+
+                    if(strcmp(buffer, "\r\n\0") == 0) {
+                        strcpy(buffer, "exit\r\n\0");
+                        
+                        if (VERBOSE)
+                        {
+                            strcpy(msgClient, "Requête vide fermeture de la session\n\0");
+                            printf("%s", msgClient),
+                            fprintf(logs, "%s", msgClient);
+                        }
+                        
+                    } else {
+                        (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "request(lenght=%d) : %s", res, buffer), printf("request(lenght=%d) : %s", res, buffer)) : 0;
+                    }
+                    
                 } while (strcmp(buffer, "exit\r\n\0") != 0);
                 
                 strcpy(msgClient, "Fermeture de la session\n\0");
