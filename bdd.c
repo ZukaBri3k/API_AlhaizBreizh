@@ -21,7 +21,6 @@ int main() {
     }
 
     PGresult *res = PQexec(conn, "SELECT id FROM personnes");
-    PGresult *res = PQexec(conn, "SELECT id FROM personnes");
     printf("Value 0 : %s\n", PQgetvalue(res, 0, 0));
 
     PQclear(res);
