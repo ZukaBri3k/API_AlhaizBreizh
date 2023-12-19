@@ -36,7 +36,7 @@ int main() {
     
     while (1 == 1)
     {
-        read(serveur, input, LENCLE);
+        read(serveur, input, 255);
         printf(input);
 
         input[strcspn(input, "\r\n\0")] = 0;
