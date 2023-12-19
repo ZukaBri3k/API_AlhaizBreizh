@@ -6,7 +6,7 @@ int main() {
     const char *pgport = "5432";
     const char *dbName = "sae";
     const char *login = "sae";
-    const char *pwd = "vae4ua9phuch4Cef";
+    const char *pwd = "okai9xai9ufaFoht";
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
