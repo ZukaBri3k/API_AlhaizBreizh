@@ -8,20 +8,6 @@
 #include <getopt.h>
 #include <string.h>
 
-void readReadmeFile() {
-    FILE *file;
-    char ch;
-    file = fopen("README.md", "r");
-    if (file == NULL) {
-        perror("Erreur lors de l'ouverture du fichier README.md");
-        exit(EXIT_FAILURE);
-    }
-    while ((ch = fgetc(file)) != EOF) {
-        putchar(ch);
-    }
-    fclose(file);
-}
-
 int main(int argc) {
     int PORT = 8080;
     int sock;
@@ -55,6 +41,5 @@ int main(int argc) {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PORT);
     cnx = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
-    readReadmeFile();
     return 0;
 }
