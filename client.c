@@ -8,21 +8,7 @@
 #include <getopt.h>
 #include <string.h>
 
-void readReadmeFile() {
-    FILE *file;
-    char ch;
-    file = fopen("README.md", "r");
-    if (file == NULL) {
-        perror("Erreur lors de l'ouverture du fichier README.md");
-        exit(EXIT_FAILURE);
-    }
-    while ((ch = fgetc(file)) != EOF) {
-        putchar(ch);
-    }
-    fclose(file);
-}
-
-int main() {
+int main(int argc, char* argv[]) {
     int PORT = 8080;
     int sock;
     int ret;
@@ -39,7 +25,7 @@ int main() {
     };
 
     //parcours de toutes les options
-    while((opt = getopt_long(argc, argv, ":p:n", long_options, &option_index)) != -1) 
+    while((opt = getopt_long(argc, argv, ":p", long_options, &option_index)) != -1) 
     { 
         switch(opt)
         { 
@@ -55,6 +41,5 @@ int main() {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PORT);
     cnx = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
-    readReadmeFile();
     return 0;
 }
