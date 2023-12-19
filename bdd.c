@@ -61,9 +61,9 @@ int main() {
                 PGresult *logement = PQexec(conn, query);
                 for (int i = 0; i < PQntuples(logement); i++)
                 {
-                    printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(logement, i, 0));
+                    printf("Logement %s\n", id_str, PQgetvalue(logement, i, 0));
                 }
-
+                PQclear(logement);
             } else {
                 printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
 
@@ -80,13 +80,14 @@ int main() {
                 } else {
                     printf("La personne a l'id %s n'est propriétaire d'aucun logement\n", id_str);
                 }
+                PQclear(nom_logement);
             }
 
         //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur
         } else {
             printf("Aucune personne trouvée avec l'id %s\n", id_str);
         }
-
+        PQclear(res);
     //Si il n'y a pas de personne avec cette clé alors on affiche un message d'erreur
     } else {
         printf("Aucune clé trouvée correspondant à '%s'\n", cle);
