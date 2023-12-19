@@ -59,7 +59,7 @@ int main() {
                 printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
 
                 //Ici je vais chercher le nom du logement de la personne qui a la clé
-                sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio = %s", id_str);
+                sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio_logement = %s", id_str);
                 PGresult *nom_logement = PQexec(conn, query);
 
                 //Je verifie si la personne a un logement
