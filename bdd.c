@@ -14,12 +14,10 @@ int main() {
     const char *login = "sae";
     const char *pwd = "okai9xai9ufaFoht";
 
-    char cle[LENCLE];
+    char cle[LENCLE] = "";
     char query[256];
     int serveur;
     serveur = open("serveur2bdd", O_RDONLY);
-    
-    read(cle, serveur, LENCLE);
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
@@ -32,6 +30,13 @@ int main() {
         PQfinish(conn);
         return 1;
     }
+    
+    while (1 == 1)
+    {
+        read(serveur, cle, LENCLE);
+        printf("La clé est : %s\n", cle);
+    }
+    
 
     //Ici je vais chercher l'id de la personne qui a la clé
     sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
