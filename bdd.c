@@ -15,6 +15,7 @@ int main() {
     const char *pwd = "okai9xai9ufaFoht";
 
     char cle[LENCLE] = "";
+    char input[50];
     char query[256];
     int serveur;
     int bdd;
@@ -35,25 +36,43 @@ int main() {
     
     while (1 == 1)
     {
-        read(serveur, cle, LENCLE);
+        read(serveur, input, LENCLE);
 
-        cle[strcspn(cle, "\r\n\0")] = 0;
+        input[strcspn(input, "\r\n\0")] = 0;
 
-        //Ici je vais chercher l'id de la personne qui a la clé
-        sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
-        PGresult *id_res = PQexec(conn, query);
+        if (strstr(input, "cle") != NULL) {
+            sscanf(input, "cle %s", cle);
 
-        //Ici je vais chercher les privilège de la personne qui a la clé
-        sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
-        PGresult *privilege = PQexec(conn, query);
+            //Ici je vais chercher l'id de la personne qui a la clé
+            sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
+            PGresult *id_res = PQexec(conn, query);
+            if (PQntuples(id_res) > 0) {
+                write(bdd, true, 1);
+            } else {
+                write(bdd, false, 1);
+            }
+            //Je verifie si il y a une personne avec cette clé
+            //Si il n'y a pas de personne avec cette clé alors on envoie false
+            PQclear(id_res);
+        } else {
+            write(bdd, false, 2);
+        }
 
-        //Je verifie si il y a une personne avec cette clé
-        if (PQntuples(id_res) > 0) {
+        if (strstr(input, "") != NULL) {
+            //Ici je vais chercher les privilège de la personne qui a la clé
+            sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
+            PGresult *privilege = PQexec(conn, query);
+
+
+            sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
+            PGresult *id_res = PQexec(conn, query);
+
+
             char *id_str = PQgetvalue(id_res, 0, 0);
-
             //Ici je vais chercher le nom de la personne qui a la clé
             sprintf(query, "SELECT nom_pers FROM personnes WHERE id = %s", id_str);
             PGresult *res = PQexec(conn, query);
+
 
             //Je verifie si il y'a bien quelqu'un avec cette id
             if (PQntuples(res) > 0) {
@@ -70,8 +89,8 @@ int main() {
                     for (int i = 0; i < PQntuples(logement); i++)
                     {
                         printf("Logement %s\n", PQgetvalue(logement, i, 0));
-                        write(bdd, logement, 2);
                     }
+                    write(bdd, logement, 2);
                     PQclear(logement);
                 } else {
                     printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
@@ -85,8 +104,8 @@ int main() {
                         for (int i = 0; i < PQntuples(nom_logement); i++)
                         {
                             printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
-                            write(bdd, nom_logement, 2);
                         }
+                        write(bdd, nom_logement, 2);
                     } else {
                         write(bdd, NULL, 2);
                     }
@@ -98,14 +117,9 @@ int main() {
                 write(bdd, NULL, 2);
             }
             PQclear(res);
-        //Si il n'y a pas de personne avec cette clé alors on affiche un message d'erreur
-        } else {
-            write(bdd, NULL, 2);
+            PQclear(id_res);
+            PQclear(privilege);
         }
-
-        PQclear(id_res);
-        PQclear(privilege);
-    }
     PQfinish(conn);
 
     return 0;
