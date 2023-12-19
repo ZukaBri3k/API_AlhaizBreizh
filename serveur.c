@@ -137,10 +137,10 @@ int main(int argc, char* argv[]) {
         
     }
     
-    //affichage de fermeture du serveur
+    /* //affichage de fermeture du serveur
     afficherHeure(logs);
     fprintf(logs, "close\n");
     printf("close\n");
-    fclose(logs);
+    fclose(logs); */
 
 }
