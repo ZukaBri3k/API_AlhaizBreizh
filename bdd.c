@@ -54,14 +54,7 @@ int main() {
             //Je verifie si il y a une personne avec cette clé
             //Si il n'y a pas de personne avec cette clé alors on envoie false
             PQclear(id_res);
-        } else {
-            write(bdd, "false", strlen("false"));
-        }
-
-
-        printf(input);
-
-        if (strstr(input, "getLogement ") != NULL) {
+        } else if (strstr(input, "getLogement ") != NULL) {
             sscanf(input, "getLogement %s", cle);
             printf("La clé est %s\n", cle);
 
