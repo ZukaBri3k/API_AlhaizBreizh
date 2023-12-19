@@ -12,7 +12,7 @@ int main() {
     const char *login = "sae";
     const char *pwd = "okai9xai9ufaFoht";
 
-    char cle[20] = "987654321";
+    char cle[20] = "123456789";
     char query[256];
     //int serveur;
     //serveur = open("serveur2bdd", O_RDONLY);
@@ -55,6 +55,15 @@ int main() {
             //Je verifie si la personne a des privilèges
             if (strcmp(PQgetvalue(privilege, 0, 0), "t") == 0) {
                 printf("La personne a l'id %s a des privilèges\n", id_str);
+
+                //Ici je vais prendre tout les logements
+                sprintf(query, "SELECT libelle_logement FROM logement");
+                PGresult *logement = PQexec(conn, query);
+                for (int i = 0; i < PQntuples(logement); i++)
+                {
+                    printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(logement, i, 0));
+                }
+
             } else {
                 printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
 
