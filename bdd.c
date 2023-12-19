@@ -56,7 +56,7 @@ int main() {
     PGresult *res = PQexec(conn, query);
     printf("Nom de la personne a l'id 1 : %s\n", PQgetvalue(res, 0, 0)); */
 
-    PQclear(res);
+    //PQclear(res);
     PQfinish(conn);
 
     return 0;
