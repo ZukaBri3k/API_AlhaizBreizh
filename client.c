@@ -31,6 +31,7 @@ void readReadmeFile() {
 int main() {
     int sock;
     int ret;
+    int cnx;
     struct sockaddr_in addr;
 
     sock = socket(AF_INET, SOCK_STREAM, 0);
@@ -38,6 +39,6 @@ int main() {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(8080);
     cnx = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+    readReadmeFile();
+    return 0;
 }
-
-readReadmeFile();
