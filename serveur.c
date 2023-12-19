@@ -9,6 +9,7 @@
 #include <getopt.h>
 #include <stdbool.h>
 #include <time.h>
+#include <fcntl.h>
 
 #define BUFFER_SIZE 1024
 
