@@ -3,6 +3,7 @@
 #include <fcntl.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <string.h>
 
 int main() {
     const char *pghost = "127.0.0.1";
@@ -50,7 +51,7 @@ int main() {
             printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
             printf("Privilege de la personne a l'id %s : %s\n", id_str, privilege);
             //Je verifie si la personne a des privilège
-            if (PQgetvalue(privilege, 0, 0) == true) {
+            if (strcmp(PQgetvalue(privilege, 0, 0), "true") == 0) {
                 printf("La personne a l'id %s a des privilège\n", id_str);
             } else {
                 printf("La personne a l'id %s n'a pas de privilège\n", id_str);
