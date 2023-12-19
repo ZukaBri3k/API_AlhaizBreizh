@@ -38,6 +38,9 @@ int main(int argc, char* argv[]) {
     bool VERBOSE = false;
     FILE *logs = fopen("logs.txt", "a");
 
+    //declaration des tubes
+    int serveur2bdd = open("serveur2bdd", O_WRONLY);
+
     //traitement des options longues
     int opt;
     int option_index = 0;
@@ -147,7 +150,7 @@ int main(int argc, char* argv[]) {
                 fprintf(logs, "Clé API saisie : %s", buffer);
                 printf("Clé API saisie : %s", buffer);
             }
-            
+            res = write(serveur2bdd, buffer, strlen(buffer));       
 
             if(strcmp(buffer, cle) != 0) {
                 //si la clé n'est pas bonne
