@@ -153,6 +153,7 @@ int main(int argc, char* argv[]) {
 
             //ecriture de la clé dans le tube
             res = write(serveur2bdd, buffer, strlen(buffer));
+            close(serveur2bdd);
 
             //récupération de la clé depuis le tube
             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
@@ -203,7 +204,10 @@ int main(int argc, char* argv[]) {
                             afficherHeure(logs);
                             fprintf(logs, "request(lenght=%d) : %s", res, buffer);
                             printf("request(lenght=%d) : %s", res, buffer);
+                            serveur2bdd = open("serveur2bdd", O_WRONLY);
                             res = write(serveur2bdd, buffer, strlen(buffer));
+                            close(serveur2bdd);
+                            
 
                             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
                             afficherHeure(logs);
