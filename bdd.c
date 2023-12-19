@@ -35,6 +35,8 @@ int main() {
     {
         read(serveur, cle, LENCLE);
 
+        cle[strcspn(cle, "\0")] = 0;
+
         //Ici je vais chercher l'id de la personne qui a la clé
         sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
         PGresult *id_res = PQexec(conn, query);
