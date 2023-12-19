@@ -67,17 +67,19 @@ int main() {
             sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
             PGresult *privilege = PQexec(conn, query);
 
+            printf("Privilege de la personne a la clé %s : %s\n", cle, PQgetvalue(privilege, 0, 0));
 
             sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
             PGresult *id_res = PQexec(conn, query);
 
+            printf("Id de la personne a la clé %s : %s\n", cle, PQgetvalue(id_res, 0, 0));
 
             char *id_str = PQgetvalue(id_res, 0, 0);
             //Ici je vais chercher le nom de la personne qui a la clé
             sprintf(query, "SELECT nom_pers FROM personnes WHERE id = %s", id_str);
             PGresult *res = PQexec(conn, query);
 
-            printf("Id de la personne a la clé %s : %s\n", cle, id_str);
+            printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
             //Je verifie si il y'a bien quelqu'un avec cette id
             if (PQntuples(res) > 0) {
                 printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
