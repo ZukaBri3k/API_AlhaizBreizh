@@ -35,7 +35,7 @@ int main() {
 
     if (PQntuples(id_res) > 0) {
         char *id_str = PQgetvalue(id_res, 0, 0);
-        sprintf(query, "SELECT nom_pers FROM personnes WHERE id_personnes = %s", id_str);
+        sprintf(query, "SELECT nom_pers FROM personnes WHERE id = %s", id_str);
         PGresult *res = PQexec(conn, query);
         if (PQntuples(res) > 0) {
             printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
