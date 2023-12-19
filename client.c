@@ -5,33 +5,42 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h>
+#include <getopt.h>
 #include <string.h>
 
-void readReadmeFile() {
-    FILE *file;
-    char ch;
-    file = fopen("README.md", "r");
-    if (file == NULL) {
-        perror("Erreur lors de l'ouverture du fichier README.md");
-        exit(EXIT_FAILURE);
-    }
-    while ((ch = fgetc(file)) != EOF) {
-        putchar(ch);
-    }
-    fclose(file);
-}
-
-int main() {
+int main(int argc, char* argv[]) {
+    int PORT = 8080;
     int sock;
     int ret;
     int cnx;
     struct sockaddr_in addr;
 
+    //traitement des options longues
+    int opt;
+    int option_index = 0;
+
+    //liste des options longues
+    struct option long_options[] = {
+        {"port", required_argument, NULL, 'p'},
+    };
+
+    //parcours de toutes les options
+    while((opt = getopt_long(argc, argv, ":p:m", long_options, &option_index)) != -1) 
+    { 
+        switch(opt)
+        { 
+            case 'p': 
+                printf("Port personnalisé : %s\n", optarg);
+                PORT = atoi(optarg);
+                break;
+        }
+    }
+
     sock = socket(AF_INET, SOCK_STREAM, 0);
-    addr.sin_addr.s_addr = inet_addr("127.0.0.1");
+    addr.sin_addr.s_addr = inet_addr("0.0.0.0");
     addr.sin_family = AF_INET;
-    addr.sin_port = htons(8080);
+    addr.sin_port = htons(PORT);
     cnx = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
-    readReadmeFile();
+    printf("%d\n",cnx);
     return 0;
 }
