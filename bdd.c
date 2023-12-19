@@ -61,7 +61,7 @@ int main() {
                 PGresult *logement = PQexec(conn, query);
                 for (int i = 0; i < PQntuples(logement); i++)
                 {
-                    printf("Logement %s\n", id_str, PQgetvalue(logement, i, 0));
+                    printf("Logement %s\n", PQgetvalue(logement, i, 0));
                 }
                 PQclear(logement);
             } else {
