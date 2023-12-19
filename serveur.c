@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 
 
     //parcours de toutes les options
-    while((opt = getopt_long(argc, argv, ":p:", long_options, &option_index)) != -1) 
+    while((opt = getopt_long(argc, argv, ":p", long_options, &option_index)) != -1) 
     { 
         switch(opt)
         { 
