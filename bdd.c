@@ -64,7 +64,7 @@ int main() {
 
                 //Je verifie si la personne a un logement
                 if (PQntuples(nom_logement) > 0) {
-                    for (int i = 0; i < PQntuples; i++)
+                    for (int i = 0; i < PQntuples(nom_logement); i++)
                     {
                         printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
                     }
