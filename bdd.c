@@ -42,7 +42,6 @@ int main() {
 
         if (strstr(input, "cle") != NULL) {
             sscanf(input, "cle %s", cle);
-            printf("La clé est %s\n", cle);
 
             //Ici je vais chercher l'id de la personne qui a la clé
             sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
@@ -58,6 +57,9 @@ int main() {
         } else {
             write(bdd, "false", strlen("false"));
         }
+
+
+        printf(strstr(input, "getLogement "));
 
         if (strstr(input, "getLogement ") != NULL) {
             sscanf(input, "getLogement %s", cle);
