@@ -15,11 +15,10 @@ int main() {
     const char *pwd = "okai9xai9ufaFoht";
 
     char cle[LENCLE] = "";
-    char input[50];
+    char input[100];
     char query[256];
     int serveur;
     int bdd;
-    serveur = open("serveur2bdd", O_RDONLY);
     bdd = open("bdd2serveur", O_WRONLY);
 
     char conninfo[256];
@@ -36,6 +35,7 @@ int main() {
     
     while (1 == 1)
     {
+        serveur = open("serveur2bdd", O_RDONLY);
         read(serveur, input, 255);
         printf(input);
 
@@ -122,6 +122,7 @@ int main() {
             PQclear(res);
             PQclear(id_res);
             PQclear(privilege);
+            close(serveur);
         }
     }
     PQfinish(conn);
