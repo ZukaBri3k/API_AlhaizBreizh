@@ -116,9 +116,10 @@ int main() {
                     PQclear(nom_logement);
                 }
 
-            //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur
+            //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur et on renvoie null
             } else {
                 write(bdd, "NULL", strlen("NULL"));
+                printf("Il n'y a pas de personne avec l'id %s\n", id_str);
             }
             PQclear(res);
             PQclear(id_res);
