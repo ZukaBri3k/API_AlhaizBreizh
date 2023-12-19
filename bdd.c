@@ -2,10 +2,8 @@
 #include <stdio.h>
 
 int main() {
-    const char *pghost = "postgresdb";
+    const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
-    const char *pgoptions = NULL;
-    const char *pgtty = NULL;
     const char *dbName = "sae";
     const char *login = "sae";
     const char *pwd = "vae4ua9phuch4Cef";
