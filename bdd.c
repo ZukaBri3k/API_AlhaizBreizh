@@ -1,8 +1,19 @@
-#include <libpq-fe.h>
+#include <postgresql/libpq-fe.h>
 #include <stdio.h>
 
 int main() {
-    const char *conninfo = "host=localhost port=5432 dbname=sae user=postgres password=vae4ua9phuch4Cef";
+    const char *pghost = "postgresdb";
+    const char *pgport = "5432";
+    const char *pgoptions = NULL;
+    const char *pgtty = NULL;
+    const char *dbName = "sae";
+    const char *login = "sae";
+    const char *pwd = "vae4ua9phuch4Cef";
+
+    char conninfo[256];
+    sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
+            pghost, pgport, dbName, login, pwd);
+
     PGconn *conn = PQconnectdb(conninfo);
     
     if (PQstatus(conn) != CONNECTION_OK) {
