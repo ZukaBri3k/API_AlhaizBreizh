@@ -57,16 +57,19 @@ int main(int argc, char* argv[]) {
         { 
             case 'p': 
                 //si une option de port est donnée
-                (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "port: %s\n", optarg), printf("port: %s\n", optarg)) : 0; 
+                afficherHeure(logs);
+                printf("port: %s\n", optarg);
                 PORT = atoi(optarg);
                 break;
             case 'h':
                 //renvoie l'aide
-                (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "help\n"), printf("help\n")) : 0;
+                afficherHeure(logs);
+                printf("help\n");
                 break;
             case 'v':
                 VERBOSE = true;
-                (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "Verbose activé\n"), printf("Verbose activé\n")) : 0;
+                afficherHeure(logs);
+                printf("Verbose activé\n");
                 break;
         }
     }
@@ -135,14 +138,13 @@ int main(int argc, char* argv[]) {
                 strcpy(msgClient, "Fermeture de la session\n\0");
                 res = write(cnx, msgClient, strlen(msgClient));
                 close(cnx);
+
+                if (VERBOSE) {
+                    afficherHeure(logs);
+                    fprintf(logs, "Fermeture de la session\n");
+                }
+                fclose(logs);
             }
         
     }
-    
-    /* //affichage de fermeture du serveur
-    afficherHeure(logs);
-    fprintf(logs, "close\n");
-    printf("close\n");
-    fclose(logs); */
-
 }
