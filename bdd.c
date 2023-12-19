@@ -92,7 +92,7 @@ int main() {
                     {
                         printf("Logement %s\n", PQgetvalue(logement, i, 0));
                     }
-                    write(bdd, logement, strlen(logement));
+                    write(bdd, logement, strlen(&logement));
                     PQclear(logement);
                 } else {
                     printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
@@ -107,7 +107,7 @@ int main() {
                         {
                             printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
                         }
-                        write(bdd, nom_logement, strlen(nom_logement));
+                        write(bdd, nom_logement, strlen(&nom_logement));
                     } else {
                         write(bdd, NULL, 2);
                     }
