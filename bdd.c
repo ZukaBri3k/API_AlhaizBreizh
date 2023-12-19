@@ -12,7 +12,7 @@ int main() {
     const char *login = "sae";
     const char *pwd = "okai9xai9ufaFoht";
 
-    char cle[20] = "123456789";
+    char cle[20] = "987654321";
     char query[256];
     //int serveur;
     //serveur = open("serveur2bdd", O_RDONLY);
