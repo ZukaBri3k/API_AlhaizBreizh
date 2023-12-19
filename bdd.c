@@ -124,8 +124,8 @@ int main() {
             PQclear(res);
             PQclear(id_res);
             PQclear(privilege);
-            close(serveur);
         }
+        close(serveur);
     }
     PQfinish(conn);
 
