@@ -59,7 +59,7 @@ int main() {
         }
 
 
-        printf(strstr(input, "getLogement "));
+        printf(input);
 
         if (strstr(input, "getLogement ") != NULL) {
             sscanf(input, "getLogement %s", cle);
