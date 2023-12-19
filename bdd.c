@@ -86,19 +86,19 @@ int main() {
                     printf("La personne a l'id %s a des privilèges\n", id_str);
 
                     //Ici je vais prendre tout les logements
-                    sprintf(query, "SELECT libelle_logement FROM logement");
+                    sprintf(query, "SELECT * FROM logement");
                     PGresult *logement = PQexec(conn, query);
                     for (int i = 0; i < PQntuples(logement); i++)
                     {
                         printf("Logement %s\n", PQgetvalue(logement, i, 0));
                     }
-                    write(bdd, logement, strlen(&logement));
+                    write(bdd, logement, 64);
                     PQclear(logement);
                 } else {
                     printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
 
                     //Ici je vais chercher le nom du logement de la personne qui a la clé
-                    sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio_logement = %s", id_str);
+                    sprintf(query, "SELECT * FROM logement WHERE id_proprio_logement = %s", id_str);
                     PGresult *nom_logement = PQexec(conn, query);
 
                     //Je verifie si la personne a un logement
@@ -107,16 +107,16 @@ int main() {
                         {
                             printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
                         }
-                        write(bdd, nom_logement, strlen(&nom_logement));
+                        write(bdd, nom_logement, 64);
                     } else {
-                        write(bdd, NULL, 2);
+                        write(bdd, "NULL", strlen("NULL"));
                     }
                     PQclear(nom_logement);
                 }
 
             //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur
             } else {
-                write(bdd, NULL, 2);
+                write(bdd, "NULL", strlen("NULL"));
             }
             PQclear(res);
             PQclear(id_res);
