@@ -107,7 +107,7 @@ int main(int argc, char* argv[]) {
 
             //on demande saisir sa clé api
             strcpy(msgClient, "Entrez votre clé API:\n");
-            fprintf(logs, msgClient);
+            fprintf(logs, "Entrez votre clé API:\n");
             (VERBOSE) ? (afficherHeure(logs), fprintf(logs, msgClient), printf(msgClient)) : 0;
 
             //on lit la clé api
