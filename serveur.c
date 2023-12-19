@@ -57,16 +57,16 @@ int main(int argc, char* argv[]) {
         { 
             case 'p': 
                 //si une option de port est donnée
-                printf("port: %s\n", optarg);
+                (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "port: %s\n", optarg), printf("port: %s\n", optarg)) : 0; 
                 PORT = atoi(optarg);
                 break;
             case 'h':
                 //renvoie l'aide
-                printf("help\n");
+                (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "help\n"), printf("help\n")) : 0;
                 break;
             case 'v':
-                printf("Verbose activé\n");
                 VERBOSE = true;
+                (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "Verbose activé\n"), printf("Verbose activé\n")) : 0;
                 break;
         }
     }
