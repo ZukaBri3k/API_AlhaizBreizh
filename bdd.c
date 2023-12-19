@@ -5,6 +5,8 @@
 #include <stdbool.h>
 #include <string.h>
 
+#define LENCLE 20
+
 int main() {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
@@ -12,12 +14,12 @@ int main() {
     const char *login = "sae";
     const char *pwd = "okai9xai9ufaFoht";
 
-    char cle[20] = "123456789";
+    char cle[LENCLE];
     char query[256];
-    //int serveur;
-    //serveur = open("serveur2bdd", O_RDONLY);
+    int serveur;
+    serveur = open("serveur2bdd", O_RDONLY);
     
-    //read(cle, serveur, 2);
+    read(cle, serveur, LENCLE);
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
