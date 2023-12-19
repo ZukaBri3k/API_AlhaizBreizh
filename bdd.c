@@ -17,7 +17,9 @@ int main() {
     char cle[LENCLE] = "";
     char query[256];
     int serveur;
+    int bdd;
     serveur = open("serveur2bdd", O_RDONLY);
+    bdd = open("bdd2serveur", O_WRONLY);
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
@@ -68,7 +70,7 @@ int main() {
                     for (int i = 0; i < PQntuples(logement); i++)
                     {
                         printf("Logement %s\n", PQgetvalue(logement, i, 0));
-                        write(serveur, logement, 2);
+                        write(bdd, logement, 2);
                     }
                     PQclear(logement);
                 } else {
@@ -83,22 +85,22 @@ int main() {
                         for (int i = 0; i < PQntuples(nom_logement); i++)
                         {
                             printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
-                            write(serveur, nom_logement, 2);
+                            write(bdd, nom_logement, 2);
                         }
                     } else {
-                        write(serveur, NULL, 2);
+                        write(bdd, NULL, 2);
                     }
                     PQclear(nom_logement);
                 }
 
             //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur
             } else {
-                write(serveur, NULL, 2);
+                write(bdd, NULL, 2);
             }
             PQclear(res);
         //Si il n'y a pas de personne avec cette clé alors on affiche un message d'erreur
         } else {
-            write(serveur, NULL, 2);
+            write(bdd, NULL, 2);
         }
 
         PQclear(id_res);
