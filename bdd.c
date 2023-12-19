@@ -6,11 +6,15 @@ int main() {
     const char *pgport = "5432";
     const char *pgoptions = NULL;
     const char *pgtty = NULL;
-    const char *name_bdd = "sae";
-    const char *connexion = "sae";
+    const char *dbName = "sae";
+    const char *login = "sae";
     const char *pwd = "vae4ua9phuch4Cef";
-    
-    PGconn *conn(pghost, pgport, pgoptions, pgtty, name_bdd, connexion, pwd);
+
+    char conninfo[256];
+    sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
+            pghost, pgport, dbName, login, pwd);
+
+    PGconn *conn = PQconnectdb(conninfo);
     
     if (PQstatus(conn) != CONNECTION_OK) {
         fprintf(stderr, "Erreur lors de la connexion à la base de données : %s\n", PQerrorMessage(conn));
