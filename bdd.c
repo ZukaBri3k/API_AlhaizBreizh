@@ -47,9 +47,9 @@ int main() {
             sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
             PGresult *id_res = PQexec(conn, query);
             if (PQntuples(id_res) > 0) {
-                write(bdd, true, 1);
+                write(bdd, true, 2);
             } else {
-                write(bdd, false, 1);
+                write(bdd, false, 2);
             }
             //Je verifie si il y a une personne avec cette clé
             //Si il n'y a pas de personne avec cette clé alors on envoie false
@@ -120,6 +120,7 @@ int main() {
             PQclear(id_res);
             PQclear(privilege);
         }
+    }
     PQfinish(conn);
 
     return 0;
