@@ -107,6 +107,8 @@ int main(int argc, char* argv[]) {
         {
             res = read(cnx, buffer, BUFFER_SIZE-1);
             buffer[res] = '\0';
+            (strcmp(buffer, "\0") == 0) ? strcpy(buffer, "exit\r\n\0") : 0;
+
             (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "request(lenght=%d) : %s", res, buffer), printf("request(lenght=%d) : %s", res, buffer)) : 0;
         } while (strcmp(buffer, "exit\r\n\0") != 0);
         
