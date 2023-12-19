@@ -10,21 +10,14 @@
 void readReadmeFile() {
     FILE *file;
     char ch;
-
-    // Ouvrir le fichier README en mode lecture
     file = fopen("README.md", "r");
-
     if (file == NULL) {
         perror("Erreur lors de l'ouverture du fichier README.md");
         exit(EXIT_FAILURE);
     }
-
-    // Lire et afficher le contenu du fichier
     while ((ch = fgetc(file)) != EOF) {
         putchar(ch);
     }
-
-    // Fermer le fichier
     fclose(file);
 }
 
