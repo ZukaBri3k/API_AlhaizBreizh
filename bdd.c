@@ -32,7 +32,7 @@ int main() {
     }
 
     //Ici je vais chercher l'id de la personne qui a la clé
-    sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
+    sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
     PGresult *id_res = PQexec(conn, query);
 
     //Ici je vais chercher les privilège de la personne qui a la clé
