@@ -58,7 +58,7 @@ int main(int argc, char* argv[]) {
             case 'p': 
                 //si une option de port est donnée
                 afficherHeure(logs);
-                printf("port: %s\n", optarg);
+                printf("Port personnalisé : %s\n", optarg);
                 PORT = atoi(optarg);
                 break;
             case 'h':
@@ -67,6 +67,7 @@ int main(int argc, char* argv[]) {
                 printf("help\n");
                 break;
             case 'v':
+                //active le mode verbose
                 VERBOSE = true;
                 afficherHeure(logs);
                 printf("Verbose activé\n");
@@ -87,7 +88,13 @@ int main(int argc, char* argv[]) {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PORT);
     ret = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
-    (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "bind=%d\n", ret), printf("bind=%d\n", ret)) : 0;  
+
+    if (VERBOSE)
+    {
+        afficherHeure(logs);
+        fprintf(logs, "bind=%d\n", ret);
+        printf("bind=%d\n", ret);
+    } 
 
     //affichage du démarrage
     afficherHeure(logs);
@@ -97,11 +104,23 @@ int main(int argc, char* argv[]) {
     while (1 == 1) {
 
         ret = listen(sock, 1);
-        (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "listen=%d\n", ret), printf("listen=%d\n", ret)) : 0;
+
+        if (VERBOSE)
+        {
+            afficherHeure(logs);
+            fprintf(logs, "listen=%d\n", ret);
+            printf("listen=%d\n", ret);
+        }
 
         size = sizeof(conn_addr);
         cnx = accept(sock, (struct sockaddr *)&conn_addr, (socklen_t *)&size);
-        (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "accept=%d\n", ret), printf("accept=%d\n", ret)) : 0;
+
+        if (VERBOSE)
+        {
+            afficherHeure(logs);
+            fprintf(logs, "accept=%d\n", ret);
+            printf("accept=%d\n", ret);
+        }
 
         char buffer[BUFFER_SIZE];
         int res;
@@ -110,41 +129,72 @@ int main(int argc, char* argv[]) {
 
             //on demande saisir sa clé api
             strcpy(msgClient, "Entrez votre clé API:\n");
-            fprintf(logs, "Entrez votre clé API:\n");
-            (VERBOSE) ? (afficherHeure(logs), fprintf(logs, msgClient), printf(msgClient)) : 0;
+            write(cnx, msgClient, strlen(msgClient));
+
+            if (VERBOSE)
+            {
+                afficherHeure(logs);
+                fprintf(logs, msgClient);
+            }
 
             //on lit la clé api
             res = read(cnx, buffer, BUFFER_SIZE-1);
             buffer[res] = '\0';
 
+            if (VERBOSE)
+            {
+                afficherHeure(logs);
+                fprintf(logs, "Clé API saisie : %s", buffer);
+                printf("Clé API saisie : %s", buffer);
+            }
+            
+
             if(strcmp(buffer, cle) != 0) {
                 //si la clé n'est pas bonne
                 strcpy(msgClient, "Clé API incorrecte fermeture de la session\n\0");
-                (VERBOSE) ? (afficherHeure(logs), fprintf(logs, msgClient), printf(msgClient)) : 0;
+
+                if (VERBOSE)
+                {
+                    afficherHeure(logs);
+                    fprintf(logs, msgClient);
+                    printf(msgClient);
+                }               
                 res = write(cnx, msgClient, strlen(msgClient));
                 close(cnx);
             } else {
                 //si la clé est bonne
                 strcpy(msgClient, "Clé API correcte\n\0");
-                (VERBOSE) ? (afficherHeure(logs), fprintf(logs, msgClient), printf(msgClient)) : 0;
+
+                if (VERBOSE)
+                {
+                    afficherHeure(logs);
+                    fprintf(logs, msgClient);
+                    printf(msgClient);
+                }               
                 res = write(cnx, msgClient, strlen(msgClient));
                 
                 do {
                     res = read(cnx, buffer, BUFFER_SIZE-1);
                     buffer[res] = '\0';
 
-                    if(strcmp(buffer, "\r\n\0") == 0) {
+                    if(strcmp(buffer, "\r\n\0") == 0 || strcmp(buffer, "") == 0) {
                         strcpy(buffer, "exit\r\n\0");
                         
                         if (VERBOSE)
                         {
+                            afficherHeure(logs);
                             strcpy(msgClient, "Requête vide fermeture de la session\n\0");
                             printf("%s", msgClient),
                             fprintf(logs, "%s", msgClient);
                         }
                         
                     } else {
-                        (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "request(lenght=%d) : %s", res, buffer), printf("request(lenght=%d) : %s", res, buffer)) : 0;
+                        if (VERBOSE)
+                        {
+                            afficherHeure(logs);
+                            fprintf(logs, "request(lenght=%d) : %s", res, buffer);
+                            printf("request(lenght=%d) : %s", res, buffer);
+                        }
                     }
                     
                 } while (strcmp(buffer, "exit\r\n\0") != 0);
