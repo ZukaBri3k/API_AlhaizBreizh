@@ -37,6 +37,7 @@ int main() {
     while (1 == 1)
     {
         read(serveur, input, LENCLE);
+        printf(input);
 
         input[strcspn(input, "\r\n\0")] = 0;
 
@@ -54,7 +55,7 @@ int main() {
             //Je verifie si il y a une personne avec cette clé
             //Si il n'y a pas de personne avec cette clé alors on envoie false
             PQclear(id_res);
-        } else if (strstr(input, "getLogement ") != NULL) {
+        } else if (strstr(input, "getLogement") != NULL) {
             sscanf(input, "getLogement %s", cle);
             printf("La clé est %s\n", cle);
 
