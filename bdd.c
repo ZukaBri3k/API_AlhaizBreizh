@@ -58,7 +58,9 @@ int main() {
             write(bdd, "false", strlen("false"));
         }
 
-        if (strstr(input, "dsvdsfvvdsfqd") != NULL) {
+        if (strstr(input, "getLogement ") != NULL) {
+            sscanf(input, "getLogement %s", cle);
+
             //Ici je vais chercher les privilège de la personne qui a la clé
             sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
             PGresult *privilege = PQexec(conn, query);
@@ -90,7 +92,7 @@ int main() {
                     {
                         printf("Logement %s\n", PQgetvalue(logement, i, 0));
                     }
-                    write(bdd, logement, 2);
+                    write(bdd, logement, strlen(logement));
                     PQclear(logement);
                 } else {
                     printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
@@ -105,7 +107,7 @@ int main() {
                         {
                             printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
                         }
-                        write(bdd, nom_logement, 2);
+                        write(bdd, nom_logement, strlen(nom_logement));
                     } else {
                         write(bdd, NULL, 2);
                     }
