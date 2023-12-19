@@ -102,7 +102,7 @@ int main(int argc, char* argv[]) {
 
         char buffer[BUFFER_SIZE];
         int res;
-        char cle[20] = "1234";
+        char cle[20] = "1234\r\n\0";
         char msgClient[100];
 
             //on demande saisir sa clé api
