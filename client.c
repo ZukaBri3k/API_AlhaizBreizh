@@ -8,7 +8,7 @@
 #include <getopt.h>
 #include <string.h>
 
-int main(int argc) {
+int main(int argc, char* argv[]) {
     int PORT = 8080;
     int sock;
     int ret;
@@ -25,7 +25,7 @@ int main(int argc) {
     };
 
     //parcours de toutes les options
-    while((opt = getopt_long(argc, ":p", long_options, &option_index)) != -1) 
+    while((opt = getopt_long(argc, argv, ":p", long_options, &option_index)) != -1) 
     { 
         switch(opt)
         { 
