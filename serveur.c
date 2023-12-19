@@ -102,15 +102,37 @@ int main(int argc, char* argv[]) {
 
         char buffer[BUFFER_SIZE];
         int res;
+        char cle[20] = "1234";
+        char msgClient[100];
 
-        do
-        {
+            //on demande saisir sa clé api
+            (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "Entrez votre clé API:\n"), printf("Entrez votre clé API:\n")) : 0;
+
+            //on lit la clé api
             res = read(cnx, buffer, BUFFER_SIZE-1);
             buffer[res] = '\0';
+            //si la requete est vide on ferme la session du client
             (strcmp(buffer, "\0") == 0) ? strcpy(buffer, "exit\r\n\0") : 0;
 
-            (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "request(lenght=%d) : %s", res, buffer), printf("request(lenght=%d) : %s", res, buffer)) : 0;
-        } while (strcmp(buffer, "exit\r\n\0") != 0);
+            if(strcmp(buffer, cle) != 0) {
+                //si la clé n'est pas bonne
+                strcpy(msgClient, "Clé API incorrecte fermeture de la session\n\0");
+                (VERBOSE) ? (afficherHeure(logs), fprintf(logs, msgClient), printf(msgClient)) : 0;
+                res = write(cnx, msgClient, strlen(msgClient));
+            } else {
+                //si la clé est bonne
+                strcpy(msgClient, "Clé API correcte\n\0");
+                (VERBOSE) ? (afficherHeure(logs), fprintf(logs, msgClient), printf(msgClient)) : 0;
+                res = write(cnx, msgClient, strlen(msgClient));
+                
+                do {
+                    (VERBOSE) ? (afficherHeure(logs), fprintf(logs, "request(lenght=%d) : %s", res, buffer), printf("request(lenght=%d) : %s", res, buffer)) : 0;
+                } while (strcmp(buffer, "exit\r\n\0") != 0);
+                
+                strcpy(msgClient, "Fermeture de la session\n\0");
+                res = write(cnx, msgClient, strlen(msgClient));
+                close(cnx);
+            }
         
     }
     
