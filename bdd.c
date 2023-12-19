@@ -68,6 +68,7 @@ int main() {
                     for (int i = 0; i < PQntuples(logement); i++)
                     {
                         printf("Logement %s\n", PQgetvalue(logement, i, 0));
+                        write(serveur, logement, 2);
                     }
                     PQclear(logement);
                 } else {
@@ -82,21 +83,22 @@ int main() {
                         for (int i = 0; i < PQntuples(nom_logement); i++)
                         {
                             printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
+                            write(serveur, nom_logement, 2);
                         }
                     } else {
-                        printf("La personne a l'id %s n'est propriétaire d'aucun logement\n", id_str);
+                        write(serveur, NULL, 2);
                     }
                     PQclear(nom_logement);
                 }
 
             //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur
             } else {
-                printf("Aucune personne trouvée avec l'id %s\n", id_str);
+                write(serveur, NULL, 2);
             }
             PQclear(res);
         //Si il n'y a pas de personne avec cette clé alors on affiche un message d'erreur
         } else {
-            printf("Aucune clé trouvée correspondant à '%s'\n", cle);
+            write(serveur, NULL, 2);
         }
 
         PQclear(id_res);
