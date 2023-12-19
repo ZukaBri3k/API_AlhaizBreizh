@@ -60,6 +60,7 @@ int main() {
 
         if (strstr(input, "getLogement ") != NULL) {
             sscanf(input, "getLogement %s", cle);
+            printf("La clé est %s\n", cle);
 
             //Ici je vais chercher les privilège de la personne qui a la clé
             sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
