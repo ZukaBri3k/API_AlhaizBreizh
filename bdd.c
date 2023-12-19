@@ -11,6 +11,7 @@ int main() {
     const char *pwd = "okai9xai9ufaFoht";
 
     char cle[20] = "123456789";
+    char query[256];
     int serveur;
     serveur = open("serveur2bdd", O_RDONLY);
     
@@ -28,9 +29,11 @@ int main() {
         return 1;
     }
 
-    PGresult *id = PQexec(conn, ("SELECT id_personnes FROM cle where cle = %s", &cle));
-    PGresult *res = PQexec(conn, ("SELECT nom FROM personnes where id_personnes = %s", &id));
-    printf("Nom de la personne a l'id 0 : %s\n", res);
+    sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
+    PGresult *id = PQexec(conn, query);
+    sprintf(query, "SELECT nom_pers FROM personnes WHERE id_personnes = '%s'", id);
+    PGresult *res = PQexec(conn, query);
+    printf("Nom de la personne a l'id 1 : %s\n", PQgetvalue(res, 0, 0));
 
     PQclear(res);
     PQfinish(conn);
