@@ -25,7 +25,7 @@ int main(int argc, char* argv[]) {
     };
 
     //parcours de toutes les options
-    while((opt = getopt_long(argc, argv, ":p", long_options, &option_index)) != -1) 
+    while((opt = getopt_long(argc, argv, ":p:m", long_options, &option_index)) != -1) 
     { 
         switch(opt)
         { 
@@ -41,5 +41,6 @@ int main(int argc, char* argv[]) {
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PORT);
     cnx = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+    printf("%d\n",cnx);
     return 0;
 }
