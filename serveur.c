@@ -154,7 +154,7 @@ int main(int argc, char* argv[]) {
             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
             buffer[res] = '\0';   
 
-            if(strcmp(buffer, 'true\0') != 0) {
+            if(strcmp(buffer, "true\0") != 0) {
                 //si la clé n'est pas bonne
                 strcpy(msgClient, "Clé API incorrecte fermeture de la session\n\0");
 
