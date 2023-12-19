@@ -42,6 +42,7 @@ int main() {
     //Je verifie si il y a une personne avec cette clé
     if (PQntuples(id_res) > 0) {
         char *id_str = PQgetvalue(id_res, 0, 0);
+
         //Ici je vais chercher le nom de la personne qui a la clé
         sprintf(query, "SELECT nom_pers FROM personnes WHERE id = %s", id_str);
         PGresult *res = PQexec(conn, query);
@@ -50,16 +51,33 @@ int main() {
         if (PQntuples(res) > 0) {
             printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
             printf("Privilege de la personne a l'id %s : %s\n", id_str, PQgetvalue(privilege, 0, 0));
-            //Je verifie si la personne a des privilège
+
+            //Je verifie si la personne a des privilèges
             if (strcmp(PQgetvalue(privilege, 0, 0), "t") == 0) {
-                printf("La personne a l'id %s a des privilège\n", id_str);
+                printf("La personne a l'id %s a des privilèges\n", id_str);
             } else {
-                printf("La personne a l'id %s n'a pas de privilège\n", id_str);
+                printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
+
+                //Ici je vais chercher le nom du logement de la personne qui a la clé
+                sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio = %s", id_str);
+                PGresult *nom_logement = PQexec(conn, query);
+
+                //Je verifie si la personne a un logement
+                if (PQntuples(nom_logement) > 0) {
+                    for (int i = 0; i < PQntuples; i++)
+                    {
+                        printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
+                    }
+                } else {
+                    printf("La personne a l'id %s n'est propriétaire d'aucun logement\n", id_str);
+                }
             }
+
         //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur
         } else {
             printf("Aucune personne trouvée avec l'id %s\n", id_str);
         }
+
     //Si il n'y a pas de personne avec cette clé alors on affiche un message d'erreur
     } else {
         printf("Aucune clé trouvée correspondant à '%s'\n", cle);
