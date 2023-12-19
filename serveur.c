@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 
 
     //parcours de toutes les options
-    while((opt = getopt_long(argc, argv, ":p", long_options, &option_index)) != -1) 
+    while((opt = getopt_long(argc, argv, ":p:n", long_options, &option_index)) != -1) 
     { 
         switch(opt)
         { 
@@ -111,14 +111,13 @@ int main(int argc, char* argv[]) {
             //on lit la clé api
             res = read(cnx, buffer, BUFFER_SIZE-1);
             buffer[res] = '\0';
-            //si la requete est vide on ferme la session du client
-            (strcmp(buffer, "\0") == 0) ? strcpy(buffer, "exit\r\n\0") : 0;
 
             if(strcmp(buffer, cle) != 0) {
                 //si la clé n'est pas bonne
                 strcpy(msgClient, "Clé API incorrecte fermeture de la session\n\0");
                 (VERBOSE) ? (afficherHeure(logs), fprintf(logs, msgClient), printf(msgClient)) : 0;
                 res = write(cnx, msgClient, strlen(msgClient));
+                close(cnx);
             } else {
                 //si la clé est bonne
                 strcpy(msgClient, "Clé API correcte\n\0");
