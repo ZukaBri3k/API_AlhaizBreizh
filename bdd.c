@@ -25,7 +25,7 @@ int main() {
     char chemin[256] = "json.txt";
 
     int taille;
-    printf("Début du programme BDD\n");
+    printf("-------------------------------Début du programme-------------------------------\n");
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
