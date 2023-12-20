@@ -51,10 +51,14 @@ int main() {
             sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
             PGresult *id_res = PQexec(conn, query);
             if (PQntuples(id_res) > 0) {
+                open("bdd2serveur", O_WRONLY);
                 write(bdd, "true", strlen("true"));
+                close(bdd);
                 printf("La clé reçu est bonne\n");
             } else {
+                open("bdd2serveur", O_WRONLY);
                 write(bdd, "false", strlen("false"));
+                close(bdd);
                 printf("La clé reçu est mauvaise\n");
             }
             //Je verifie si il y a une personne avec cette clé
