@@ -43,7 +43,7 @@ int main() {
         read(serveur, input, 255);
         sleep(1);
         close(serveur);
-        printf(input);
+        printf("Reçu : %s\n", input);
 
         input[strcspn(input, "\r\n\0")] = 0;
 
