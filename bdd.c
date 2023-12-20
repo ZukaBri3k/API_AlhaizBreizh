@@ -53,11 +53,13 @@ int main() {
             if (PQntuples(id_res) > 0) {
                 open("bdd2serveur", O_WRONLY);
                 write(bdd, "true", strlen("true"));
+                sleep(1);
                 close(bdd);
                 printf("La clé reçu est bonne\n");
             } else {
                 open("bdd2serveur", O_WRONLY);
                 write(bdd, "false", strlen("false"));
+                sleep(1);
                 close(bdd);
                 printf("La clé reçu est mauvaise\n");
             }
@@ -104,6 +106,7 @@ int main() {
                     int j = 10;
                     bdd = open("bdd2serveur", O_WRONLY);
                     j = write(bdd, PQgetvalue(logement, 0, 0), strlen(PQgetvalue(logement, 0, 0)));
+                    sleep(1);
                     close(bdd);
                     printf("Erreur = %d\n", j);
                     PQclear(logement);
@@ -123,6 +126,7 @@ int main() {
                         int j = 10;
                         bdd = open("bdd2serveur", O_WRONLY);
                         j = write(bdd, PQgetvalue(nom_logement, 0, 0), strlen(PQgetvalue(nom_logement, 0, 0)));
+                        sleep(1);
                         close(bdd);
                         printf("Erreur = %d\n", j);
                     } else {
