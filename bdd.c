@@ -151,8 +151,11 @@ int main() {
                                 write(bdd, "  {\n", strlen("  {\n"));
                                 for (int j = 0; j < cols; j++) {
                                     printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
-                                    sprintf(query, ("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]));
-                                    write(bdd, query, strlen(query));
+                                    write(bdd, "    \"", strlen("    \""));
+                                    write(bdd, PQfname(nom_logement, j), strlen(PQfname(nom_logement, j)));
+                                    write(bdd, "\": \"", strlen("\": \""));
+                                    write(bdd, data[i][j], strlen(data[i][j]));
+                                    write(bdd, "\"", strlen("\""));
                                     if (j < cols - 1) {
                                         printf(",");
                                         write(bdd, "\",", strlen("\","));
