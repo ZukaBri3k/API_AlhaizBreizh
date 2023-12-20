@@ -157,7 +157,7 @@ int main() {
             write(bdd, "Commande incorrect", strlen("Commande incorrect"));
             close(bdd);
         }
-        
+        printf("Fin de boucle\n");
     }
     PQfinish(conn);
     close(bdd);
