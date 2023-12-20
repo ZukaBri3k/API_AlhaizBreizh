@@ -37,9 +37,7 @@ int main() {
     while (1 == 1)
     {
         char input[BUFFSIZE];
-        printf("ok1\n");
         serveur = open("serveur2bdd", O_RDONLY);
-        printf("ok2\n");
         taille = read(serveur, input, BUFFSIZE - 1);
         input[taille] = '\0';
         sleep(1);
@@ -124,18 +122,59 @@ int main() {
 
                         //Je verifie si la personne a un logement
                         if (PQntuples(nom_logement) > 0) {
-                            for (int i = 0; i < PQntuples(nom_logement); i++)
-                            {
-                                printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
+                            int rows = PQntuples(nom_logement);
+                            int cols = PQnfields(nom_logement);
+
+                            // Créer un tableau pour stocker les données
+                            char ***data = (char ***)malloc(rows * sizeof(char **));
+                            for (int i = 0; i < rows; i++) {
+                                data[i] = (char **)malloc((cols + 1) * sizeof(char *));
                             }
-                            int j = 10;
+
+                            // Remplir le tableau avec les données de la requête
+                            for (int i = 0; i < rows; i++) {
+                                for (int j = 0; j < cols; j++) {
+                                    data[i][j] = strdup(PQgetvalue(nom_logement, i, j));
+                                }
+                            }
+
+                            // Convertir les données en format JSON et les écrits dans le tube
+                            printf("[\n");
+                            for (int i = 0; i < rows; i++) {
+                                printf("  {\n");
+                                for (int j = 0; j < cols; j++) {
+                                    printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
+                                    if (j < cols - 1) {
+                                        printf(",");
+                                    }
+                                    printf("\n");
+                                }
+                                printf("  }");
+                                if (i < rows - 1) {
+                                    printf(",");
+                                }
+                                printf("\n");
+                            }
+                            printf("]\n");
+
+                            // Ecrit le JSON dans le tube
+                            int p = 10;
                             bdd = open("bdd2serveur", O_WRONLY);
-                            j = write(bdd, PQgetvalue(nom_logement, 0, 0), strlen(PQgetvalue(nom_logement, 0, 0)));
+                            p = write(bdd, "bien reçu", strlen("bien reçu"));
                             sleep(1);
+
+                            // Libérer la mémoire
+                            for (int i = 0; i < rows; i++) {
+                                for (int j = 0; j < cols; j++) {
+                                    free(data[i][j]);
+                                }
+                                free(data[i]);
+                            }
+                            free(data);
                             close(bdd);
-                            printf("Erreur = %d\n", j);
+                            printf("Erreur = %d\n", p);
                         } else {
-                            bdd = open("bdd2serveur", O_WRONLY);
+                            open("bdd2serveur", O_WRONLY);
                             write(bdd, "false", strlen("false"));
                             sleep(1);
                             close(bdd);
