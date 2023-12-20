@@ -39,7 +39,10 @@ int main() {
     while (1 == 1)
     {
         char input[100] = "";
+        serveur = open("serveur2bdd", O_RDONLY);
         read(serveur, input, 255);
+        sleep(1);
+        close(serveur);
         printf(input);
 
         input[strcspn(input, "\r\n\0")] = 0;
@@ -138,7 +141,6 @@ int main() {
                         }
                         PQclear(nom_logement);
                     }
-
                 //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur et on renvoie null
                 } else {
                     write(bdd, "NULL", strlen("NULL"));
