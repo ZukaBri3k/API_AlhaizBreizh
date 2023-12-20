@@ -20,10 +20,6 @@ int main() {
     int serveur;
     int bdd;
     printf("Ouverture des fichiers\n");
-    /* bdd = open("bdd2serveur", O_WRONLY);
-    printf("Ouverture du fichier bdd2serveur\n");
-    serveur = open("serveur2bdd", O_RDONLY);
-    printf("Ouverture du fichier serveur2bdd\n"); */
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
@@ -57,13 +53,13 @@ int main() {
             sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
             PGresult *id_res = PQexec(conn, query);
             if (PQntuples(id_res) > 0) {
-                open("bdd2serveur", O_WRONLY);
+                bdd = open("bdd2serveur", O_WRONLY);
                 write(bdd, "true", strlen("true"));
                 sleep(1);
                 close(bdd);
                 printf("La clé reçu est bonne\n");
             } else {
-                open("bdd2serveur", O_WRONLY);
+                bdd = open("bdd2serveur", O_WRONLY);
                 write(bdd, "false", strlen("false"));
                 sleep(1);
                 close(bdd);
@@ -137,7 +133,7 @@ int main() {
                             close(bdd);
                             printf("Erreur = %d\n", j);
                         } else {
-                            open("bdd2serveur", O_WRONLY);
+                            bdd = open("bdd2serveur", O_WRONLY);
                             write(bdd, "false", strlen("false"));
                             sleep(1);
                             close(bdd);
@@ -146,13 +142,13 @@ int main() {
                     }
                 //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur et on renvoie null
                 } else {
-                    write(bdd, "false", strlen("false"));
+                    bdd = write(bdd, "false", strlen("false"));
                     printf("Il n'y a pas de personne avec l'id %s\n", id_str);
                 }
                 PQclear(res);
                 PQclear(id_res);
             } else {
-                open("bdd2serveur", O_WRONLY);
+                bdd = open("bdd2serveur", O_WRONLY);
                 write(bdd, "false", strlen("false"));
                 sleep(1);
                 close(bdd);
@@ -160,7 +156,7 @@ int main() {
             }
             PQclear(privilege);
         } else {
-            open("bdd2serveur", O_WRONLY);
+            bdd = open("bdd2serveur", O_WRONLY);
             write(bdd, "Commande incorrect", strlen("Commande incorrect"));
             close(bdd);
             printf("Commande incorrect\n");
