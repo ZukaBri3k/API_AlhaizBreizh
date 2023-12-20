@@ -78,6 +78,7 @@ void creerJson(PGresult *res) {
         }
         free(data[i]);
     }
+    free(data);
     fclose(json);
 
     // Envoie du message au serveur pour dire que c'est fini
@@ -192,7 +193,7 @@ int main() {
                         if (PQntuples(nom_logement) > 0) {
                             
                             // Création du json
-                            creerJson(nom_logement);
+                            //creerJson(nom_logement);
 
                             printf("Fin de la création du json pour non privilégier\n");
                         } else {
