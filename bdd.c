@@ -19,10 +19,10 @@ int main() {
     int serveur;
     int bdd;
     printf("Ouverture des fichiers\n");
-    bdd = open("bdd2serveur", O_WRONLY);
+    /* bdd = open("bdd2serveur", O_WRONLY);
     printf("Ouverture du fichier bdd2serveur\n");
     serveur = open("serveur2bdd", O_RDONLY);
-    printf("Ouverture du fichier serveur2bdd\n");
+    printf("Ouverture du fichier serveur2bdd\n"); */
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
@@ -40,7 +40,7 @@ int main() {
     while (1 == 1)
     {
         serveur = open("serveur2bdd", O_RDONLY);
-        read(serveur, input, 255);
+        read(serveur, input, strlen(input));
         sleep(1);
         close(serveur);
         printf("Reçu : %s\n", input);
