@@ -25,7 +25,7 @@ void creerJson(PGresult *res) {
     // Créer un tableau pour stocker les données
     char ***data = (char ***)malloc(rows * sizeof(char **));
     for (int i = 0; i < rows; i++) {
-        data[i] = (char **)malloc((cols + 1) * sizeof(char *));
+        data[i] = realloc (data, sizeof(char *) * (cols + 1));
     }
 
     // Remplir le tableau avec les données de la requête
@@ -79,7 +79,6 @@ void creerJson(PGresult *res) {
         }
         free(data[i]);
     }
-    printf("test\n");
     free(data);
     fclose(json);
 
