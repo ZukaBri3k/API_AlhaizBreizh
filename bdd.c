@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <stdbool.h>
 #include <string.h>
+#include <stdlib.h>
 
 #define LENCLE 20
 #define BUFFSIZE 100
