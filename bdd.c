@@ -20,8 +20,8 @@ int main() {
     char query[256];
     int serveur;
     int bdd;
-    /* int json;
-    char chemin[256] = "json.txt"; */
+    int json;
+    char chemin[256] = "json.txt";
     int taille;
     printf("Ouverture des fichiers\n");
 
@@ -142,38 +142,33 @@ int main() {
                             }
 
                             // Convertir les données en format JSON et les écrits dans le tube
-                            bdd = open("bdd2serveur", O_WRONLY);
-                            /* json = fopen(chemin, "w"); */
+                            json = fopen(chemin, "w");
                             printf("[\n");
-                            write(bdd, "[\n", strlen("[\n"));
+                            fprintf(json, "[\n");
                             for (int i = 0; i < rows; i++) {
                                 printf("  {\n");
-                                write(bdd, "  {\n", strlen("  {\n"));
+                                fprintf(json, "  {\n");
                                 for (int j = 0; j < cols; j++) {
                                     printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
-                                    write(bdd, "    \"", strlen("    \""));
-                                    write(bdd, PQfname(nom_logement, j), strlen(PQfname(nom_logement, j)));
-                                    write(bdd, "\": \"", strlen("\": \""));
-                                    write(bdd, data[i][j], strlen(data[i][j]));
-                                    write(bdd, "\"", strlen("\""));
+                                    fprintf(json, "    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
                                     if (j < cols - 1) {
                                         printf(",");
-                                        write(bdd, "\",", strlen("\","));
+                                        fprintf(json, ",");
                                     }
                                     printf("\n");
-                                    write(bdd, "\n", strlen("\n"));
+                                    fprintf(json, "\n");
                                 }
                                 printf("  }");
-                                write(bdd, "  }", strlen("  }"));
+                                fprintf(json, "  }");
                                 if (i < rows - 1) {
                                     printf(",");
-                                    write(bdd, ",", strlen(","));
+                                    fprintf(json, ",");
                                 }
                                 printf("\n");
-                                write(bdd, "\n", strlen("\n"));
+                                fprintf(json, "\n");
                             }
                             printf("]\n");
-                            write(bdd, "]\n", strlen("]\n"));
+                            fprintf(json, "]\n");
 
                             // Ecrit le JSON dans le tube
                             int p = 10;
@@ -187,6 +182,8 @@ int main() {
                                 free(data[i]);
                             }
                             free(data);
+                            fclose(json);
+                            bdd = open("bdd2serveur", O_WRONLY);
                             write(bdd, "\0", strlen("\0"));
                             close(bdd);
                             printf("Erreur = %d\n", p);
