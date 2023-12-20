@@ -161,11 +161,13 @@ int main(int argc, char* argv[]) {
             serveur2bdd = open("serveur2bdd", O_WRONLY);
 
             res = write(serveur2bdd, buffer, strlen(buffer));
+            sleep(1);
             close(serveur2bdd);
 
             //récupération de la réponse depuis le tube
             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
             buffer[res] = '\0';
+            sleep(1);
             close(bdd2serveur);
 
             if(strcmp(buffer, "true\0") != 0) {
@@ -215,12 +217,13 @@ int main(int argc, char* argv[]) {
                             printf("request(lenght=%d) : %s", res, buffer);
                             serveur2bdd = open("serveur2bdd", O_WRONLY);
                             res = write(serveur2bdd, buffer, strlen(buffer));
+                            sleep(1);
                             close(serveur2bdd);
 
-                            sleep(1);
 
                             bdd2serveur = open("bdd2serveur", O_RDONLY);
                             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
+                            sleep(1);
                             close(bdd2serveur);
                             buffer[res] = '\0';
                             afficherHeure(logs);
