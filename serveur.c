@@ -33,6 +33,28 @@ void afficherHeure(FILE *logs) {
     printf("[%02d:%02d:%02d] > ", h, min, s);
 }
 
+void afficherHeureIP(FILE *logs, struct sockaddr_in conn_addr) {
+
+    int h, min, s, day, mois, an;
+    time_t now = time(NULL);
+    char ip[INET_ADDRSTRLEN];
+    inet_ntop(AF_INET, &(conn_addr.sin_addr), ip, INET_ADDRSTRLEN);
+
+    struct tm *local = localtime(&now);
+        h = local->tm_hour;        
+        min = local->tm_min;       
+        s = local->tm_sec;       
+        day = local->tm_mday;          
+        mois = local->tm_mon + 1;     
+        an = local->tm_year + 1900;  
+    // Afficher la date courante
+    fprintf(logs, "[%02d-%02d-%d]--", day, mois, an);
+    fprintf(logs, "[%02d:%02d:%02d]--[%s] > ", h, min, s, ip);
+
+    printf("[%02d-%02d-%d]--", day, mois, an);
+    printf("[%02d:%02d:%02d]--[%s] > ", h, min, s, ip);
+}
+
 int main(int argc, char* argv[]) {
 
     int PORT = 8080;
@@ -122,13 +144,10 @@ int main(int argc, char* argv[]) {
 
         size = sizeof(conn_addr);
         cnx = accept(sock, (struct sockaddr *)&conn_addr, (socklen_t *)&size);
-        char ip[INET_ADDRSTRLEN];
-        inet_ntop(AF_INET, &(conn_addr.sin_addr), ip, INET_ADDRSTRLEN);
-        printf("ip : %s\n", ip);
 
         if (VERBOSE)
         {
-            afficherHeure(logs);
+            afficherHeureIP(logs, conn_addr);
             fprintf(logs, "accept=%d\n", ret);
             printf("accept=%d\n", ret);
         }
@@ -141,19 +160,13 @@ int main(int argc, char* argv[]) {
             strcpy(msgClient, "Entrez votre clé API:\n");
             write(cnx, msgClient, strlen(msgClient));
 
-            if (VERBOSE)
-            {
-                afficherHeure(logs);
-                fprintf(logs, msgClient);
-            }
-
             //on lit la clé api
             res = read(cnx, buffer, BUFFER_SIZE-1);
             buffer[res] = '\0';
 
             if (VERBOSE)
             {
-                afficherHeure(logs);
+                afficherHeureIP(logs, conn_addr);
                 fprintf(logs, "Clé API saisie : %s", buffer);
                 printf("Clé API saisie : %s", buffer);
             }
@@ -178,7 +191,7 @@ int main(int argc, char* argv[]) {
 
                 if (VERBOSE)
                 {
-                    afficherHeure(logs);
+                    afficherHeureIP(logs, conn_addr);
                     fprintf(logs, msgClient);
                     printf(msgClient);
                 }               
@@ -190,7 +203,7 @@ int main(int argc, char* argv[]) {
 
                 if (VERBOSE)
                 {
-                    afficherHeure(logs);
+                    afficherHeureIP(logs, conn_addr);
                     fprintf(logs, msgClient);
                     printf(msgClient);
                 }               
@@ -205,7 +218,7 @@ int main(int argc, char* argv[]) {
                         
                         if (VERBOSE)
                         {
-                            afficherHeure(logs);
+                            afficherHeureIP(logs, conn_addr);
                             strcpy(msgClient, "Requête vide fermeture de la session\n\0");
                             printf("%s", msgClient),
                             fprintf(logs, "%s", msgClient);
@@ -215,7 +228,7 @@ int main(int argc, char* argv[]) {
                         if (VERBOSE)
                         {
                             //ecriture de la requete dans le fichier bdd
-                            afficherHeure(logs);
+                            afficherHeureIP(logs, conn_addr);
                             fprintf(logs, "request(lenght=%d) : %s", res, buffer);
                             printf("request(lenght=%d) : %s", res, buffer);
                             serveur2bdd = open("serveur2bdd", O_WRONLY);
@@ -230,7 +243,7 @@ int main(int argc, char* argv[]) {
                             close(bdd2serveur);
                             buffer[res] = '\n';
                             buffer[res+1] = '\0';
-                            afficherHeure(logs);
+                            afficherHeureIP(logs, conn_addr);
                             fprintf(logs, "response(lenght=%d) : %s\n", res, buffer);
                             printf("response(lenght=%d) : %s\n", res, buffer);
                             res = write(cnx, buffer, strlen(buffer));
@@ -244,7 +257,7 @@ int main(int argc, char* argv[]) {
                 close(cnx);
 
                 if (VERBOSE) {
-                    afficherHeure(logs);
+                    afficherHeureIP(logs, conn_addr);
                     fprintf(logs, "Fermeture de la session\n");
                 }
                 fclose(logs);
