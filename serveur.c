@@ -42,7 +42,7 @@ int main(int argc, char* argv[]) {
     //declaration des tubes
     int serveur2bdd = open("serveur2bdd", O_WRONLY);
     int bdd2serveur = open("bdd2serveur", O_RDONLY);
-    pritnf("TEST------------------------------\n");
+    printf("TEST------------------------------\n");
     //traitement des options longues
     int opt;
     int option_index = 0;
