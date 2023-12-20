@@ -43,7 +43,6 @@ int main(int argc, char* argv[]) {
     int bdd2serveur;
     int serveur2bdd;
     
-    printf("TEST------------------------------\n");
     //traitement des options longues
     int opt;
     int option_index = 0;
@@ -230,6 +229,7 @@ int main(int argc, char* argv[]) {
                             afficherHeure(logs);
                             fprintf(logs, "response(lenght=%d) : %s\n", res, buffer);
                             printf("response(lenght=%d) : %s\n", res, buffer);
+                            res = write(cnx, buffer, strlen(buffer));
                         }
                     }
                     
