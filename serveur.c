@@ -40,8 +40,9 @@ int main(int argc, char* argv[]) {
     FILE *logs = fopen("logs.txt", "a");
 
     //declaration des tubes
-    int bdd2serveur = open("bdd2serveur", O_RDONLY);
-    int serveur2bdd = open("serveur2bdd", O_WRONLY);
+    int bdd2serveur;
+    int serveur2bdd;
+    
     printf("TEST------------------------------\n");
     //traitement des options longues
     int opt;
@@ -156,6 +157,9 @@ int main(int argc, char* argv[]) {
             }
 
             //ecriture de la clé dans le tube
+            bdd2serveur = open("bdd2serveur", O_RDONLY);
+            serveur2bdd = open("serveur2bdd", O_WRONLY);
+
             res = write(serveur2bdd, buffer, strlen(buffer));
             close(serveur2bdd);
 
@@ -211,11 +215,13 @@ int main(int argc, char* argv[]) {
                             printf("request(lenght=%d) : %s", res, buffer);
                             serveur2bdd = open("serveur2bdd", O_WRONLY);
                             res = write(serveur2bdd, buffer, strlen(buffer));
-                            //close(serveur2bdd);
-                            
+                            close(serveur2bdd);
+
                             sleep(1);
 
+                            bdd2serveur = open("bdd2serveur", O_RDONLY);
                             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
+                            close(bdd2serveur);
                             afficherHeure(logs);
                             fprintf(logs, "response(lenght=%d) : %s", res, buffer);
                             printf("response(lenght=%d) : %s", res, buffer);
