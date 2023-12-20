@@ -97,7 +97,8 @@ int main() {
                     {
                         printf("Logement %s\n", PQgetvalue(logement, i, 0));
                     }
-                    int i = write(bdd, logement, 63);
+                    int i = 10; 
+                    i = write(bdd, logement, 63);
                     printf("Erreur = %d\n", i);
                     PQclear(logement);
                 } else {
@@ -113,7 +114,8 @@ int main() {
                         {
                             printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
                         }
-                        int i = write(bdd, nom_logement, 63);
+                        int i = 10;
+                        i = write(bdd, nom_logement, 63);
                         printf("Erreur = %d\n", i);
                     } else {
                         write(bdd, "NULL", strlen("NULL"));
