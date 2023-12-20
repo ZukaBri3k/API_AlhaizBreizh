@@ -6,6 +6,7 @@
 #include <string.h>
 
 #define LENCLE 20
+#define BUFFSIZE 100
 
 int main() {
     const char *pghost = "127.0.0.1";
@@ -36,11 +37,11 @@ int main() {
         return 1;
     }
     
-    char input[100];
     while (1 == 1)
     {
+        char input[BUFFSIZE];
         serveur = open("serveur2bdd", O_RDONLY);
-        read(serveur, input, 99);
+        read(serveur, input, BUFFSIZE - 1);
         sleep(1);
         close(serveur);
         printf("Reçu : %s\n", input);
