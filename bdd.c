@@ -40,7 +40,9 @@ int main() {
     while (1 == 1)
     {
         char input[BUFFSIZE];
+        printf("ok1\n");
         serveur = open("serveur2bdd", O_RDONLY);
+        printf("ok2\n");
         read(serveur, input, BUFFSIZE - 1);
         sleep(1);
         close(serveur);
