@@ -254,7 +254,8 @@ int main(int argc, char* argv[]) {
                                 
                                 int fic = open("json.txt", O_RDONLY);
 
-                                while (res = read(fic, buffer, BUFFER_SIZE) > 0) {
+                                while (res = read(fic, buffer, BUFFER_SIZE-1) > 0) {
+                                    buffer[res] = '\0';
                                     printf("%s", buffer);
                                     fprintf(logs, "%s", buffer);
                                     write(cnx, buffer, strlen(buffer));
