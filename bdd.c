@@ -95,11 +95,13 @@ int main() {
                     PGresult *logement = PQexec(conn, query);
                     for (int i = 0; i < PQntuples(logement); i++)
                     {
-                        printf("Logement %s\n", PQgetvalue(logement, i, 0));
+                        printf("Logement id : %s\n", PQgetvalue(logement, i, 0));
                     }
-                    int i = 10; 
-                    i = write(bdd, logement, 63);
-                    printf("Erreur = %d\n", i);
+                    int j = 10;
+                    bdd = open("bdd2serveur", O_WRONLY);
+                    j = write(bdd, logement, 63);
+                    close(bdd);
+                    printf("Erreur = %d\n", j);
                     PQclear(logement);
                 } else {
                     printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
@@ -114,9 +116,11 @@ int main() {
                         {
                             printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
                         }
-                        int i = 10;
-                        i = write(bdd, nom_logement, 63);
-                        printf("Erreur = %d\n", i);
+                        int j = 10;
+                        bdd = open("bdd2serveur", O_WRONLY);
+                        j = write(bdd, nom_logement, 63);
+                        close(bdd);
+                        printf("Erreur = %d\n", j);
                     } else {
                         write(bdd, "NULL", strlen("NULL"));
                     }
