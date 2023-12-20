@@ -140,38 +140,36 @@ int main() {
                             }
 
                             // Convertir les données en format JSON et les écrits dans le tube
-                            serveur = open("bdd2serveur", O_WRONLY);
+                            bdd = open("bdd2serveur", O_WRONLY);
                             printf("[\n");
-                            write(serveur, "[\n", strlen("[\n"));
+                            write(bdd, "[\n", strlen("[\n"));
                             for (int i = 0; i < rows; i++) {
                                 printf("  {\n");
-                                write(serveur, "  {\n", strlen("  {\n"));
+                                bdd = write(bdd, "  {\n", strlen("  {\n"));
                                 for (int j = 0; j < cols; j++) {
                                     printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
-                                    write(serveur, "    \"", strlen("    \""));
+                                    bdd = write(bdd, "    \"", strlen("    \""));
                                     if (j < cols - 1) {
                                         printf(",");
-                                        write(serveur, "\",", strlen("\","));
+                                        bdd = write(bdd, "\",", strlen("\","));
                                     }
                                     printf("\n");
-                                    write(serveur, "\n", strlen("\n"));
+                                    bdd = write(bdd, "\n", strlen("\n"));
                                 }
                                 printf("  }");
-                                write(serveur, "  }", strlen("  }"));
+                                bdd = write(bdd, "  }", strlen("  }"));
                                 if (i < rows - 1) {
                                     printf(",");
-                                    write(serveur, ",", strlen(","));
+                                    bdd = write(bdd, ",", strlen(","));
                                 }
                                 printf("\n");
-                                write(serveur, "\n", strlen("\n"));
+                                bdd = write(bdd, "\n", strlen("\n"));
                             }
                             printf("]\n");
-                            write(serveur, "]\n", strlen("]\n"));
+                            bdd = write(bdd, "]\n", strlen("]\n"));
 
                             // Ecrit le JSON dans le tube
                             int p = 10;
-                            bdd = open("bdd2serveur", O_WRONLY);
-                            p = write(bdd, "bien reçu", strlen("bien reçu"));
                             sleep(1);
 
                             // Libérer la mémoire
