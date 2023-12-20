@@ -172,9 +172,9 @@ int main(int argc, char* argv[]) {
             }
             printf("test0\n");
             //ecriture de la clé dans le tube
-            serveur2bdd = open("serveur2bdd", O_RDONLY);
+            serveur2bdd = open("serveur2bdd", O_WRONLY);
             printf("test1\n");
-            bdd2serveur = open("bdd2serveur", O_WRONLY);
+            bdd2serveur = open("bdd2serveur", O_RDONLY);
             printf("test2\n");
 
             res = write(serveur2bdd, buffer, strlen(buffer));
