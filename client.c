@@ -60,7 +60,63 @@ int main(int argc, char* argv[]) {
     scanf("%s", command.data.clientInfo.password);
     command.command = 1;
     send(sock, &command, sizeof(command), 0);
-    close(sock);
+    ServerResponse response;
+    recv(sock, &response, sizeof(response), 0);
+    if (response.status == 0) {
+        switch (command.command) {
+            case 1:
+                printf("Opération réussie\n");
+                break;
 
+            default:
+                printf("Réponse inattendue du serveur.\n");
+                break;
+        }
+    } else {
+        printf("Erreur du serveur. Code d'erreur : %d\n", response.status);
+        close(sock);
+    
+    printf("Que souhaitez-vous faire ?\n");
+    printf("1. Consulter la liste des biens\n");
+    printf("2. Consulter la disponibilité d'un bien\n");
+    printf("3. Modifier les dates d'indisponibilité d'un bien\n");
+    printf("0. Quitter\n");
+    printf("Votre choix : ");
+    int choix;
+    scanf("%d", &choix);
+
+    if (choix == 1) {
+        command.command = 2;
+        send(sock, &command, sizeof(command), 0);
+        recv(sock, &response, sizeof(response), 0);
+        if (response.status == 0) {
+            printf("Liste des biens du client :\n");
+            // ...
+        } else {
+            printf("Erreur du serveur lors de la consultation de la liste des biens. Code d'erreur : %d\n", response.status);
+        }
+    } else if (userChoice == 2) {
+        command.command = 3;
+        send(sock, &command, sizeof(command), 0);
+        recv(sock, &response, sizeof(response), 0);
+        if (response.status == 0) {
+            printf("Disponibilité du bien :\n");
+            // ...
+        } else {
+            printf("Erreur du serveur lors de la consultation de la disponibilité d'un bien. Code d'erreur : %d\n", response.status);
+        }
+    } else if (userChoice == 3) {
+        command.command = 4;
+        send(sock, &command, sizeof(command), 0);
+        recv(sock, &response, sizeof(response), 0);
+        if (response.status == 0) {
+            printf("Dates d'indisponibilité modifiées avec succès.\n");
+            // ...
+        } else {
+            printf("Erreur du serveur lors de la modification des dates d'indisponibilité. Code d'erreur : %d\n", response.status);
+        }
+    } else {
+        printf("Opération terminée.\n");
+    }
     return 0;
 }
