@@ -145,28 +145,29 @@ int main() {
                             write(bdd, "[\n", strlen("[\n"));
                             for (int i = 0; i < rows; i++) {
                                 printf("  {\n");
-                                bdd = write(bdd, "  {\n", strlen("  {\n"));
+                                write(bdd, "  {\n", strlen("  {\n"));
                                 for (int j = 0; j < cols; j++) {
                                     printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
-                                    bdd = write(bdd, "    \"", strlen("    \""));
+                                    sprintf(query, "    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
+                                    write(bdd, query, strlen(query));
                                     if (j < cols - 1) {
                                         printf(",");
-                                        bdd = write(bdd, "\",", strlen("\","));
+                                        write(bdd, "\",", strlen("\","));
                                     }
                                     printf("\n");
-                                    bdd = write(bdd, "\n", strlen("\n"));
+                                    write(bdd, "\n", strlen("\n"));
                                 }
                                 printf("  }");
-                                bdd = write(bdd, "  }", strlen("  }"));
+                                write(bdd, "  }", strlen("  }"));
                                 if (i < rows - 1) {
                                     printf(",");
-                                    bdd = write(bdd, ",", strlen(","));
+                                    write(bdd, ",", strlen(","));
                                 }
                                 printf("\n");
-                                bdd = write(bdd, "\n", strlen("\n"));
+                                write(bdd, "\n", strlen("\n"));
                             }
                             printf("]\n");
-                            bdd = write(bdd, "]\n", strlen("]\n"));
+                            write(bdd, "]\n", strlen("]\n"));
 
                             // Ecrit le JSON dans le tube
                             int p = 10;
@@ -180,6 +181,7 @@ int main() {
                                 free(data[i]);
                             }
                             free(data);
+                            write(bdd, "\0", strlen("\0"));
                             close(bdd);
                             printf("Erreur = %d\n", p);
                         } else {
