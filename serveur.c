@@ -107,21 +107,24 @@ int main(int argc, char* argv[]) {
     printf("Serveur démarré sur le port %d\n", PORT);
     
     ret = listen(sock, 1);
+    if (VERBOSE)
+    {
+        afficherHeure(logs);
+        fprintf(logs, "listen=%d\n", ret);
+        printf("listen=%d\n", ret);
+    }
 
 //----------------------------------------------------------------------------------
 
 
     while (1 == 1) {
 
-        if (VERBOSE)
-        {
-            afficherHeure(logs);
-            fprintf(logs, "listen=%d\n", ret);
-            printf("listen=%d\n", ret);
-        }
 
         size = sizeof(conn_addr);
         cnx = accept(sock, (struct sockaddr *)&conn_addr, (socklen_t *)&size);
+        char ip[INET_ADDRSTRLEN];
+        inet_ntop(AF_INET, &(conn_addr.sin_addr), ip, INET_ADDRSTRLEN);
+        printf("ip : %s\n", ip);
 
         if (VERBOSE)
         {
