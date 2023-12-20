@@ -52,10 +52,10 @@ int main() {
             PGresult *id_res = PQexec(conn, query);
             if (PQntuples(id_res) > 0) {
                 write(bdd, "true", strlen("true"));
-                printf("Clé reçu et est bonne\n");
+                printf("La clé reçu est bonne\n");
             } else {
                 write(bdd, "false", strlen("false"));
-                printf("Clé reçu et est mauvaise\n");
+                printf("La clé reçu est mauvaise\n");
             }
             //Je verifie si il y a une personne avec cette clé
             //Si il n'y a pas de personne avec cette clé alors on envoie false
@@ -97,7 +97,7 @@ int main() {
                     {
                         printf("Logement %s\n", PQgetvalue(logement, i, 0));
                     }
-                    write(bdd, logement, 64);
+                    write(bdd, logement, 63);
                     PQclear(logement);
                 } else {
                     printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
@@ -112,7 +112,7 @@ int main() {
                         {
                             printf("La personne a l'id %s est propriétaire du logement %s\n", id_str, PQgetvalue(nom_logement, i, 0));
                         }
-                        write(bdd, nom_logement, 64);
+                        write(bdd, nom_logement, 63);
                     } else {
                         write(bdd, "NULL", strlen("NULL"));
                     }
