@@ -244,7 +244,7 @@ int main(int argc, char* argv[]) {
                             fprintf(logs, "response(lenght=%d) :\n", res);
                             printf("response(lenght=%d) :\n", res);
 
-                            while (strcmp(buffer, "\0") == 0)
+                            while (strcmp(buffer, "\0") != 0)
                             {
                                 bdd2serveur = open("bdd2serveur", O_RDONLY);
                                 res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
