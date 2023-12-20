@@ -251,18 +251,15 @@ int main(int argc, char* argv[]) {
 
                             if (strcmp(buffer, "0\n\0") == 0)
                             {
-                                do
-                                {
-                                    int fic = open("json.txt", O_RDONLY);
-                                    res = read(fic, buffer, BUFFER_SIZE-1);
-                                    buffer[res] = '\0';
-                                    close(fic);
+                                
+                                int fic = open("json.txt", O_RDONLY);
+
+                                while (res = read(fic, buffer, BUFFER_SIZE) > 0) {
                                     printf("%s", buffer);
                                     fprintf(logs, "%s", buffer);
                                     write(cnx, buffer, strlen(buffer));
-                                    
-                                } while (buffer != NULL);
-                                
+                                };
+                                close(fic);                               
                             }
                                                          
                         }
