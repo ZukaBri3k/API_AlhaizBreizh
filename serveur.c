@@ -214,10 +214,10 @@ int main(int argc, char* argv[]) {
                             close(serveur2bdd);
                             
 
-                            /* res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
+                            res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
                             afficherHeure(logs);
                             fprintf(logs, "response(lenght=%d) : %s", res, buffer);
-                            printf("response(lenght=%d) : %s", res, buffer); */
+                            printf("response(lenght=%d) : %s", res, buffer);
                         }
                     }
                     
