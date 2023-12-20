@@ -20,6 +20,8 @@ int main() {
     char query[256];
     int serveur;
     int bdd;
+    /* int json;
+    char chemin[256] = "json.txt"; */
     int taille;
     printf("Ouverture des fichiers\n");
 
@@ -141,6 +143,7 @@ int main() {
 
                             // Convertir les données en format JSON et les écrits dans le tube
                             bdd = open("bdd2serveur", O_WRONLY);
+                            /* json = fopen(chemin, "w"); */
                             printf("[\n");
                             write(bdd, "[\n", strlen("[\n"));
                             for (int i = 0; i < rows; i++) {
@@ -148,7 +151,7 @@ int main() {
                                 write(bdd, "  {\n", strlen("  {\n"));
                                 for (int j = 0; j < cols; j++) {
                                     printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
-                                    sprintf(query, "    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
+                                    sprintf(query, ("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]));
                                     write(bdd, query, strlen(query));
                                     if (j < cols - 1) {
                                         printf(",");
