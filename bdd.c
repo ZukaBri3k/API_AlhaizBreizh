@@ -36,9 +36,9 @@ int main() {
         return 1;
     }
     
+    char input[100] = "";
     while (1 == 1)
     {
-        char input[100] = "";
         serveur = open("serveur2bdd", O_RDONLY);
         read(serveur, input, 255);
         sleep(1);
