@@ -19,6 +19,7 @@ int main() {
     int serveur;
     int bdd;
     bdd = open("bdd2serveur", O_WRONLY);
+    serveur = open("serveur2bdd", O_RDONLY);
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
@@ -35,7 +36,6 @@ int main() {
     while (1 == 1)
     {
         char input[100] = "";
-        serveur = open("serveur2bdd", O_RDONLY);
         read(serveur, input, 255);
         printf(input);
 
@@ -125,9 +125,9 @@ int main() {
             PQclear(id_res);
             PQclear(privilege);
         }
-        close(serveur);
     }
     PQfinish(conn);
-
+    close(serveur);
+    close(bdd);
     return 0;
 }
