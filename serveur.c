@@ -260,7 +260,7 @@ int main(int argc, char* argv[]) {
                                     fprintf(logs, "%s", buffer);
                                     write(cnx, buffer, strlen(buffer));
                                     
-                                } while (strcmp(buffer, "\0") != 0);
+                                } while (buffer != NULL);
                                 
                             }
                                                          
