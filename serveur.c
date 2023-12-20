@@ -240,13 +240,30 @@ int main(int argc, char* argv[]) {
 
                             bdd2serveur = open("bdd2serveur", O_RDONLY);
                             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
-                            buffer[res] = '\0';
+                            buffer[res] = '\n';
+                            buffer[res+1] = '\0';
                             sleep(1);
                             close(bdd2serveur);
                             afficherHeureIP(logs, conn_addr);
                             fprintf(logs, "response(lenght=%d) :%s\n", res, buffer);
                             printf("response(lenght=%d) : %s\n", res, buffer);
-                            res = write(cnx, buffer, strlen(buffer));                              
+                            res = write(cnx, buffer, strlen(buffer));
+
+                            if (strcmp(buffer, "0\n\0") == 0)
+                            {
+                                do
+                                {
+                                    int fic = open("json.txt", O_RDONLY);
+                                    read(fic, buffer, BUFFER_SIZE-1);
+                                    close(fic);
+                                    printf("%s", buffer);
+                                    fprintf(logs, "%s", buffer);
+                                    write(cnx, buffer, strlen(buffer));
+                                    
+                                } while (strcmp(buffer, "\0") == 0);
+                                
+                            }
+                                                         
                         }
                     }
                     
