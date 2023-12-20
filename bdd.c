@@ -20,10 +20,12 @@ int main() {
     char query[256];
     int serveur;
     int bdd;
-    int json;
+    //Ecriture du json
+    FILE* json;
     char chemin[256] = "json.txt";
+
     int taille;
-    printf("Ouverture des fichiers\n");
+    printf("Début du programme BDD\n");
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
@@ -142,7 +144,9 @@ int main() {
                             }
 
                             // Convertir les données en format JSON et les écrits dans le tube
+                            // Ouverture du fichier JSON
                             json = fopen(chemin, "w");
+
                             printf("[\n");
                             fprintf(json, "[\n");
                             for (int i = 0; i < rows; i++) {
