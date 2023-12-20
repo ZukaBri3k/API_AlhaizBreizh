@@ -36,7 +36,7 @@ int main() {
         return 1;
     }
     
-    char input[100] = "";
+    char input[100];
     while (1 == 1)
     {
         serveur = open("serveur2bdd", O_RDONLY);
