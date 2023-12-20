@@ -19,6 +19,7 @@ int main() {
     char query[256];
     int serveur;
     int bdd;
+    int taille;
     printf("Ouverture des fichiers\n");
 
     char conninfo[256];
@@ -39,7 +40,8 @@ int main() {
         printf("ok1\n");
         serveur = open("serveur2bdd", O_RDONLY);
         printf("ok2\n");
-        read(serveur, input, BUFFSIZE - 1);
+        taille = read(serveur, input, BUFFSIZE - 1);
+        input[taille] = '\0';
         sleep(1);
         close(serveur);
         printf("Reçu : %s\n", input);
