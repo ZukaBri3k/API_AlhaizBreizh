@@ -1,28 +1,213 @@
 #include <postgresql/libpq-fe.h>
 #include <stdio.h>
+#include <fcntl.h>
+#include <unistd.h>
+#include <stdbool.h>
+#include <string.h>
+#include <stdlib.h>
+
+#define LENCLE 20
 
 int main() {
-    const char *pghost = "postgresdb";
+    const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
-    const char *pgoptions = NULL;
-    const char *pgtty = NULL;
-    const char *name_bdd = "sae";
-    const char *connexion = "sae";
-    const char *pwd = "vae4ua9phuch4Cef";
-    
-    PGconn *conn(pghost, pgport, pgoptions, pgtty, name_bdd, connexion, pwd);
+    const char *dbName = "sae";
+    const char *login = "sae";
+    const char *pwd = "okai9xai9ufaFoht";
+
+    char cle[LENCLE] = "";
+    char query[256];
+    int serveur;
+    int bdd;
+    printf("Ouverture des fichiers\n");
+    bdd = open("bdd2serveur", O_WRONLY);
+    printf("Ouverture du fichier bdd2serveur\n");
+    serveur = open("serveur2bdd", O_RDONLY);
+    printf("Ouverture du fichier serveur2bdd\n");
+
+    char conninfo[256];
+    sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
+            pghost, pgport, dbName, login, pwd);
+
+    PGconn *conn = PQconnectdb(conninfo);
     
     if (PQstatus(conn) != CONNECTION_OK) {
         fprintf(stderr, "Erreur lors de la connexion à la base de données : %s\n", PQerrorMessage(conn));
         PQfinish(conn);
         return 1;
     }
+    
+    while (1 == 1)
+    {
+        char input[100] = "";
+        serveur = open("serveur2bdd", O_RDONLY);
+        read(serveur, input, 255);
+        sleep(1);
+        close(serveur);
+        printf("Reçu : %s\n", input);
 
-    PGresult *res = PQexec(conn, "SELECT id FROM personnes");
-    printf("Nombre de lignes : %d\n", PQntuples(res));
+        input[strcspn(input, "\r\n\0")] = 0;
 
-    PQclear(res);
+        if (strstr(input, "cle") != NULL) {
+            sscanf(input, "cle %s", cle);
+
+            //Ici je vais chercher l'id de la personne qui a la clé
+            sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
+            PGresult *id_res = PQexec(conn, query);
+            if (PQntuples(id_res) > 0) {
+                open("bdd2serveur", O_WRONLY);
+                write(bdd, "true", strlen("true"));
+                sleep(1);
+                close(bdd);
+                printf("La clé reçu est bonne\n");
+            } else {
+                open("bdd2serveur", O_WRONLY);
+                write(bdd, "false", strlen("false"));
+                sleep(1);
+                close(bdd);
+                printf("La clé reçu est mauvaise\n");
+            }
+            //Je verifie si il y a une personne avec cette clé
+            //Si il n'y a pas de personne avec cette clé alors on envoie false
+            PQclear(id_res);
+        } else if (strstr(input, "getLogement") != NULL) {
+            sscanf(input, "getLogement %s", cle);
+            printf("La clé est %s\n", cle);
+
+            //Ici je vais chercher les privilège de la personne qui a la clé
+            sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
+            PGresult *privilege = PQexec(conn, query);
+            if (PQntuples(privilege) > 0)
+            {
+                printf("Privilege de la personne a la clé %s : %s\n", cle, PQgetvalue(privilege, 0, 0));
+
+                sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
+                PGresult *id_res = PQexec(conn, query);
+
+                printf("Id de la personne a la clé %s : %s\n", cle, PQgetvalue(id_res, 0, 0));
+
+                char *id_str = PQgetvalue(id_res, 0, 0);
+                //Ici je vais chercher le nom de la personne qui a la clé
+                sprintf(query, "SELECT nom_pers FROM personnes WHERE id = %s", id_str);
+                PGresult *res = PQexec(conn, query);
+
+                printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
+                //Je verifie si il y'a bien quelqu'un avec cette id
+                if (PQntuples(res) > 0) {
+                    printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
+                    printf("Privilege de la personne a l'id %s : %s\n", id_str, PQgetvalue(privilege, 0, 0));
+
+                    //Je verifie si la personne a des privilèges
+                    if (strcmp(PQgetvalue(privilege, 0, 0), "t") == 0) {
+                        printf("La personne a l'id %s a des privilèges\n", id_str);
+
+                        //Ici je vais prendre tout les logements
+                        sprintf(query, "SELECT * FROM logement");
+                        PGresult *logement = PQexec(conn, query);
+                        for (int i = 0; i < PQntuples(logement); i++)
+                        {
+                            printf("Logement id : %s\n", PQgetvalue(logement, i, 0));
+                        }
+                        int j = 10;
+                        bdd = open("bdd2serveur", O_WRONLY);
+                        j = write(bdd, PQgetvalue(logement, 0, 0), strlen(PQgetvalue(logement, 0, 0)));
+                        sleep(1);
+                        close(bdd);
+                        printf("Erreur = %d\n", j);
+                        PQclear(logement);
+                    } else {
+                        printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
+
+                        //Ici je vais chercher le nom du logement de la personne qui a la clé
+                        sprintf(query, "SELECT * FROM logement WHERE id_proprio_logement = %s", id_str);
+                        PGresult *nom_logement = PQexec(conn, query);
+
+                        //Je verifie si la personne a un logement
+                        if (PQntuples(nom_logement) > 0) {
+                            
+                            int rows = PQntuples(nom_logement);
+                            int cols = PQnfields(nom_logement);
+
+                            // Créer un tableau pour stocker les données
+                            char ***data = (char ***)malloc(rows * sizeof(char **));
+                            for (int i = 0; i < rows; i++) {
+                                data[i] = (char **)malloc((cols + 1) * sizeof(char *));
+                            }
+
+                            // Remplir le tableau avec les données de la requête
+                            for (int i = 0; i < rows; i++) {
+                                for (int j = 0; j < cols; j++) {
+                                    data[i][j] = strdup(PQgetvalue(nom_logement, i, j));
+                                }
+                            }
+
+                            // Convertir les données en format JSON et les écrits dans le tube
+                            printf("[\n");
+                            for (int i = 0; i < rows; i++) {
+                                printf("  {\n");
+                                for (int j = 0; j < cols; j++) {
+                                    printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
+                                    if (j < cols - 1) {
+                                        printf(",");
+                                    }
+                                    printf("\n");
+                                }
+                                printf("  }");
+                                if (i < rows - 1) {
+                                    printf(",");
+                                }
+                                printf("\n");
+                            }
+                            printf("]\n");
+
+                            // Ecrit le JSON dans le tube
+                            int p = 10;
+                            bdd = open("bdd2serveur", O_WRONLY);
+                            p = write(bdd, "bien reçu", strlen("bien reçu"));
+                            sleep(1);
+
+                            // Libérer la mémoire
+                            for (int i = 0; i < rows; i++) {
+                                for (int j = 0; j < cols; j++) {
+                                    free(data[i][j]);
+                                }
+                                free(data[i]);
+                            }
+                            free(data);
+                            close(bdd);
+                            printf("Erreur = %d\n", p);
+                        } else {
+                            open("bdd2serveur", O_WRONLY);
+                            write(bdd, "false", strlen("false"));
+                            sleep(1);
+                            close(bdd);
+                        }
+                        PQclear(nom_logement);
+                    }
+                //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur et on renvoie null
+                } else {
+                    write(bdd, "false", strlen("false"));
+                    printf("Il n'y a pas de personne avec l'id %s\n", id_str);
+                }
+                PQclear(res);
+                PQclear(id_res);
+            } else {
+                open("bdd2serveur", O_WRONLY);
+                write(bdd, "false", strlen("false"));
+                sleep(1);
+                close(bdd);
+                printf("La clé reçu est mauvaise\n");
+            }
+            PQclear(privilege);
+        } /* else {
+            open("bdd2serveur", O_WRONLY);
+            write(bdd, "Commande incorrect", strlen("Commande incorrect"));
+            close(bdd);
+        } */
+        printf("-------------------------------Fin de boucle-------------------------------\n");
+    }
     PQfinish(conn);
-
+    close(bdd);
+    close(serveur);
     return 0;
 }
