@@ -161,6 +161,7 @@ int main() {
             open("bdd2serveur", O_WRONLY);
             write(bdd, "Commande incorrect", strlen("Commande incorrect"));
             close(bdd);
+            printf("Commande incorrect\n");
         }
         printf("-------------------------------Fin de boucle-------------------------------\n");
     }
