@@ -209,9 +209,10 @@ int main(int argc, char* argv[]) {
                             fprintf(logs, "%s", msgClient);
                         }
                         
-                    } else {
+                    } else if (strcmp(buffer, "exit\r\n\0") != 0){
                         if (VERBOSE)
                         {
+                            //ecriture de la requete dans le fichier bdd
                             afficherHeure(logs);
                             fprintf(logs, "request(lenght=%d) : %s", res, buffer);
                             printf("request(lenght=%d) : %s", res, buffer);
@@ -220,7 +221,7 @@ int main(int argc, char* argv[]) {
                             sleep(1);
                             close(serveur2bdd);
 
-
+                            //récupération de la réponse depuis le tube
                             bdd2serveur = open("bdd2serveur", O_RDONLY);
                             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
                             sleep(1);
