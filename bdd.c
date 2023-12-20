@@ -99,7 +99,7 @@ int main() {
                     }
                     int j = 10;
                     bdd = open("bdd2serveur", O_WRONLY);
-                    j = write(bdd, logement, 63);
+                    j = write(bdd, PQgetvalue(logement, 0, 0), strlen(PQgetvalue(logement, 0, 0)));
                     close(bdd);
                     printf("Erreur = %d\n", j);
                     PQclear(logement);
@@ -118,7 +118,7 @@ int main() {
                         }
                         int j = 10;
                         bdd = open("bdd2serveur", O_WRONLY);
-                        j = write(bdd, nom_logement, 63);
+                        j = write(bdd, PQgetvalue(nom_logement, 0, 0), strlen(PQgetvalue(nom_logement, 0, 0)));
                         close(bdd);
                         printf("Erreur = %d\n", j);
                     } else {
