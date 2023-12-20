@@ -40,8 +40,8 @@ int main(int argc, char* argv[]) {
     FILE *logs = fopen("logs.txt", "a");
 
     //declaration des tubes
-    int serveur2bdd = open("serveur2bdd", O_WRONLY);
     int bdd2serveur = open("bdd2serveur", O_RDONLY);
+    int serveur2bdd = open("serveur2bdd", O_WRONLY);
     printf("TEST------------------------------\n");
     //traitement des options longues
     int opt;
