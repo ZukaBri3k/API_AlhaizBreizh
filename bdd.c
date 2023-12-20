@@ -41,7 +41,7 @@ int main() {
     {
         char input[100] = "";
         serveur = open("serveur2bdd", O_RDONLY);
-        read(serveur, input, strlen(input));
+        read(serveur, input, 255);
         sleep(1);
         close(serveur);
         printf("Reçu : %s\n", input);
