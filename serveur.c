@@ -228,8 +228,8 @@ int main(int argc, char* argv[]) {
                             close(bdd2serveur);
                             buffer[res] = '\0';
                             afficherHeure(logs);
-                            fprintf(logs, "response(lenght=%d) : %s", res, buffer);
-                            printf("response(lenght=%d) : %s", res, buffer);
+                            fprintf(logs, "response(lenght=%d) : %s\n", res, buffer);
+                            printf("response(lenght=%d) : %s\n", res, buffer);
                         }
                     }
                     
