@@ -42,6 +42,7 @@ int main(int argc, char* argv[]) {
     //declaration des tubes
     int serveur2bdd = open("serveur2bdd", O_WRONLY);
     int bdd2serveur = open("bdd2serveur", O_RDONLY);
+    pritnf("TEST------------------------------\n");
     //traitement des options longues
     int opt;
     int option_index = 0;
@@ -105,9 +106,12 @@ int main(int argc, char* argv[]) {
     fprintf(logs, "Serveur démarré sur le port %d\n", PORT);
     printf("Serveur démarré sur le port %d\n", PORT);
     
-    while (1 == 1) {
+    ret = listen(sock, 1);
 
-        ret = listen(sock, 1);
+//----------------------------------------------------------------------------------
+
+
+    while (1 == 1) {
 
         if (VERBOSE)
         {
@@ -155,9 +159,10 @@ int main(int argc, char* argv[]) {
             res = write(serveur2bdd, buffer, strlen(buffer));
             close(serveur2bdd);
 
-            //récupération de la clé depuis le tube
+            //récupération de la réponse depuis le tube
             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
-            buffer[res] = '\0';   
+            buffer[res] = '\0';
+            close(bdd2serveur);
 
             if(strcmp(buffer, "true\0") != 0) {
                 //si la clé n'est pas bonne
