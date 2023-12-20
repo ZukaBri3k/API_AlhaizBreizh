@@ -222,6 +222,7 @@ int main(int argc, char* argv[]) {
                             bdd2serveur = open("bdd2serveur", O_RDONLY);
                             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
                             close(bdd2serveur);
+                            buffer[res] = '\0';
                             afficherHeure(logs);
                             fprintf(logs, "response(lenght=%d) : %s", res, buffer);
                             printf("response(lenght=%d) : %s", res, buffer);
