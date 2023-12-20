@@ -147,35 +147,34 @@ int main() {
                             // Ouverture du fichier JSON
                             json = fopen(chemin, "w");
 
-                            printf("[\n");
+                            /* printf("[\n"); */
                             fprintf(json, "[\n");
                             for (int i = 0; i < rows; i++) {
-                                printf("  {\n");
+                                /* printf("  {\n"); */
                                 fprintf(json, "  {\n");
                                 for (int j = 0; j < cols; j++) {
-                                    printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
+                                    /* printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]); */
                                     fprintf(json, "    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
                                     if (j < cols - 1) {
-                                        printf(",");
+                                        /* printf(","); */
                                         fprintf(json, ",");
                                     }
-                                    printf("\n");
+                                    /* printf("\n"); */
                                     fprintf(json, "\n");
                                 }
-                                printf("  }");
+                                /* printf("  }"); */
                                 fprintf(json, "  }");
                                 if (i < rows - 1) {
                                     printf(",");
                                     fprintf(json, ",");
                                 }
-                                printf("\n");
+                                /* printf("\n"); */
                                 fprintf(json, "\n");
                             }
-                            printf("]\n");
+                            /* printf("]\n"); */
                             fprintf(json, "]\n");
 
-                            // Ecrit le JSON dans le tube
-                            int p = 10;
+                            // Sleep pour laisser le temps au serveur de lire le fichier
                             sleep(1);
 
                             // Libérer la mémoire
@@ -187,10 +186,13 @@ int main() {
                             }
                             free(data);
                             fclose(json);
+
+                            // Envoie du message au serveur pour dire que c'est fini
                             bdd = open("bdd2serveur", O_WRONLY);
-                            write(bdd, "\0", strlen("\0"));
+                            write(bdd, "0", strlen("0"));
                             close(bdd);
-                            printf("Erreur = %d\n", p);
+
+                            printf("Fin de la création du json\n");
                         } else {
                             open("bdd2serveur", O_WRONLY);
                             write(bdd, "false", strlen("false"));
