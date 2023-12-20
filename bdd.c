@@ -18,6 +18,7 @@ int main() {
     char query[256];
     int serveur;
     int bdd;
+    printf("Ouverture des fichiers\n");
     bdd = open("bdd2serveur", O_WRONLY);
     printf("Ouverture du fichier bdd2serveur\n");
     serveur = open("serveur2bdd", O_RDONLY);
