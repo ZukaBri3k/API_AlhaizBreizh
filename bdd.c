@@ -199,11 +199,11 @@ int main() {
                 printf("La clé reçu est mauvaise\n");
             }
             PQclear(privilege);
-        } else {
+        } /* else {
             open("bdd2serveur", O_WRONLY);
             write(bdd, "Commande incorrect", strlen("Commande incorrect"));
             close(bdd);
-        }
+        } */
         printf("-------------------------------Fin de boucle-------------------------------\n");
     }
     PQfinish(conn);
