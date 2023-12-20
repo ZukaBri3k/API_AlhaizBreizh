@@ -165,7 +165,7 @@ int main() {
                                 /* printf("  }"); */
                                 fprintf(json, "  }");
                                 if (i < rows - 1) {
-                                    printf(",");
+                                    /* printf(","); */
                                     fprintf(json, ",");
                                 }
                                 /* printf("\n"); */
