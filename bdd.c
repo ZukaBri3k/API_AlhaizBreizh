@@ -41,6 +41,7 @@ int main() {
     
     while (1 == 1)
     {
+        printf("-------------------------------Début de boucle-------------------------------\n");
         char input[BUFFSIZE];
         serveur = open("serveur2bdd", O_RDONLY);
         taille = read(serveur, input, BUFFSIZE - 1);
