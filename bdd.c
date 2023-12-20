@@ -135,7 +135,7 @@ int main() {
                             printf("Erreur = %d\n", j);
                         } else {
                             open("bdd2serveur", O_WRONLY);
-                            write(bdd, "NULL", strlen("NULL"));
+                            write(bdd, "false", strlen("false"));
                             sleep(1);
                             close(bdd);
                         }
@@ -143,7 +143,7 @@ int main() {
                     }
                 //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur et on renvoie null
                 } else {
-                    write(bdd, "NULL", strlen("NULL"));
+                    write(bdd, "false", strlen("false"));
                     printf("Il n'y a pas de personne avec l'id %s\n", id_str);
                 }
                 PQclear(res);
