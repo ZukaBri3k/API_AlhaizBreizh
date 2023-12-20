@@ -78,8 +78,6 @@ void creerJson(PGresult *res) {
         }
         free(data[i]);
     }
-    free(data);
-    free(res);
     fclose(json);
 
     // Envoie du message au serveur pour dire que c'est fini
