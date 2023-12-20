@@ -40,7 +40,7 @@ int main() {
     while (1 == 1)
     {
         serveur = open("serveur2bdd", O_RDONLY);
-        read(serveur, input, strlen(input));
+        read(serveur, input, 99);
         sleep(1);
         close(serveur);
         printf("Reçu : %s\n", input);
