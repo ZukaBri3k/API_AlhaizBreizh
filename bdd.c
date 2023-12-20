@@ -14,11 +14,11 @@
 void creerJson(PGresult *res) {
     //Ecriture du json
     FILE* json;
-    char chemin[256] = "json.txt";
+    char chemin[10] = "json.txt";
     // Création de la variables pour écrire dans le tube
     int bdd;
 
-
+//************ Début de la création du json ************//
     int rows = PQntuples(res);
     int cols = PQnfields(res);
 
@@ -37,7 +37,7 @@ void creerJson(PGresult *res) {
 
     // Convertir les données en format JSON et les écrits dans le tube
     // Ouverture du fichier JSON
-    FILE* json = fopen(chemin, "w");
+    json = fopen(chemin, "w");
 
     /* printf("[\n"); */
     fprintf(json, "[\n");
@@ -83,8 +83,6 @@ void creerJson(PGresult *res) {
     bdd = open("bdd2serveur", O_WRONLY);
     write(bdd, "0", strlen("0"));
     close(bdd);
-
-    printf("Fin de la création du json pour privilégier\n");
     PQclear(res);
 }
 
@@ -118,7 +116,7 @@ int main() {
     
     while (1 == 1)
     {
-        printf("-------------------------------Début de boucle-------------------------------\n");
+        printf("\n-------------------------------Début de boucle-------------------------------\n");
         char input[BUFFSIZE];
         serveur = open("serveur2bdd", O_RDONLY);
         taille = read(serveur, input, BUFFSIZE - 1);
