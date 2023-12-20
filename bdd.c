@@ -37,7 +37,6 @@ int main() {
         char input[100] = "";
         serveur = open("serveur2bdd", O_RDONLY);
         read(serveur, input, 255);
-        close(serveur);
         printf(input);
 
         input[strcspn(input, "\r\n\0")] = 0;
@@ -126,6 +125,7 @@ int main() {
             PQclear(id_res);
             PQclear(privilege);
         }
+        close(serveur);
     }
     PQfinish(conn);
 
