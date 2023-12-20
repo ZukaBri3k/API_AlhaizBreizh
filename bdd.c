@@ -19,7 +19,9 @@ int main() {
     int serveur;
     int bdd;
     bdd = open("bdd2serveur", O_WRONLY);
+    printf("Ouverture du fichier bdd2serveur\n");
     serveur = open("serveur2bdd", O_RDONLY);
+    printf("Ouverture du fichier serveur2bdd\n");
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
