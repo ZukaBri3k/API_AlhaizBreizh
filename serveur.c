@@ -170,10 +170,12 @@ int main(int argc, char* argv[]) {
                 fprintf(logs, "Clé API saisie : %s", buffer);
                 printf("Clé API saisie : %s", buffer);
             }
-
+            printf("test0\n");
             //ecriture de la clé dans le tube
             serveur2bdd = open("serveur2bdd", O_RDONLY);
+            printf("test1\n");
             bdd2serveur = open("bdd2serveur", O_WRONLY);
+            printf("test2\n");
 
             res = write(serveur2bdd, buffer, strlen(buffer));
             sleep(1);
