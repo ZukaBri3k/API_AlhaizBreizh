@@ -180,7 +180,7 @@ int main() {
                         PGresult *logement = PQexec(conn, query);
                         
                         // Création du json
-                        creerJson(logement);
+                        //creerJson(logement);
 
                         printf("Fin de la création du json pour privilégier\n");
                     } else {
@@ -193,7 +193,7 @@ int main() {
                         if (PQntuples(nom_logement) > 0) {
                             
                             // Création du json
-                            //creerJson(nom_logement);
+                            creerJson(nom_logement);
 
                             printf("Fin de la création du json pour non privilégier\n");
                         } else {
