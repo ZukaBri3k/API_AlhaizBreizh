@@ -170,18 +170,15 @@ int main(int argc, char* argv[]) {
                 fprintf(logs, "Clé API saisie : %s", buffer);
                 printf("Clé API saisie : %s", buffer);
             }
-            printf("test0\n");
+            
             //ecriture de la clé dans le tube
-
             serveur2bdd = open("serveur2bdd", O_WRONLY);
-            printf("test1\n");
             res = write(serveur2bdd, buffer, strlen(buffer));
             sleep(1);
             close(serveur2bdd);
 
             //récupération de la réponse depuis le tube
             bdd2serveur = open("bdd2serveur", O_RDONLY);
-            printf("test2\n");
             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
             buffer[res] = '\0';
             sleep(1);
@@ -243,11 +240,12 @@ int main(int argc, char* argv[]) {
 
                             bdd2serveur = open("bdd2serveur", O_RDONLY);
                             res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
+                            buffer[res] = '\0';
                             sleep(1);
                             close(bdd2serveur);
                             afficherHeureIP(logs, conn_addr);
-                            fprintf(logs, "response(lenght=%d) :\n", res);
-                            printf("response(lenght=%d) :\n", res);
+                            fprintf(logs, "response(lenght=%d) :%s\n", res, buffer);
+                            printf("response(lenght=%d) : %s\n", res, buffer);
                             res = write(cnx, buffer, strlen(buffer));                              
                         }
                     }
