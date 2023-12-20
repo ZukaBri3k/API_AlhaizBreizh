@@ -131,7 +131,10 @@ int main() {
                             close(bdd);
                             printf("Erreur = %d\n", j);
                         } else {
+                            open("bdd2serveur", O_WRONLY);
                             write(bdd, "NULL", strlen("NULL"));
+                            sleep(1);
+                            close(bdd);
                         }
                         PQclear(nom_logement);
                     }
@@ -151,8 +154,7 @@ int main() {
                 printf("La clé reçu est mauvaise\n");
             }
             PQclear(privilege);
-        } else
-        {
+        } else {
             open("bdd2serveur", O_WRONLY);
             write(bdd, "Commande incorrect", strlen("Commande incorrect"));
             close(bdd);
