@@ -239,16 +239,20 @@ int main(int argc, char* argv[]) {
                             close(serveur2bdd);
 
                             //récupération de la réponse depuis le tube
-                            bdd2serveur = open("bdd2serveur", O_RDONLY);
-                            res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
-                            sleep(1);
-                            close(bdd2serveur);
-                            buffer[res] = '\n';
-                            buffer[res+1] = '\0';
+
                             afficherHeureIP(logs, conn_addr);
-                            fprintf(logs, "response(lenght=%d) : %s\n", res, buffer);
-                            printf("response(lenght=%d) : %s\n", res, buffer);
-                            res = write(cnx, buffer, strlen(buffer));
+                            fprintf(logs, "response(lenght=%d) :\n", res);
+                            printf("response(lenght=%d) :\n", res);
+
+                            while (strcmp(buffer, "\0") == 0)
+                            {
+                                bdd2serveur = open("bdd2serveur", O_RDONLY);
+                                res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
+                                //sleep(1);
+                                close(bdd2serveur);
+                                printf("%s", buffer);
+                                res = write(cnx, buffer, strlen(buffer));                               
+                            }
                         }
                     }
                     
