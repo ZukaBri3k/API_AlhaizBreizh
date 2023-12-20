@@ -64,7 +64,7 @@ void creerJson(PGresult *res) {
         fprintf(json, "\n");
     }
     /* printf("]\n"); */
-    fprintf(json, "]\n");
+    fprintf(json, "]\n\0");
 
     // Sleep pour laisser le temps au serveur de lire le fichier
     sleep(1);
@@ -78,6 +78,7 @@ void creerJson(PGresult *res) {
     }
     free(data);
     fclose(json);
+    free(chemin);
 
     // Envoie du message au serveur pour dire que c'est fini
     bdd = open("bdd2serveur", O_WRONLY);
