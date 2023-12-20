@@ -65,6 +65,7 @@ void creerJson(PGresult *res) {
     }
     /* printf("]\n"); */
     fprintf(json, "]\n");
+
     char null_char = '\0';
     fwrite(&null_char, sizeof(char), 1, json);
 
@@ -78,6 +79,7 @@ void creerJson(PGresult *res) {
         }
         free(data[i]);
     }
+    printf("test\n");
     free(data);
     fclose(json);
 
@@ -193,7 +195,6 @@ int main() {
                         if (PQntuples(nom_logement) > 0) {
                             
                             // Création du json
-                            printf("Création du json pour non privilégier\n");
                             creerJson(nom_logement);
 
                             printf("Fin de la création du json pour non privilégier\n");
