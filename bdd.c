@@ -52,7 +52,7 @@ int main() {
         sleep(1);
         close(serveur);
 
-        input[strcspn(input, "\r\n")] = 0;
+        input[strcspn(input, "\r\n\0")] = 0;
 
         if (strstr(input, "cle") != NULL) {
             sscanf(input, "cle %s", cle);
@@ -172,7 +172,7 @@ int main() {
                             // Envoie du message au serveur pour dire que c'est fini
                             bdd = open("bdd2serveur", O_WRONLY);
                             int erreur;
-                            erreur = write(bdd, "0", strlen("0"));
+                            erreur = write(bdd, "0\r\n", strlen("0\r\n"));
                             printf("Erreur : %d\n", erreur);
                             close(bdd);
 
@@ -256,7 +256,7 @@ int main() {
                             // Envoie du message au serveur pour dire que c'est fini
                             bdd = open("bdd2serveur", O_WRONLY);
                             int erreur;
-                            erreur = write(bdd, "0", strlen("0"));
+                            erreur = write(bdd, "0\r\n", strlen("0\r\n"));
                             printf("Erreur : %d\n", erreur);
                             close(bdd);
 
