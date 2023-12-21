@@ -165,8 +165,8 @@ int main(int argc, char* argv[]) {
             res = read(cnx, buffer, BUFFER_SIZE-1);
             strcpy(cleAPI, " ");
             strcat(cleAPI, buffer);
-            strcspn(cleAPI, "\r\n");
-            strcspn(cleAPI, "cle ");
+            cleAPI[strcspn(cleAPI, "\r\n")] = 0;
+            cleAPI[strcspn(cleAPI, "cle ")] = 0;
             printf("cleAPI : %s\n", cleAPI);
             buffer[res] = '\0';
 
