@@ -80,6 +80,7 @@ int main(int argc, char* argv[]) {
     printf("1. Consulter la liste des biens\n");
     printf("2. Consulter la disponibilité d'un bien\n");
     printf("3. Modifier les dates d'indisponibilité d'un bien\n");
+    printf("4. Consulter la liste de tous les biens (admin)\n");
     printf("0. Quitter\n");
     printf("Votre choix : ");
     int choix;
@@ -91,7 +92,7 @@ int main(int argc, char* argv[]) {
         recv(sock, &response, sizeof(response), 0);
         if (response.status == 0) {
             printf("Liste des biens du client :\n");
-            // ...
+            printf(response);
         } else {
             printf("Erreur du serveur lors de la consultation de la liste des biens. Code d'erreur : %d\n", response.status);
         }
@@ -101,7 +102,7 @@ int main(int argc, char* argv[]) {
         recv(sock, &response, sizeof(response), 0);
         if (response.status == 0) {
             printf("Disponibilité du bien :\n");
-            // ...
+            printf(response);
         } else {
             printf("Erreur du serveur lors de la consultation de la disponibilité d'un bien. Code d'erreur : %d\n", response.status);
         }
@@ -111,9 +112,19 @@ int main(int argc, char* argv[]) {
         recv(sock, &response, sizeof(response), 0);
         if (response.status == 0) {
             printf("Dates d'indisponibilité modifiées avec succès.\n");
-            // ...
+            printf(response);
         } else {
             printf("Erreur du serveur lors de la modification des dates d'indisponibilité. Code d'erreur : %d\n", response.status);
+        }
+    } else if (userChoice == 4) {
+        command.command = 5;
+        send(sock, &command, sizeof(command), 0);
+        recv(sock, &response, sizeof(response), 0);
+        if (response.status == 0) {
+            printf("La liste de tous les biens :\n");
+            printf(response);
+        } else {
+            printf("Erreur du serveur lors de la consultation de tous les biens. Code d'erreur : %d\n", response.status);
         }
     } else {
         printf("Opération terminée.\n");
