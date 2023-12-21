@@ -161,6 +161,8 @@ int main() {
                             }
                             /* printf("]\n"); */
                             fprintf(json, "]\n");
+                            char null_char = '\0';
+                            fwrite(&null_char, sizeof(char), 1, json);
                             fclose(json);
 
                             // Ecrit le JSON dans le tube
