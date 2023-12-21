@@ -163,10 +163,7 @@ int main(int argc, char* argv[]) {
 
             //on lit la clé api
             res = read(cnx, buffer, BUFFER_SIZE-1);
-            strcpy(cleAPI, " ");
-            strcat(cleAPI, buffer);
-            cleAPI[strcspn(cleAPI, "\r\n")] = 0;
-            cleAPI[strcspn(cleAPI, "cle ")] = 0;
+            sscanf(buffer, "cle %s", cleAPI);
             printf("cleAPI : %s\n", cleAPI);
             buffer[res] = '\0';
 
