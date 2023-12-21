@@ -166,6 +166,7 @@ int main(int argc, char* argv[]) {
             strcpy(cleAPI, " ");
             strcat(cleAPI, buffer);
             strcspn(cleAPI, "\r\n");
+            strcspn(cleAPI, "cle ");
             buffer[res] = '\0';
 
             if (VERBOSE)
