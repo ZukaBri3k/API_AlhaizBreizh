@@ -170,7 +170,9 @@ int main() {
 
                             // Envoie du message au serveur pour dire que c'est fini
                             bdd = open("bdd2serveur", O_WRONLY);
-                            write(bdd, "0", strlen("0"));
+                            int erreur;
+                            erreur = write(bdd, "0", strlen("0"));
+                            printf("Erreur : %d\n", erreur);
                             close(bdd);
 
                             //********************Fin de la création du json********************//
@@ -250,7 +252,9 @@ int main() {
 
                             // Envoie du message au serveur pour dire que c'est fini
                             bdd = open("bdd2serveur", O_WRONLY);
-                            write(bdd, "0", strlen("0"));
+                            int erreur;
+                            erreur = write(bdd, "0", strlen("0"));
+                            printf("Erreur : %d\n", erreur);
                             close(bdd);
 
                             //********************Fin de la création du json********************//
