@@ -289,12 +289,12 @@ int main() {
                 printf("La clé reçu est mauvaise\n");
             }
             PQclear(privilege);
-        } /* else {
+        } else {
             bdd = open("bdd2serveur", O_WRONLY);
             write(bdd, "Commande incococococococoocco)ococoococooccoococoocoococoorrect", strlen("Commande incococococococoocco)ococoococooccoococoocoococoorrect"));
             close(bdd);
             printf("Commande incorrect\n");
-        } */
+        }
         printf("-------------------------------Fin de boucle-------------------------------\n");
     }
     PQfinish(conn);
