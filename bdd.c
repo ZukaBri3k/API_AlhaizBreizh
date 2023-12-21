@@ -283,7 +283,7 @@ int main() {
             sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
             PGresult *id_proprio = PQexec(conn, query);
             // Récupération de l'id du logement
-            printf(query, "SELECT id_logement FROM logement WHERE id_proprio_logement = '%s'", PQgetvalue(id_proprio, 0, 0));
+            sprintf(query, "SELECT id_logement FROM logement WHERE id_proprio_logement = '%s'", PQgetvalue(id_proprio, 0, 0));
             PGresult *id_logement = PQexec(conn, query);
 
             if (PQntuples(id_logement) > 0) {
