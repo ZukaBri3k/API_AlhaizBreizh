@@ -26,8 +26,6 @@ int main() {
     //Ecriture du json
     FILE* json;
     char chemin[10] = "json.txt";
-    // Création de la variables pour écrire dans le tube
-    int bdd;
 
     int taille;
     printf("-------------------------------Début du programme-------------------------------\n");
