@@ -18,8 +18,10 @@ int main() {
 
     char cle[LENCLE] = "";
     char query[256];
+    //Ouverture des tubes
     int serveur;
     int bdd;
+
     //Ecriture du json
     FILE* json;
     char chemin[256] = "json.txt";
@@ -41,14 +43,13 @@ int main() {
     
     while (1 == 1)
     {
-        printf("-------------------------------Début de boucle-------------------------------\n");
+        printf("\n-------------------------------Début de boucle-------------------------------\n");
         char input[BUFFSIZE];
         serveur = open("serveur2bdd", O_RDONLY);
         taille = read(serveur, input, BUFFSIZE - 1);
         input[taille] = '\0';
         sleep(1);
         close(serveur);
-        printf("Reçu : %s\n", input);
 
         input[strcspn(input, "\r\n\0")] = 0;
 
@@ -254,7 +255,7 @@ int main() {
 
                             printf("Fin de la création du json\n");
                         } else {
-                            open("bdd2serveur", O_WRONLY);
+                            bdd = open("bdd2serveur", O_WRONLY);
                             write(bdd, "false", strlen("false"));
                             sleep(1);
                             close(bdd);
@@ -263,8 +264,11 @@ int main() {
                     }
                 //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur et on renvoie null
                 } else {
-                    bdd = write(bdd, "false", strlen("false"));
+                    bdd = open("bdd2serveur", O_WRONLY);
+                    write(bdd, "false", strlen("false"));
                     printf("Il n'y a pas de personne avec l'id %s\n", id_str);
+                    sleep(1);
+                    close(bdd);
                 }
                 PQclear(res);
                 PQclear(id_res);
