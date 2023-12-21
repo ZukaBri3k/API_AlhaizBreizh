@@ -100,8 +100,7 @@ int main() {
                         
                         int rows = PQntuples(logement);
                         int cols = PQnfields(logement);
-
-                        printf("-------------------------------Début de la création du JSON-------------------------------\n");
+                        printf("-------------------------Début de la création du JSON------------------------\n");
 
                         // Créer un tableau pour stocker les données
                         char ***data = (char ***)malloc(rows * sizeof(char **));
@@ -156,7 +155,7 @@ int main() {
 
                         PQclear(logement);
 
-                        printf("--------------------------------Fin de la création du JSON--------------------------------\n");
+                        printf("--------------------------Fin de la création du JSON-------------------------\n");
                     } else {
 
                         //Ici je vais chercher le nom du logement de la personne qui a la clé
@@ -169,7 +168,7 @@ int main() {
                             int rows = PQntuples(nom_logement);
                             int cols = PQnfields(nom_logement);
 
-                            printf("-------------------------------Début de la création du JSON-------------------------------\n");
+                            printf("-------------------------Début de la création du JSON------------------------\n");
 
                             // Créer un tableau pour stocker les données
                             char ***data = (char ***)malloc(rows * sizeof(char **));
@@ -222,7 +221,7 @@ int main() {
                             free(data);
                             close(bdd);
 
-                            printf("--------------------------------Fin de la création du JSON--------------------------------\n");
+                            printf("--------------------------Fin de la création du JSON-------------------------\n");
                         } else {
                             open("bdd2serveur", O_WRONLY);
                             write(bdd, "false", strlen("false"));
