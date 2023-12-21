@@ -105,6 +105,7 @@ int main() {
                         PGresult *logement = PQexec(conn, query);
                         
                         //********************Début de la création du json********************//
+                        printf("-------------------------------Début de la création du JSON-------------------------------\n");
 
                         //Je verifie si la personne a un logement
                         if (PQntuples(logement) > 0) {
@@ -176,7 +177,7 @@ int main() {
                             close(bdd);
 
                             //********************Fin de la création du json********************//
-                            printf("Fin de la création du json\n");
+                            printf("-------------------------------Fin de la création du JSON-------------------------------\n");
                             PQclear(logement);
                         }
 
@@ -187,6 +188,8 @@ int main() {
                         PGresult *nom_logement = PQexec(conn, query);
 
                         //********************Début de la création du json********************//
+
+                        printf("-------------------------------Début de la création du JSON-------------------------------\n");
 
                         //Je verifie si la personne a un logement
                         if (PQntuples(nom_logement) > 0) {
@@ -259,7 +262,7 @@ int main() {
 
                             //********************Fin de la création du json********************//
 
-                            printf("Fin de la création du json\n");
+                            printf("-------------------------------Fin de la création du JSON-------------------------------\n");
                         } else {
                             bdd = open("bdd2serveur", O_WRONLY);
                             write(bdd, "false", strlen("false"));
@@ -288,7 +291,7 @@ int main() {
             PQclear(privilege);
         } /* else {
             bdd = open("bdd2serveur", O_WRONLY);
-            write(bdd, "Commande incorrect", strlen("Commande incorrect"));
+            write(bdd, "Commande incococococococoocco)ococoococooccoococoocoococoorrect", strlen("Commande incococococococoocco)ococoococooccoococoocoococoorrect"));
             close(bdd);
             printf("Commande incorrect\n");
         } */
