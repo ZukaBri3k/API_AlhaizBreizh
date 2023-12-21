@@ -7,6 +7,7 @@
 #include <stdlib.h>
 
 #define LENCLE 20
+#define BUFFSIZE 100
 
 int main() {
     const char *pghost = "127.0.0.1";
@@ -19,6 +20,10 @@ int main() {
     char query[256];
     int serveur;
     int bdd;
+
+    int taille;
+
+    char input[BUFFSIZE];
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
@@ -34,9 +39,9 @@ int main() {
     
     while (1 == 1)
     {
-        char input[100] = "";
         serveur = open("serveur2bdd", O_RDONLY);
-        read(serveur, input, 255);
+        taille = read(serveur, input, BUFFSIZE - 1);
+        input[taille] = '\0';
         sleep(1);
         close(serveur);
         printf("Reçu : %s\n", input);
