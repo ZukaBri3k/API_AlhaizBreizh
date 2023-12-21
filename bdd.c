@@ -39,6 +39,7 @@ int main() {
     
     while (1 == 1)
     {
+        printf("-------------------------------Début de boucle-------------------------------\n");
         serveur = open("serveur2bdd", O_RDONLY);
         taille = read(serveur, input, BUFFSIZE - 1);
         input[taille] = '\0';
@@ -132,29 +133,39 @@ int main() {
                                 }
                             }
 
-                            // Convertir les données en format JSON et les écrits dans le tube
-                            printf("[\n");
+                            // Convertir les données en format JSON et les écrits dans le tube ainsi que dans le fichier
+                            FILE *json = fopen("json.txt", "w");
+                            /* printf("[\n"); */
+                            fprintf(json, "[\n");
                             for (int i = 0; i < rows; i++) {
-                                printf("  {\n");
+                                /* printf("  {\n"); */
+                                fprintf(json, "  {\n");
                                 for (int j = 0; j < cols; j++) {
-                                    printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
+                                    /* printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]); */
+                                    fprintf(json, "    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
                                     if (j < cols - 1) {
-                                        printf(",");
+                                        /* printf(","); */
+                                        fprintf(json, ",");
                                     }
-                                    printf("\n");
+                                    /* printf("\n"); */
+                                    fprintf(json, "\n");
                                 }
-                                printf("  }");
+                                /* printf("  }"); */
+                                fprintf(json, "  }");
                                 if (i < rows - 1) {
-                                    printf(",");
+                                    /* printf(","); */
+                                    fprintf(json, ",");
                                 }
-                                printf("\n");
+                                /* printf("\n"); */
+                                fprintf(json, "\n");
                             }
-                            printf("]\n");
+                            /* printf("]\n"); */
+                            fprintf(json, "]\n");
+                            fclose(json);
 
                             // Ecrit le JSON dans le tube
-                            int p = 10;
                             bdd = open("bdd2serveur", O_WRONLY);
-                            p = write(bdd, "bien reçu", strlen("bien reçu"));
+                            write(bdd, "0", strlen("0"));
                             sleep(1);
 
                             // Libérer la mémoire
@@ -166,7 +177,6 @@ int main() {
                             }
                             free(data);
                             close(bdd);
-                            printf("Erreur = %d\n", p);
                         } else {
                             open("bdd2serveur", O_WRONLY);
                             write(bdd, "false", strlen("false"));
@@ -197,6 +207,7 @@ int main() {
             bdd = open("bdd2serveur", O_WRONLY);
             write(bdd, "Commande incorrect", strlen("Commande incorrect"));
             close(bdd);
+            printf("Commande incorrect\n");
         }
         printf("-------------------------------Fin de boucle-------------------------------\n");
     }
