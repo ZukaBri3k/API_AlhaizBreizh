@@ -278,7 +278,7 @@ int main() {
         //******************************************************************//
         //******************************************************************//
         } else if (strstr(input, "getDisponibilite") != NULL) {
-            sscanf(input, "getDisponibilite %s, %s, %s", cle, date_debut, date_fin);
+            sscanf(input, "getDisponibilite %s, %s %s", date_debut, date_fin, cle);
 
             sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
             PGresult *id_proprio = PQexec(conn, query);
