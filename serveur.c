@@ -60,6 +60,7 @@ int main(int argc, char* argv[]) {
     int PORT = 8080;
     bool VERBOSE = false;
     FILE *logs = fopen("logs.txt", "a");
+    char cleAPI[20];
 
     //declaration des tubes
     int bdd2serveur;
@@ -162,6 +163,9 @@ int main(int argc, char* argv[]) {
 
             //on lit la clé api
             res = read(cnx, buffer, BUFFER_SIZE-1);
+            strcpy(cleAPI, " ");
+            strcat(cleAPI, buffer);
+            strcspn(cleAPI, "\r\n");
             buffer[res] = '\0';
 
             if (VERBOSE)
@@ -231,6 +235,7 @@ int main(int argc, char* argv[]) {
                             fprintf(logs, "request(lenght=%d) : %s", res, buffer);
                             printf("request(lenght=%d) : %s", res, buffer);
                             serveur2bdd = open("serveur2bdd", O_WRONLY);
+                            strcpy(buffer, strcat(buffer, cleAPI));
                             res = write(serveur2bdd, buffer, strlen(buffer));
                             sleep(1);
                             close(serveur2bdd);
