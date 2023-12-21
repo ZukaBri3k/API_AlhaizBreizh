@@ -194,9 +194,8 @@ int main() {
                             // Créer un tableau pour stocker les données
                             char ***data = (char ***)malloc(rows * sizeof(char **));
                             for (int i = 0; i < rows; i++) {
-                                data[i] = realloc (data, sizeof(char *) * (cols + 1));
+                                data[i] = (char **)malloc(sizeof(char *) * (cols + 1));
                             }
-                            printf("data : %s", data[0][0]);
                             // Remplir le tableau avec les données de la requête
                             for (int i = 0; i < rows; i++) {
                                 for (int j = 0; j < cols; j++) {
