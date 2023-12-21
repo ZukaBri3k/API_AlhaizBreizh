@@ -47,10 +47,10 @@ int main() {
         char input[BUFFSIZE];
         serveur = open("serveur2bdd", O_RDONLY);
         taille = read(serveur, input, BUFFSIZE - 1);
+        printf("La commande reçu est : %s\n", input);
         input[taille] = '\0';
         sleep(1);
         close(serveur);
-        printf("La commande reçu est : %s\n", input);
 
         input[strcspn(input, "\r\n\0")] = 0;
 
