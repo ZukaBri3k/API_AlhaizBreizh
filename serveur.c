@@ -249,19 +249,20 @@ int main(int argc, char* argv[]) {
                             printf("response(lenght=%d) : %s\n", res, buffer);
                             res = write(cnx, buffer, strlen(buffer));
 
-                            if (strcmp(buffer, "0\n\0") == 0)
-                            {
-                                
-                                int fic = open("json.txt", O_RDONLY);
-
-                                while (res = read(fic, buffer, BUFFER_SIZE) > 0) {
-                                    printf("%s", buffer);
-                                    fprintf(logs, "%s", buffer);
-                                    write(cnx, buffer, strlen(buffer));
-                                };
-                                close(fic);                               
-                            }
                                                          
+                        }
+                        
+                        if (strcmp(buffer, "0\n\0") == 0)
+                        {
+                            
+                            int fic = open("json.txt", O_RDONLY);
+
+                            while (res = read(fic, buffer, BUFFER_SIZE) > 0) {
+                                printf("%s", buffer);
+                                fprintf(logs, "%s", buffer);
+                                write(cnx, buffer, strlen(buffer));
+                            };
+                            close(fic);                               
                         }
                     }
                     
@@ -276,8 +277,6 @@ int main(int argc, char* argv[]) {
                     fprintf(logs, "Fermeture de la session\n");
                 }
                 fclose(logs);
-                close(serveur2bdd);
-                close(bdd2serveur);
             }
         
     }
