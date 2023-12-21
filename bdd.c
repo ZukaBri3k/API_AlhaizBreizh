@@ -175,6 +175,7 @@ int main() {
                             //********************Fin de la création du json********************//
                             printf("Fin de la création du json\n");
                             PQclear(logement);
+                        }
 
                     } else {
 
@@ -289,8 +290,5 @@ int main() {
         printf("-------------------------------Fin de boucle-------------------------------\n");
     }
     PQfinish(conn);
-    close(bdd);
-    close(serveur);
     return 0;
-}
 }
