@@ -118,31 +118,22 @@ int main() {
 
                         // Convertir les données en format JSON et les écrits dans le tube ainsi que dans le fichier
                         FILE *json = fopen("json.txt", "w");
-                        /* printf("[\n"); */
                         fprintf(json, "[\n");
                         for (int i = 0; i < rows; i++) {
-                            /* printf("  {\n"); */
                             fprintf(json, "  {\n");
                             for (int j = 0; j < cols; j++) {
-                                /* printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]); */
                                 fprintf(json, "    \"%s\": \"%s\"", PQfname(logement, j), data[i][j]);
                                 if (j < cols - 1) {
-                                    /* printf(","); */
                                     fprintf(json, ",");
                                 }
-                                /* printf("\n"); */
                                 fprintf(json, "\n");
                             }
-                            /* printf("  }"); */
                             fprintf(json, "  }");
                             if (i < rows - 1) {
-                                /* printf(","); */
                                 fprintf(json, ",");
                             }
-                            /* printf("\n"); */
                             fprintf(json, "\n");
                         }
-                        /* printf("]\n"); */
                         fprintf(json, "]\n");
                         char null_char = '\0';
                         fwrite(&null_char, sizeof(char), 1, json);
@@ -195,31 +186,22 @@ int main() {
 
                             // Convertir les données en format JSON et les écrits dans le tube ainsi que dans le fichier
                             FILE *json = fopen("json.txt", "w");
-                            /* printf("[\n"); */
                             fprintf(json, "[\n");
                             for (int i = 0; i < rows; i++) {
-                                /* printf("  {\n"); */
                                 fprintf(json, "  {\n");
                                 for (int j = 0; j < cols; j++) {
-                                    /* printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]); */
                                     fprintf(json, "    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
                                     if (j < cols - 1) {
-                                        /* printf(","); */
                                         fprintf(json, ",");
                                     }
-                                    /* printf("\n"); */
                                     fprintf(json, "\n");
                                 }
-                                /* printf("  }"); */
                                 fprintf(json, "  }");
                                 if (i < rows - 1) {
-                                    /* printf(","); */
                                     fprintf(json, ",");
                                 }
-                                /* printf("\n"); */
                                 fprintf(json, "\n");
                             }
-                            /* printf("]\n"); */
                             fprintf(json, "]\n");
                             char null_char = '\0';
                             fwrite(&null_char, sizeof(char), 1, json);
