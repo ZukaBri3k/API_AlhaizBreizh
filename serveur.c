@@ -10,7 +10,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <fcntl.h>
-#include "bdd.c"
+#include "bdd.h"
 
 #define BUFFER_SIZE 1024
 
