@@ -118,23 +118,12 @@ char* getLogement(char cle[15]) {
                 printf("-------------------------Début de la création du JSON------------------------\n");
 
                 // Création d'un pointeur pour stocker les données
-                //char *data = (char *)malloc(rows  * sizeof(char));
                 size_t size = rows; // taille initiale estimée
                 char *data = (char *)malloc(size * sizeof(char));
                 if (data == NULL) {
                     // gestion de l'erreur
                 }
 
-                // plus tard, si vous avez besoin de plus de mémoire :
-                size *= 2; // double la taille
-                char *new_data = (char *)realloc(data, size * sizeof(char));
-                if (new_data == NULL) {
-                    // gestion de l'erreur
-                } else {
-                    data = new_data;
-                }
-
-                // Convertir les données en format JSON et écrit dans data
                 strcat(data, "[\n");
                 printf("%s\n", data);
                 for (int i = 0; i < rows; i++) {
@@ -154,6 +143,18 @@ char* getLogement(char cle[15]) {
                 }
                 strcat(data, "]\n");
                 printf("%s\n", data);
+
+                // si vous avez besoin de plus de mémoire :
+                size *= 2; // double la taille
+                char *new_data = (char *)realloc(data, size * sizeof(char));
+                if (new_data == NULL) {
+                    // gestion de l'erreur
+                } else {
+                    data = new_data;
+                }
+
+                // vous pouvez maintenant écrire plus de données dans 'data', jusqu'à 'size * sizeof(char)' octets
+                // Convertir les données en format JSON et écrit dans data
 
                 PQclear(logement);
 
