@@ -10,6 +10,7 @@
 #include <stdbool.h>
 #include <time.h>
 #include <fcntl.h>
+#include <bdd.h>
 
 #define BUFFER_SIZE 1024
 
@@ -174,6 +175,10 @@ int main(int argc, char* argv[]) {
                 printf("Clé API saisie : %s", buffer);
             }
             
+            printf("-------------- TEST ---------------\n");
+            printtf(getLogement("123456789"));
+
+
             //ecriture de la clé dans le tube
             serveur2bdd = open("serveur2bdd", O_WRONLY);
             res = write(serveur2bdd, buffer, strlen(buffer));
