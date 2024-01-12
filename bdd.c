@@ -118,7 +118,7 @@ char* getLogement(char cle[15]) {
                 printf("-------------------------Début de la création du JSON------------------------\n");
 
                 // Créer un tableau pour stocker les données
-                char *data = (char *)malloc((rows + 1) * sizeof(char));
+                char *data = (char *)malloc(rows  * sizeof(char));
 
                 // Convertir les données en format JSON et écrit dans data
                 strcat(data, "[\n");
@@ -145,7 +145,7 @@ char* getLogement(char cle[15]) {
 
                 printf("--------------------------Fin de la création du JSON-------------------------\n");
                 PQfinish(conn);
-                return data;
+                return &data;
             } else
             {
                 return "Vous n'avez pas les privilèges";
