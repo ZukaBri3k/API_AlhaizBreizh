@@ -7,6 +7,8 @@
 #include <stdlib.h>
 
 #define LENCLE 20
+#define BUFFSIZE 100
+#define DATE 10
 
 int main() {
     const char *pghost = "127.0.0.1";
@@ -19,11 +21,14 @@ int main() {
     char query[256];
     int serveur;
     int bdd;
-    printf("Ouverture des fichiers\n");
-    bdd = open("bdd2serveur", O_WRONLY);
-    printf("Ouverture du fichier bdd2serveur\n");
-    serveur = open("serveur2bdd", O_RDONLY);
-    printf("Ouverture du fichier serveur2bdd\n");
+
+    // Variables pour le getDisponibilite
+    char date_debut[DATE];
+    char date_fin[DATE];
+
+    int taille;
+
+    char input[BUFFSIZE];
 
     char conninfo[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
@@ -39,14 +44,23 @@ int main() {
     
     while (1 == 1)
     {
-        char input[100] = "";
+        printf("-------------------------------Début de boucle-------------------------------\n");
         serveur = open("serveur2bdd", O_RDONLY);
-        read(serveur, input, 255);
+        taille = read(serveur, input, BUFFSIZE - 1);
+        input[taille] = '\0';
         sleep(1);
         close(serveur);
         printf("Reçu : %s\n", input);
 
         input[strcspn(input, "\r\n\0")] = 0;
+
+        //******************************************************************//
+        //******************************************************************//
+        //******************************************************************//
+        //*********************Code pour le cle 123... *********************//
+        //******************************************************************//
+        //******************************************************************//
+        //******************************************************************//
 
         if (strstr(input, "cle") != NULL) {
             sscanf(input, "cle %s", cle);
@@ -55,13 +69,13 @@ int main() {
             sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
             PGresult *id_res = PQexec(conn, query);
             if (PQntuples(id_res) > 0) {
-                open("bdd2serveur", O_WRONLY);
+                bdd = open("bdd2serveur", O_WRONLY);
                 write(bdd, "true", strlen("true"));
                 sleep(1);
                 close(bdd);
                 printf("La clé reçu est bonne\n");
             } else {
-                open("bdd2serveur", O_WRONLY);
+                bdd = open("bdd2serveur", O_WRONLY);
                 write(bdd, "false", strlen("false"));
                 sleep(1);
                 close(bdd);
@@ -70,6 +84,15 @@ int main() {
             //Je verifie si il y a une personne avec cette clé
             //Si il n'y a pas de personne avec cette clé alors on envoie false
             PQclear(id_res);
+
+            //******************************************************************//
+            //******************************************************************//
+            //******************************************************************//
+            //*********************Code pour le getLogement*********************//
+            //******************************************************************//
+            //******************************************************************//
+            //******************************************************************//
+
         } else if (strstr(input, "getLogement") != NULL) {
             sscanf(input, "getLogement %s", cle);
             printf("La clé est %s\n", cle);
@@ -79,47 +102,83 @@ int main() {
             PGresult *privilege = PQexec(conn, query);
             if (PQntuples(privilege) > 0)
             {
-                printf("Privilege de la personne a la clé %s : %s\n", cle, PQgetvalue(privilege, 0, 0));
-
                 sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
                 PGresult *id_res = PQexec(conn, query);
-
-                printf("Id de la personne a la clé %s : %s\n", cle, PQgetvalue(id_res, 0, 0));
 
                 char *id_str = PQgetvalue(id_res, 0, 0);
                 //Ici je vais chercher le nom de la personne qui a la clé
                 sprintf(query, "SELECT nom_pers FROM personnes WHERE id = %s", id_str);
                 PGresult *res = PQexec(conn, query);
 
-                printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
                 //Je verifie si il y'a bien quelqu'un avec cette id
                 if (PQntuples(res) > 0) {
-                    printf("Nom de la personne a l'id %s : %s\n", id_str, PQgetvalue(res, 0, 0));
-                    printf("Privilege de la personne a l'id %s : %s\n", id_str, PQgetvalue(privilege, 0, 0));
 
                     //Je verifie si la personne a des privilèges
                     if (strcmp(PQgetvalue(privilege, 0, 0), "t") == 0) {
-                        printf("La personne a l'id %s a des privilèges\n", id_str);
 
                         //Ici je vais prendre tout les logements
                         sprintf(query, "SELECT * FROM logement");
                         PGresult *logement = PQexec(conn, query);
-                        for (int i = 0; i < PQntuples(logement); i++)
-                        {
-                            printf("Logement id : %s\n", PQgetvalue(logement, i, 0));
-                        }
-                        int j = 10;
-                        bdd = open("bdd2serveur", O_WRONLY);
-                        j = write(bdd, PQgetvalue(logement, 0, 0), strlen(PQgetvalue(logement, 0, 0)));
-                        sleep(1);
-                        close(bdd);
-                        printf("Erreur = %d\n", j);
-                        PQclear(logement);
-                    } else {
-
-
                         
-                        printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
+                        int rows = PQntuples(logement);
+                        int cols = PQnfields(logement);
+                        printf("-------------------------Début de la création du JSON------------------------\n");
+
+                        // Créer un tableau pour stocker les données
+                        char ***data = (char ***)malloc(rows * sizeof(char **));
+                        for (int i = 0; i < rows; i++) {
+                            data[i] = (char **)malloc((cols + 1) * sizeof(char *));
+                        }
+
+                        // Remplir le tableau avec les données de la requête
+                        for (int i = 0; i < rows; i++) {
+                            for (int j = 0; j < cols; j++) {
+                                data[i][j] = strdup(PQgetvalue(logement, i, j));
+                            }
+                        }
+
+                        // Convertir les données en format JSON et les écrits dans le tube ainsi que dans le fichier
+                        FILE *json = fopen("json.txt", "w");
+                        fprintf(json, "[\n");
+                        for (int i = 0; i < rows; i++) {
+                            fprintf(json, "  {\n");
+                            for (int j = 0; j < cols; j++) {
+                                fprintf(json, "    \"%s\": \"%s\"", PQfname(logement, j), data[i][j]);
+                                if (j < cols - 1) {
+                                    fprintf(json, ",");
+                                }
+                                fprintf(json, "\n");
+                            }
+                            fprintf(json, "  }");
+                            if (i < rows - 1) {
+                                fprintf(json, ",");
+                            }
+                            fprintf(json, "\n");
+                        }
+                        fprintf(json, "]\n");
+                        char null_char = '\0';
+                        fwrite(&null_char, sizeof(char), 1, json);
+                        fclose(json);
+
+                        // Ecrit le JSON dans le tube
+                        bdd = open("bdd2serveur", O_WRONLY);
+                        write(bdd, "0", strlen("0"));
+                        sleep(1);
+
+                        // Libérer la mémoire
+                        for (int i = 0; i < rows; i++) {
+                            for (int j = 0; j < cols; j++) {
+                                free(data[i][j]);
+                            }
+                            free(data[i]);
+                        }
+                        free(data);
+                        close(bdd);
+
+                        PQclear(logement);
+
+                        printf("--------------------------Fin de la création du JSON-------------------------\n");
+                    } else {
 
                         //Ici je vais chercher le nom du logement de la personne qui a la clé
                         sprintf(query, "SELECT * FROM logement WHERE id_proprio_logement = %s", id_str);
@@ -130,6 +189,8 @@ int main() {
                             
                             int rows = PQntuples(nom_logement);
                             int cols = PQnfields(nom_logement);
+
+                            printf("-------------------------Début de la création du JSON------------------------\n");
 
                             // Créer un tableau pour stocker les données
                             char ***data = (char ***)malloc(rows * sizeof(char **));
@@ -144,29 +205,32 @@ int main() {
                                 }
                             }
 
-                            // Convertir les données en format JSON et les écrits dans le tube
-                            printf("[\n");
+                            // Convertir les données en format JSON et les écrits dans le tube ainsi que dans le fichier
+                            FILE *json = fopen("json.txt", "w");
+                            fprintf(json, "[\n");
                             for (int i = 0; i < rows; i++) {
-                                printf("  {\n");
+                                fprintf(json, "  {\n");
                                 for (int j = 0; j < cols; j++) {
-                                    printf("    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
+                                    fprintf(json, "    \"%s\": \"%s\"", PQfname(nom_logement, j), data[i][j]);
                                     if (j < cols - 1) {
-                                        printf(",");
+                                        fprintf(json, ",");
                                     }
-                                    printf("\n");
+                                    fprintf(json, "\n");
                                 }
-                                printf("  }");
+                                fprintf(json, "  }");
                                 if (i < rows - 1) {
-                                    printf(",");
+                                    fprintf(json, ",");
                                 }
-                                printf("\n");
+                                fprintf(json, "\n");
                             }
-                            printf("]\n");
+                            fprintf(json, "]\n");
+                            char null_char = '\0';
+                            fwrite(&null_char, sizeof(char), 1, json);
+                            fclose(json);
 
                             // Ecrit le JSON dans le tube
-                            int p = 10;
                             bdd = open("bdd2serveur", O_WRONLY);
-                            p = write(bdd, "bien reçu", strlen("bien reçu"));
+                            write(bdd, "0", strlen("0"));
                             sleep(1);
 
                             // Libérer la mémoire
@@ -178,7 +242,8 @@ int main() {
                             }
                             free(data);
                             close(bdd);
-                            printf("Erreur = %d\n", p);
+
+                            printf("--------------------------Fin de la création du JSON-------------------------\n");
                         } else {
                             open("bdd2serveur", O_WRONLY);
                             write(bdd, "false", strlen("false"));
@@ -189,28 +254,126 @@ int main() {
                     }
                 //Si il n'y a pas de personne avec cette id alors on affiche un message d'erreur et on renvoie null
                 } else {
+                    bdd = open("bdd2serveur", O_WRONLY);
                     write(bdd, "false", strlen("false"));
+                    sleep(1);
+                    close(bdd);
                     printf("Il n'y a pas de personne avec l'id %s\n", id_str);
                 }
                 PQclear(res);
                 PQclear(id_res);
             } else {
-                open("bdd2serveur", O_WRONLY);
+                bdd = open("bdd2serveur", O_WRONLY);
                 write(bdd, "false", strlen("false"));
                 sleep(1);
                 close(bdd);
                 printf("La clé reçu est mauvaise\n");
             }
             PQclear(privilege);
-        } /* else {
-            open("bdd2serveur", O_WRONLY);
+        //******************************************************************//
+        //******************************************************************//
+        //******************************************************************//
+        //*********************Code pour le *********************//
+        //******************************************************************//
+        //******************************************************************//
+        //******************************************************************//
+        } else if (strstr(input, "getDisponibilite") != NULL) {
+            sscanf(input, "getDisponibilite %s, %s %s", date_debut, date_fin, cle);
+
+            sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
+            PGresult *id_proprio = PQexec(conn, query);
+            // Récupération de l'id du logement
+            sprintf(query, "SELECT id_logement FROM logement WHERE id_proprio_logement = '%s'", PQgetvalue(id_proprio, 0, 0));
+            PGresult *id_logement = PQexec(conn, query);
+
+            if (PQntuples(id_logement) > 0) {
+                sprintf(query, "select * from calendrier where jour >= '%s' and jour <= '%s' and disponibilite = true'", date_debut, date_fin);
+                PGresult *dispo = PQexec(conn, query);
+
+                if (PQntuples(dispo) > 0)
+                {
+
+                    int rows = PQntuples(dispo);
+                    int cols = PQnfields(dispo);
+
+                    printf("-------------------------Début de la création du JSON------------------------\n");
+
+                    // Créer un tableau pour stocker les données
+                    char ***data = (char ***)malloc(rows * sizeof(char **));
+                    for (int i = 0; i < rows; i++) {
+                        data[i] = (char **)malloc((cols + 1) * sizeof(char *));
+                    }
+
+                    // Remplir le tableau avec les données de la requête
+                    for (int i = 0; i < rows; i++) {
+                        for (int j = 0; j < cols; j++) {
+                            data[i][j] = strdup(PQgetvalue(dispo, i, j));
+                        }
+                    }
+
+                    FILE *json = fopen("json.txt", "w");
+                    for (int i = 0; i < rows; i++) {
+                        fprintf(json, "  {\n");
+                        for (int j = 0; j < cols; j++) {
+                            fprintf(json, "    \"%s\": \"%s\"", PQfname(dispo, j), data[i][j]);
+                            if (j < cols - 1) {
+                                fprintf(json, ",");
+                            }
+                            fprintf(json, "\n");
+                        }
+                        fprintf(json, "  }");
+                        if (i < rows - 1) {
+                            fprintf(json, ",");
+                        }
+                        fprintf(json, "\n");
+                    }
+                    fprintf(json, "]\n");
+                    char null_char = '\0';
+                    fwrite(&null_char, sizeof(char), 1, json);
+                    fclose(json);
+
+                    // Ecrit le JSON dans le tube
+                    bdd = open("bdd2serveur", O_WRONLY);
+                    write(bdd, "0", strlen("0"));
+                    sleep(1);
+
+                    // Libérer la mémoire
+                    for (int i = 0; i < rows; i++) {
+                        for (int j = 0; j < cols; j++) {
+                            free(data[i][j]);
+                        }
+                        free(data[i]);
+                    }
+                    free(data);
+                    close(bdd);
+
+                    printf("--------------------------Fin de la création du JSON-------------------------\n");
+                } else {
+                    bdd = open("bdd2serveur", O_WRONLY);
+                    write(bdd, "false", strlen("false"));
+                    sleep(1);
+                    close(bdd);
+                }
+
+                PQclear(dispo);
+            } else {
+                bdd = open("bdd2serveur", O_WRONLY);
+                write(bdd, "false", strlen("false"));
+                sleep(1);
+                close(bdd);
+            }
+            
+            PQclear(id_logement);
+            PQclear(id_proprio);
+        } else {
+            bdd = open("bdd2serveur", O_WRONLY);
             write(bdd, "Commande incorrect", strlen("Commande incorrect"));
             close(bdd);
-        } */
-        printf("-------------------------------Fin de boucle-------------------------------\n");
+            printf("Commande incorrect\n");
+        }
+        printf("--------------------------------Fin de boucle--------------------------------\n");
+        printf("-----------------------------------------------------------------------------\n");
     }
     PQfinish(conn);
-    close(bdd);
-    close(serveur);
     return 0;
 }
