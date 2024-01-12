@@ -11,7 +11,6 @@
 #include <time.h>
 #include <fcntl.h>
 #include "bdd.h"
-#include <postgresql/libpq-fe.h>
 
 #define BUFFER_SIZE 1024
 
