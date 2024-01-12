@@ -16,13 +16,15 @@ extern char getLogement(char input[100]);
 #define BUFFSIZE 100
 #define DATE 10
 
-bool verifCle(char input[100]) {
+bool verifCle(char cle[100]) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
     const char *login = "sae";
     const char *pwd = "okai9xai9ufaFoht";
     char conninfo[256];
+    int taille;
+    char query[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
             pghost, pgport, dbName, login, pwd);
 
@@ -35,10 +37,9 @@ bool verifCle(char input[100]) {
     }
 
     printf("-------------------------------Début de boucle-------------------------------\n");
-        bool cle = false;
+        bool clebool = false;
         input[taille] = '\0';
         sleep(1);
-        close(serveur);
         printf("Reçu : %s\n", input);
 
         input[strcspn(input, "\r\n\0")] = 0;
@@ -59,10 +60,9 @@ bool verifCle(char input[100]) {
             PGresult *id_res = PQexec(conn, query);
             if (PQntuples(id_res) > 0) {
                 sleep(1);
-                cle = true;
+                clebool = true;
                 printf("La clé reçu est bonne\n");
             } else {
-                bdd = open("bdd2serveur", O_WRONLY);
                 printf("La clé reçu est mauvaise\n");
             }
             //Je verifie si il y a une personne avec cette clé
@@ -71,20 +71,22 @@ bool verifCle(char input[100]) {
             PQfinish(conn);
             else {
             printf("Commande incorrect\n");
-        }
+            }
         printf("--------------------------------Fin de boucle--------------------------------\n");
         printf("-----------------------------------------------------------------------------\n");
     }
-    return cle;
+    return clebool;
 }
 
-char getLogement(char input[100]) {
+char* getLogement(char input[100]) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
     const char *login = "sae";
     const char *pwd = "okai9xai9ufaFoht";
     char conninfo[256];
+    int taille;
+    char query[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
             pghost, pgport, dbName, login, pwd);
 
@@ -134,7 +136,7 @@ char getLogement(char input[100]) {
                     for (int i = 0; i < rows; i++) {
                         strcat(data, "  {\n");
                         for (int j = 0; j < cols; j++) {
-                            strcat(data, "    \"%s\": \"%s\"", PQfname(logement, j), data[i][j]);
+                            strcat(data, ("    \"%s\": \"%s\"", PQfname(logement, j), data[i][j]));
                             if (j < cols - 1) {
                                 strcat(data, ",");
                             }
@@ -159,5 +161,4 @@ char getLogement(char input[100]) {
             }
         }
     }
-    return 0;
 }
