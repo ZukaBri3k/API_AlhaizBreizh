@@ -74,7 +74,7 @@ bool verifCle(char cle[100]) {
         printf("-----------------------------------------------------------------------------\n");
     } else {
         printf("Commande incorrect\n");
-        }
+    }
     return clebool;
 }
 
@@ -98,6 +98,7 @@ char* getLogement(char cle[100]) {
         PQfinish(conn);
         return "Erreur lors de la connexion à la base de données";
     }
+
     if (strstr(input, "getLogement") != NULL) {
         sscanf(input, "getLogement %s", cle);
         printf("La clé est %s\n", cle);
@@ -105,8 +106,7 @@ char* getLogement(char cle[100]) {
         //Ici je vais chercher les privilège de la personne qui a la clé
         sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
         PGresult *privilege = PQexec(conn, query);
-        if (PQntuples(privilege) > 0)
-        {
+        if (PQntuples(privilege) > 0) {
             sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
             PGresult *id_res = PQexec(conn, query);
 
