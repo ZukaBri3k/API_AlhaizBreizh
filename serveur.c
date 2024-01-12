@@ -11,6 +11,7 @@
 #include <time.h>
 #include <fcntl.h>
 #include "bdd.h"
+#include <postgresql/libpq-fe.h>
 
 #define BUFFER_SIZE 1024
 
@@ -154,7 +155,7 @@ int main(int argc, char* argv[]) {
             printf("accept=%d\n", ret);
         }
         printf("-------------- TEST ---------------\n");
-        printtf(getLogement("123456789"));
+        printf(getLogement("123456789"));
 
         char buffer[BUFFER_SIZE];
         int res;
