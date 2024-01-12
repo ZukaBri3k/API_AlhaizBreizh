@@ -1,7 +1,7 @@
 #ifndef bdd.h
 #define bdd.h
 extern bool verifCle(char input[100]);
-extern char getLogement(char input[100]);
+extern char* getLogement(char input[100]);
 #endif // bdd.h
 
 #include <postgresql/libpq-fe.h>
@@ -16,13 +16,16 @@ extern char getLogement(char input[100]);
 #define BUFFSIZE 100
 #define DATE 10
 
-bool verifCle(char input[100]) {
+bool verifCle(char cle[100]) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
     const char *login = "sae";
     const char *pwd = "okai9xai9ufaFoht";
     char conninfo[256];
+    int taille;
+    char input[BUFFSIZE];
+    char query[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
             pghost, pgport, dbName, login, pwd);
 
@@ -77,13 +80,16 @@ bool verifCle(char input[100]) {
     return cle;
 }
 
-char getLogement(char input[100]) {
+char getLogement(char cle[100]) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
     const char *login = "sae";
     const char *pwd = "okai9xai9ufaFoht";
     char conninfo[256];
+    int taille;
+    char input[BUFFSIZE];
+    char query[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
             pghost, pgport, dbName, login, pwd);
 
@@ -133,7 +139,7 @@ char getLogement(char input[100]) {
                     for (int i = 0; i < rows; i++) {
                         strcat(data, "  {\n");
                         for (int j = 0; j < cols; j++) {
-                            strcat(data, "    \"%s\": \"%s\"", PQfname(logement, j), data[i][j]);
+                            strcat(data, ("    \"%s\": \"%s\"", PQfname(logement, j), data[i][j]));
                             if (j < cols - 1) {
                                 strcat(data, ",");
                             }
@@ -158,5 +164,4 @@ char getLogement(char input[100]) {
             }
         }
     }
-    return 0;
 }
