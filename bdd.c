@@ -118,10 +118,11 @@ char* getLogement(char cle[15]) {
                 printf("-------------------------Début de la création du JSON------------------------\n");
 
                 // Créer un tableau pour stocker les données
-                char *data = (char *)malloc((strlen(data) + 1) * sizeof(char));
+                char *data = (char *)malloc((rows + 1) * sizeof(char));
 
                 // Convertir les données en format JSON et écrit dans data
                 strcat(data, "[\n");
+                printf("%s\n", data);
                 for (int i = 0; i < rows; i++) {
                     strcat(data, "  {\n");
                     for (int j = 0; j < cols; j++) {
@@ -138,6 +139,7 @@ char* getLogement(char cle[15]) {
                     strcat(data, "\n");
                 }
                 strcat(data, "]\n");
+                printf("%s\n", data);
 
                 PQclear(logement);
 
