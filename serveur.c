@@ -155,7 +155,7 @@ int main(int argc, char* argv[]) {
             printf("accept=%d\n", ret);
         }
         printf("-------------- TEST ---------------\n");
-        printf(getLogement("123456789"));
+        printf("%s\n", getLogement("123456789"));
 
         char buffer[BUFFER_SIZE];
         int res;
