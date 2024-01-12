@@ -116,6 +116,9 @@ int main() {
                         printf("Erreur = %d\n", j);
                         PQclear(logement);
                     } else {
+
+
+                        
                         printf("La personne a l'id %s n'a pas de privilèges\n", id_str);
 
                         //Ici je vais chercher le nom du logement de la personne qui a la clé
