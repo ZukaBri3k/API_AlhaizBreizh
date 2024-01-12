@@ -78,7 +78,7 @@ bool verifCle(char cle[100]) {
     return clebool;
 }
 
-char getLogement(char cle[100]) {
+char* getLogement(char cle[100]) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
@@ -96,7 +96,7 @@ char getLogement(char cle[100]) {
     if (PQstatus(conn) != CONNECTION_OK) {
         fprintf(stderr, "Erreur lors de la connexion à la base de données : %s\n", PQerrorMessage(conn));
         PQfinish(conn);
-        return 1;
+        return "Erreur lors de la connexion à la base de données";
     }
     if (strstr(input, "getLogement") != NULL) {
         sscanf(input, "getLogement %s", cle);
@@ -137,7 +137,7 @@ char getLogement(char cle[100]) {
                     for (int i = 0; i < rows; i++) {
                         strcat(data, "  {\n");
                         for (int j = 0; j < cols; j++) {
-                            strcat(data, ("    \"%s\": \"%s\"", PQfname(logement, j), data[i][j]));
+                            strcat(data, ("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j)));
                             if (j < cols - 1) {
                                 strcat(data, ",");
                             }
