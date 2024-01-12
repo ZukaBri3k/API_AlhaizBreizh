@@ -38,16 +38,10 @@ bool verifCle(char cle[100]) {
     }
 
     printf("-------------------------------Début de boucle-------------------------------\n");
-<<<<<<< bdd
-    bool clebool = false;
-    input[taille] = '\0';
-    sleep(1);
-=======
     bool cle = false;
     input[taille] = '\0';
     sleep(1);
     close(serveur);
->>>>>>> main
     printf("Reçu : %s\n", input);
 
     input[strcspn(input, "\r\n\0")] = 0;
@@ -68,27 +62,16 @@ bool verifCle(char cle[100]) {
         PGresult *id_res = PQexec(conn, query);
         if (PQntuples(id_res) > 0) {
             sleep(1);
-<<<<<<< bdd
-            clebool = true;
-            printf("La clé reçu est bonne\n");
-        } else {
-=======
             cle = true;
             printf("La clé reçu est bonne\n");
         } else {
             bdd = open("bdd2serveur", O_WRONLY);
->>>>>>> main
             printf("La clé reçu est mauvaise\n");
         }
         //Je verifie si il y a une personne avec cette clé
         //Si il n'y a pas de personne avec cette clé alors on envoie false
         PQclear(id_res);
         PQfinish(conn);
-<<<<<<< bdd
-        printf("--------------------------------Fin de boucle--------------------------------\n");
-        printf("-----------------------------------------------------------------------------\n");
-=======
->>>>>>> main
     } else {
         printf("Commande incorrect\n");
     }
