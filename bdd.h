@@ -1,7 +1,7 @@
 #ifndef bdd.h
 #define bdd.h
 extern bool verifCle(char input[100]);
-extern char getLogement(char input[100]);
+extern char* getLogement(char input[100]);
 #endif // bdd.h
 
 #include <postgresql/libpq-fe.h>
@@ -24,6 +24,7 @@ bool verifCle(char cle[100]) {
     const char *pwd = "okai9xai9ufaFoht";
     char conninfo[256];
     int taille;
+    char input[BUFFSIZE];
     char query[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
             pghost, pgport, dbName, login, pwd);
@@ -78,7 +79,7 @@ bool verifCle(char cle[100]) {
     return clebool;
 }
 
-char* getLogement(char input[100]) {
+char getLogement(char cle[100]) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
@@ -86,6 +87,7 @@ char* getLogement(char input[100]) {
     const char *pwd = "okai9xai9ufaFoht";
     char conninfo[256];
     int taille;
+    char input[BUFFSIZE];
     char query[256];
     sprintf(conninfo, "host=%s port=%s dbname=%s user=%s password=%s",
             pghost, pgport, dbName, login, pwd);
