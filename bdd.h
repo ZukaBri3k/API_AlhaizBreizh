@@ -35,46 +35,45 @@ bool verifCle(char input[100]) {
     }
 
     printf("-------------------------------Début de boucle-------------------------------\n");
-        bool cle = false;
-        input[taille] = '\0';
-        sleep(1);
-        close(serveur);
-        printf("Reçu : %s\n", input);
+    bool cle = false;
+    input[taille] = '\0';
+    sleep(1);
+    close(serveur);
+    printf("Reçu : %s\n", input);
 
-        input[strcspn(input, "\r\n\0")] = 0;
+    input[strcspn(input, "\r\n\0")] = 0;
 
-        //******************************************************************//
-        //******************************************************************//
-        //******************************************************************//
-        //**********************Code pour verif la cle**********************//
-        //******************************************************************//
-        //******************************************************************//
-        //******************************************************************//
+    //******************************************************************//
+    //******************************************************************//
+    //******************************************************************//
+    //**********************Code pour verif la cle**********************//
+    //******************************************************************//
+    //******************************************************************//
+    //******************************************************************//
 
-        if (strstr(input, "cle") != NULL) {
-            sscanf(input, "cle %s", cle);
+    if (strstr(input, "cle") != NULL) {
+        sscanf(input, "cle %s", cle);
 
-            //Ici je vais chercher l'id de la personne qui a la clé
-            sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
-            PGresult *id_res = PQexec(conn, query);
-            if (PQntuples(id_res) > 0) {
-                sleep(1);
-                cle = true;
-                printf("La clé reçu est bonne\n");
-            } else {
-                bdd = open("bdd2serveur", O_WRONLY);
-                printf("La clé reçu est mauvaise\n");
-            }
-            //Je verifie si il y a une personne avec cette clé
-            //Si il n'y a pas de personne avec cette clé alors on envoie false
-            PQclear(id_res);
-            PQfinish(conn);
-            else {
-            printf("Commande incorrect\n");
+        //Ici je vais chercher l'id de la personne qui a la clé
+        sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
+        PGresult *id_res = PQexec(conn, query);
+        if (PQntuples(id_res) > 0) {
+            sleep(1);
+            cle = true;
+            printf("La clé reçu est bonne\n");
+        } else {
+            bdd = open("bdd2serveur", O_WRONLY);
+            printf("La clé reçu est mauvaise\n");
         }
-        printf("--------------------------------Fin de boucle--------------------------------\n");
-        printf("-----------------------------------------------------------------------------\n");
+        //Je verifie si il y a une personne avec cette clé
+        //Si il n'y a pas de personne avec cette clé alors on envoie false
+        PQclear(id_res);
+        PQfinish(conn);
+    } else {
+        printf("Commande incorrect\n");
     }
+    printf("--------------------------------Fin de boucle--------------------------------\n");
+    printf("-----------------------------------------------------------------------------\n");
     return cle;
 }
 
