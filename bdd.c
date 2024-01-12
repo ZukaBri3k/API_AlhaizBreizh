@@ -118,7 +118,7 @@ char* getLogement(char cle[15]) {
                 printf("-------------------------Début de la création du JSON------------------------\n");
 
                 // Créer un tableau pour stocker les données
-                char *data = (char *)malloc(rows * sizeof(char *));
+                char *data = (char *)malloc(sizeof(char *));
 
                 // Convertir les données en format JSON et écrit dans data
                 strcat(data, "[\n");
