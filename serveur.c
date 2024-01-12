@@ -248,6 +248,7 @@ int main(int argc, char* argv[]) {
         printf("-------------- TEST ---------------\n");
         char *test = getLogement("123456789");
         printf("%s\n", test);
+        free(test);
 
         char buffer[BUFFER_SIZE];
         int res;
