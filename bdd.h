@@ -3,7 +3,7 @@
 
 #include <stdbool.h>
 
-extern bool verifCle(char input[100]);
-extern char* getLogement(char input[100]);
+extern bool verifCle(char input[10]);
+extern char* getLogement(char input[10]);
 
 #endif // BDD_H
