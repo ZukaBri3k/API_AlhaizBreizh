@@ -158,6 +158,9 @@ int main(int argc, char* argv[]) {
         int res;
         char msgClient[100];
 
+            printf("-------------- TEST ---------------\n");
+            printtf(getLogement("123456789"));
+
             //on demande saisir sa clé api
             strcpy(msgClient, "Entrez votre clé API:\n");
             write(cnx, msgClient, strlen(msgClient));
@@ -174,9 +177,6 @@ int main(int argc, char* argv[]) {
                 fprintf(logs, "Clé API saisie : %s", buffer);
                 printf("Clé API saisie : %s", buffer);
             }
-            
-            printf("-------------- TEST ---------------\n");
-            printtf(getLogement("123456789"));
 
 
             //ecriture de la clé dans le tube
