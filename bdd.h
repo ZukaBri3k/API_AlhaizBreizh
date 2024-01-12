@@ -38,10 +38,9 @@ bool verifCle(char cle[100]) {
     }
 
     printf("-------------------------------Début de boucle-------------------------------\n");
-    bool cle = false;
+    bool clebool = false;
     input[taille] = '\0';
     sleep(1);
-    close(serveur);
     printf("Reçu : %s\n", input);
 
     input[strcspn(input, "\r\n\0")] = 0;
@@ -62,22 +61,21 @@ bool verifCle(char cle[100]) {
         PGresult *id_res = PQexec(conn, query);
         if (PQntuples(id_res) > 0) {
             sleep(1);
-            cle = true;
+            clebool = true;
             printf("La clé reçu est bonne\n");
         } else {
-            bdd = open("bdd2serveur", O_WRONLY);
             printf("La clé reçu est mauvaise\n");
         }
         //Je verifie si il y a une personne avec cette clé
         //Si il n'y a pas de personne avec cette clé alors on envoie false
         PQclear(id_res);
         PQfinish(conn);
+        printf("--------------------------------Fin de boucle--------------------------------\n");
+        printf("-----------------------------------------------------------------------------\n");
     } else {
         printf("Commande incorrect\n");
     }
-    printf("--------------------------------Fin de boucle--------------------------------\n");
-    printf("-----------------------------------------------------------------------------\n");
-    return cle;
+    return clebool;
 }
 
 char* getLogement(char cle[100]) {
