@@ -159,4 +159,5 @@ char getLogement(char input[100]) {
             }
         }
     }
+    return 0;
 }
