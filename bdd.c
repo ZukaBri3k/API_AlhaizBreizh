@@ -131,9 +131,7 @@ int getLogement(char cle[15], int cnx) {
                         write(cnx, ("%s", PQfname(logement, j)), strlen(("    \"%s\": ", PQfname(logement, j))));
                         write(cnx, "\"", strlen("\""));
                         write(cnx, " : ", strlen(" : "));
-                        write(cnx, "\"", strlen("\""));
                         write(cnx, ("%s", PQgetvalue(logement, i, j)), strlen(("%s", PQgetvalue(logement, i, j))));
-                        write(cnx, "\"", strlen("\""));
                         if (j < cols - 1) {
                             write(cnx, ",", strlen(","));
                         }
