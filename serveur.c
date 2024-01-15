@@ -168,7 +168,6 @@ int main(int argc, char* argv[]) {
         sscanf(buffer, "cle %s", cleAPI);
         printf("cleAPI : %s\n", cleAPI);
         buffer[res] = '\0';
-        sscanf(buffer, "cle %s", cleAPI);
         strcpy(cleAPI, buffer);
 
         if (VERBOSE)
@@ -244,7 +243,7 @@ int main(int argc, char* argv[]) {
                         res = write(serveur2bdd, buffer, strlen(buffer));
                         sleep(1);
                         close(serveur2bdd); */
-                        if (strcmp(buffer, "getLogement") == 0)
+                        if (strcmp(buffer, "getLogement\r\n\0") == 0)
                         {
                             getLogement(cleAPI, cnx);
                         }
