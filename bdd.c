@@ -127,8 +127,13 @@ int getLogement(char cle[15], int cnx) {
                 for (int i = 0; i < rows; i++) {
                     write(cnx, "{\n", strlen("{\n"));
                     for (int j = 0; j < cols; j++) {
-                        write(cnx, ("    \"%s\": ", PQfname(logement, j)), strlen(("    \"%s\": \"%s\"", PQfname(logement, j))));
-                        write(cnx, ("\"%s\"", PQgetvalue(logement, i, j)), strlen(("\"%s\"", PQgetvalue(logement, i, j))));
+                        write(cnx, "    \"", strlen("    \""));
+                        write(cnx, ("%s", PQfname(logement, j)), strlen(("    \"%s\": ", PQfname(logement, j))));
+                        write(cnx, "\"", strlen("\""));
+                        write(cnx, " : ", strlen(" : "));
+                        write(cnx, "\"", strlen("\""));
+                        write(cnx, ("%s", PQgetvalue(logement, i, j)), strlen(("%s", PQgetvalue(logement, i, j))));
+                        write(cnx, "\"", strlen("\""));
                         if (j < cols - 1) {
                             write(cnx, ",", strlen(","));
                         }
