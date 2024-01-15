@@ -202,7 +202,7 @@ int getLogement(char cle[15], int cnx) {
             PQfinish(conn);
             return 0;
         }
-    } else {
+    } else { 
         printf("La clé n'existe pas\n");
         PQclear(privilege);
         PQfinish(conn);
