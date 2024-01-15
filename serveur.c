@@ -246,6 +246,9 @@ int main(int argc, char* argv[]) {
                         if (strcmp(buffer, "getLogement\r\n\0") == 0)
                         {
                             getLogement(cleAPI, cnx);
+                        } else {
+                            strcpy(msgClient, "Requête inconnue\n\0");
+                            res = write(cnx, msgClient, strlen(msgClient));
                         }
                         
 
