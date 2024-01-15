@@ -113,8 +113,8 @@ char* getLogement(char cle[15]) {
                 sprintf(query, "SELECT * FROM logement");
                 PGresult *logement = PQexec(conn, query);
                 
-                int rows = PQntuples(logement);
-                int cols = PQnfields(logement);
+            /*      int rows = PQntuples(logement);
+                    int cols = PQnfields(logement);
                 printf("-------------------------Début de la création du JSON------------------------\n");
 
                 // Création d'un pointeur pour stocker les données
@@ -123,7 +123,7 @@ char* getLogement(char cle[15]) {
                 if (data == NULL) {
                     // gestion de l'erreur
                 }
-
+                //problème avec les strcat, ça concatène mais ça change l'emplacement du pointeur
                 strcat(data, "[\n");
                 printf("%s\n", data);
                 for (int i = 0; i < rows; i++) {
@@ -154,13 +154,14 @@ char* getLogement(char cle[15]) {
                 }
 
                 // vous pouvez maintenant écrire plus de données dans 'data', jusqu'à 'size * sizeof(char)' octets
-                // Convertir les données en format JSON et écrit dans data
-
+                // Convertir les données en format JSON et écrit dans data */
+                
+                char logement_data = PQgetvalue(logement, 1, 1);
                 PQclear(logement);
 
                 printf("--------------------------Fin de la création du JSON-------------------------\n");
                 PQfinish(conn);
-                return data;
+                return logement_data;
             } else
             {
                 return "Vous n'avez pas les privilèges";
