@@ -192,7 +192,7 @@ int main(int argc, char* argv[]) {
         close(bdd2serveur);
         printf("buffer : %s\n", buffer);*/
         
-        if(verifCle(cleAPI, cnx) != true) {
+        if(verifCle(cleAPI) != true) {
             //si la clé n'est pas bonne
             strcpy(msgClient, "Clé API incorrecte fermeture de la session\n\0");
 
