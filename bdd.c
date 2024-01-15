@@ -83,7 +83,7 @@ int getLogement(char cle[15], int cnx) {
     if (PQstatus(conn) != CONNECTION_OK) {
         fprintf(stderr, "Erreur lors de la connexion à la base de données : %s\n", PQerrorMessage(conn));
         PQfinish(conn);
-        return "Erreur lors de la connexion à la base de données";
+        return 0;
     }
 //****Création des variables****//
     char input[BUFFSIZE];
@@ -165,7 +165,7 @@ int getLogement(char cle[15], int cnx) {
                 return 1;
             } else
             {
-                return "Vous n'avez pas les privilèges";
+                return 0;
                 PQfinish(conn);
             }
             
