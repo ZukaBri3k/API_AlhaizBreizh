@@ -11,7 +11,7 @@
 #define BUFFSIZE 100
 #define DATE 10
 
-bool verifCle(char cle[10]) {
+bool verifCle(char cle[15]) {
     //******************************************************************//
     //************************Connexion a la bdd************************//
     //******************************************************************//
@@ -67,7 +67,7 @@ bool verifCle(char cle[10]) {
 //******************************************************************//
 //**********************Code pour getLogement***********************//
 //******************************************************************//
-char* getLogement(char cle[10]) {
+int getLogement(char cle[15], int cnx) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
@@ -83,7 +83,7 @@ char* getLogement(char cle[10]) {
     if (PQstatus(conn) != CONNECTION_OK) {
         fprintf(stderr, "Erreur lors de la connexion à la base de données : %s\n", PQerrorMessage(conn));
         PQfinish(conn);
-        return "Erreur lors de la connexion à la base de données";
+        return 0;
     }
 //****Création des variables****//
     char input[BUFFSIZE];
@@ -113,40 +113,57 @@ char* getLogement(char cle[10]) {
                 sprintf(query, "SELECT * FROM logement");
                 PGresult *logement = PQexec(conn, query);
                 
-                int rows = PQntuples(logement);
-                int cols = PQnfields(logement);
+                 int rows = PQntuples(logement);
+                    int cols = PQnfields(logement);
                 printf("-------------------------Début de la création du JSON------------------------\n");
 
-                // Créer un tableau pour stocker les données
-                char *data = (char *)malloc(rows * sizeof(char *));
+                // Création d'un pointeur pour stocker les données
+                size_t size = rows; // taille initiale estimée
+                char *data = (char *)malloc(size * sizeof(char));
 
-                // Convertir les données en format JSON et écrit dans data
-                strcat(data, "[\n");
+                //problème avec les strcat, ça concatène mais ça change l'emplacement du pointeur
+                write(cnx, "[\n", strlen("[\n"));
+                /* strcat(data, "[\n"); */
+                printf("%s\n", data);
                 for (int i = 0; i < rows; i++) {
-                    strcat(data, "  {\n");
+                    write(cnx, "{\n", strlen("{\n"));
+                    /* strcat(data, "  {\n"); */
                     for (int j = 0; j < cols; j++) {
-                        strcat(data, ("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j)));
+                        write(cnx, ("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j)), strlen(("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j))));
+                        /* strcat(data, ("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j))); */
                         if (j < cols - 1) {
-                            strcat(data, ",");
+                            write(cnx, ",", strlen(","));
+                            /* strcat(data, ","); */
                         }
-                        strcat(data, "\n");
+                        write(cnx, "\n", strlen("\n"));
+                        /* strcat(data, "\n"); */
                     }
-                    strcat(data, "  }");
+                    write(cnx, "  }", strlen("  }"));
+                    /* strcat(data, "  }"); */
                     if (i < rows - 1) {
-                        strcat(data, ",");
+                        write(cnx, ",", strlen(","));
+                        /* strcat(data, ","); */
                     }
-                    strcat(data, "\n");
+                    write(cnx, "\n", strlen("\n"));
+                    /* strcat(data, "\n"); */
                 }
-                strcat(data, "]\n");
+                write(cnx, "]\n", strlen("]\n"));
+                /* strcat(data, "]\n"); */
+                printf("%s\n", data);
 
+                // vous pouvez maintenant écrire plus de données dans 'data', jusqu'à 'size * sizeof(char)' octets
+                // Convertir les données en format JSON et écrit dans data
+                
                 PQclear(logement);
+                /* write(cnx, data, strlen(data)); */
 
                 printf("--------------------------Fin de la création du JSON-------------------------\n");
                 PQfinish(conn);
-                return data;
+                free(data);
+                return 1;
             } else
             {
-                return "Vous n'avez pas les privilèges";
+                return 0;
                 PQfinish(conn);
             }
             
