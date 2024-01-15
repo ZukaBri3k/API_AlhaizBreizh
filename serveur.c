@@ -168,6 +168,7 @@ int main(int argc, char* argv[]) {
         sscanf(buffer, "cle %s", cleAPI);
         printf("cleAPI : %s\n", cleAPI);
         buffer[res] = '\0';
+        sscanf(buffer, "cle %s", cleAPI);
         strcpy(cleAPI, buffer);
 
         if (VERBOSE)
@@ -191,7 +192,7 @@ int main(int argc, char* argv[]) {
         sleep(1);
         close(bdd2serveur);
         printf("buffer : %s\n", buffer);*/
-        
+
         if(verifCle(cleAPI) != true) {
             //si la clé n'est pas bonne
             strcpy(msgClient, "Clé API incorrecte fermeture de la session\n\0");
