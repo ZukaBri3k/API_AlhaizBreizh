@@ -67,7 +67,7 @@ bool verifCle(char cle[15]) {
 //******************************************************************//
 //**********************Code pour getLogement***********************//
 //******************************************************************//
-char* getLogement(char cle[15]) {
+int getLogement(char cle[15], int cnx) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
@@ -113,7 +113,7 @@ char* getLogement(char cle[15]) {
                 sprintf(query, "SELECT * FROM logement");
                 PGresult *logement = PQexec(conn, query);
                 
-            /*      int rows = PQntuples(logement);
+                 int rows = PQntuples(logement);
                     int cols = PQnfields(logement);
                 printf("-------------------------Début de la création du JSON------------------------\n");
 
@@ -154,14 +154,15 @@ char* getLogement(char cle[15]) {
                 }
 
                 // vous pouvez maintenant écrire plus de données dans 'data', jusqu'à 'size * sizeof(char)' octets
-                // Convertir les données en format JSON et écrit dans data */
+                // Convertir les données en format JSON et écrit dans data
                 
-                char logement_data = PQgetvalue(logement, 1, 1);
                 PQclear(logement);
+                write(cnx, data, strlen(data));
 
                 printf("--------------------------Fin de la création du JSON-------------------------\n");
                 PQfinish(conn);
-                return logement_data;
+                free(data);
+                return 1;
             } else
             {
                 return "Vous n'avez pas les privilèges";
