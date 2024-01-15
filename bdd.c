@@ -120,44 +120,42 @@ int getLogement(char cle[15], int cnx) {
                 // Création d'un pointeur pour stocker les données
                 size_t size = rows; // taille initiale estimée
                 char *data = (char *)malloc(size * sizeof(char));
-                if (data == NULL) {
-                    // gestion de l'erreur
-                }
+
                 //problème avec les strcat, ça concatène mais ça change l'emplacement du pointeur
-                strcat(data, "[\n");
+                write(cnx, "[\n", strlen("[\n"));
+                /* strcat(data, "[\n"); */
                 printf("%s\n", data);
                 for (int i = 0; i < rows; i++) {
-                    strcat(data, "  {\n");
+                    write(cnx, "{\n", strlen("{\n"));
+                    /* strcat(data, "  {\n"); */
                     for (int j = 0; j < cols; j++) {
-                        strcat(data, ("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j)));
+                        write(cnx, ("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j)), strlen(("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j))));
+                        /* strcat(data, ("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j))); */
                         if (j < cols - 1) {
-                            strcat(data, ",");
+                            write(cnx, ",", strlen(","));
+                            /* strcat(data, ","); */
                         }
-                        strcat(data, "\n");
+                        write(cnx, "\n", strlen("\n"));
+                        /* strcat(data, "\n"); */
                     }
-                    strcat(data, "  }");
+                    write(cnx, "  }", strlen("  }"));
+                    /* strcat(data, "  }"); */
                     if (i < rows - 1) {
-                        strcat(data, ",");
+                        write(cnx, ",", strlen(","));
+                        /* strcat(data, ","); */
                     }
-                    strcat(data, "\n");
+                    write(cnx, "\n", strlen("\n"));
+                    /* strcat(data, "\n"); */
                 }
-                strcat(data, "]\n");
+                write(cnx, "]\n", strlen("]\n"));
+                /* strcat(data, "]\n"); */
                 printf("%s\n", data);
-
-                // si vous avez besoin de plus de mémoire :
-                size *= 2; // double la taille
-                char *new_data = (char *)realloc(data, size * sizeof(char));
-                if (new_data == NULL) {
-                    // gestion de l'erreur
-                } else {
-                    data = new_data;
-                }
 
                 // vous pouvez maintenant écrire plus de données dans 'data', jusqu'à 'size * sizeof(char)' octets
                 // Convertir les données en format JSON et écrit dans data
                 
                 PQclear(logement);
-                write(cnx, data, strlen(data));
+                /* write(cnx, data, strlen(data)); */
 
                 printf("--------------------------Fin de la création du JSON-------------------------\n");
                 PQfinish(conn);
