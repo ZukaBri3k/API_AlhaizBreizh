@@ -39,6 +39,7 @@ bool verifCle(char cle[15]) {
     bool clebool = false;
     sleep(1);
     printf("Reçu : %s\n", cle);
+    cle[strcspn(cle, "\r\n\0")] = 0;
 
     //******************************************************************//
     //**********************Code pour verif la cle**********************//
