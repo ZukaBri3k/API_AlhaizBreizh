@@ -113,60 +113,99 @@ int getLogement(char cle[15], int cnx) {
                 sprintf(query, "SELECT * FROM logement");
                 PGresult *logement = PQexec(conn, query);
                 
-                 int rows = PQntuples(logement);
-                    int cols = PQnfields(logement);
+                int rows = PQntuples(logement);
+                int cols = PQnfields(logement);
                 printf("-------------------------Début de la création du JSON------------------------\n");
 
                 // Création d'un pointeur pour stocker les données
                 size_t size = rows; // taille initiale estimée
                 char *data = (char *)malloc(size * sizeof(char));
 
-                //problème avec les strcat, ça concatène mais ça change l'emplacement du pointeur
                 write(cnx, "[\n", strlen("[\n"));
-                /* strcat(data, "[\n"); */
                 printf("%s\n", data);
                 for (int i = 0; i < rows; i++) {
                     write(cnx, "{\n", strlen("{\n"));
-                    /* strcat(data, "  {\n"); */
                     for (int j = 0; j < cols; j++) {
                         write(cnx, ("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j)), strlen(("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j))));
-                        /* strcat(data, ("    \"%s\": \"%s\"", PQfname(logement, j), PQgetvalue(logement, i, j))); */
                         if (j < cols - 1) {
                             write(cnx, ",", strlen(","));
-                            /* strcat(data, ","); */
                         }
                         write(cnx, "\n", strlen("\n"));
-                        /* strcat(data, "\n"); */
                     }
                     write(cnx, "  }", strlen("  }"));
-                    /* strcat(data, "  }"); */
                     if (i < rows - 1) {
                         write(cnx, ",", strlen(","));
-                        /* strcat(data, ","); */
                     }
                     write(cnx, "\n", strlen("\n"));
-                    /* strcat(data, "\n"); */
                 }
                 write(cnx, "]\n", strlen("]\n"));
-                /* strcat(data, "]\n"); */
                 printf("%s\n", data);
-
-                // vous pouvez maintenant écrire plus de données dans 'data', jusqu'à 'size * sizeof(char)' octets
-                // Convertir les données en format JSON et écrit dans data
                 
                 PQclear(logement);
-                /* write(cnx, data, strlen(data)); */
 
                 printf("--------------------------Fin de la création du JSON-------------------------\n");
                 PQfinish(conn);
                 free(data);
                 return 1;
-            } else
-            {
-                return 0;
-                PQfinish(conn);
+            } else {
+
+                //Ici je vais chercher le nom du logement de la personne qui a la clé
+                sprintf(query, "SELECT * FROM logement WHERE id_proprio_logement = %s", id_str);
+                PGresult *nom_logement = PQexec(conn, query);
+
+                //Je verifie si la personne a un logement
+                if (PQntuples(nom_logement) > 0) {
+                    
+                    int rows = PQntuples(nom_logement);
+                    int cols = PQnfields(nom_logement);
+
+                    printf("-------------------------Début de la création du JSON------------------------\n");
+
+                    size_t size = rows; // taille initiale estimée
+                    char *data = (char *)malloc(size * sizeof(char));
+
+                    write(cnx, "[\n", strlen("[\n"));
+                    printf("%s\n", data);
+                    for (int i = 0; i < rows; i++) {
+                        write(cnx, "{\n", strlen("{\n"));
+                        for (int j = 0; j < cols; j++) {
+                            write(cnx, ("    \"%s\": \"%s\"", PQfname(nom_logement, j), PQgetvalue(nom_logement, i, j)), strlen(("    \"%s\": \"%s\"", PQfname(nom_logement, j), PQgetvalue(nom_logement, i, j))));
+                            if (j < cols - 1) {
+                                write(cnx, ",", strlen(","));
+                            }
+                            write(cnx, "\n", strlen("\n"));
+                        }
+                        write(cnx, "  }", strlen("  }"));
+                        if (i < rows - 1) {
+                            write(cnx, ",", strlen(","));
+                        }
+                        write(cnx, "\n", strlen("\n"));
+                    }
+                    write(cnx, "]\n", strlen("]\n"));
+
+                    printf("%s\n", data);
+                    PQclear(nom_logement);
+
+                    printf("--------------------------Fin de la création du JSON-------------------------\n");
+                    PQfinish(conn);
+                    return 1;
+                } else {
+                    printf("La personne n'a pas de logement\n");
+                    PQclear(nom_logement);
+                    PQfinish(conn);
+                    return 0;
+                }
             }
-            
+        } else {
+            printf("La personne n'existe pas\n");
+            PQclear(res);
+            PQfinish(conn);
+            return 0;
         }
+    } else {
+        printf("La clé n'existe pas\n");
+        PQclear(privilege);
+        PQfinish(conn);
+        return 0;
     }
 }
