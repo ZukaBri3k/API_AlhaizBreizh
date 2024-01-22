@@ -46,7 +46,7 @@ int main() {
     read(sock, buffer, sizeof(buffer));
     printf("%s", buffer);
     scanf("%s", response);
-    send(sock, response, sizeof(response), 0);
+    send(sock, response, strlen(response), 0);
     read(sock, buffer, sizeof(buffer));
     printf("%s", buffer);
     int choix;
@@ -79,7 +79,7 @@ int main() {
         //    printf(response);
         /*}else*/if (choix == 4) {
             send(sock, "getLogement", sizeof("getLogement"), 0);
-            recv(sock, response, strlen(response), 0);
+            recv(sock, response, sizeof(response), 0);
             printf("La liste de tous les biens :\n");
             printf(response);
         } else if (choix == 0) {
