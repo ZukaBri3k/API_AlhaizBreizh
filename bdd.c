@@ -176,7 +176,7 @@ int getLogement(char cle[15], int cnx) {
                         write(cnx, "{\n", strlen("{\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \""));
-                            write(cnx, ("%s", PQfname(nom_logement, j)), strlen(("    \"%s\": ", PQfname(nom_logement, j))));
+                            write(cnx, ("%s", PQfname(nom_logement, j)), strlen(("%s", PQfname(nom_logement, j))));
                             write(cnx, "\"", strlen("\""));
                             write(cnx, " : ", strlen(" : "));
                             write(cnx, ("%s", PQgetvalue(nom_logement, i, j)), strlen(("%s", PQgetvalue(nom_logement, i, j))));
@@ -269,13 +269,14 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
         PGresult *nom_logement = PQexec(conn, query);
         printf("nom_logement : %s\n", PQgetvalue(nom_logement, 1, 0));
 
-        if (PQntuples(id_logement) > 0)
-        {
-            write(cnx, "Voici la liste de vos logement : ", strlen("Voici la liste de vos logement "));
+        if (PQntuples(id_logement) > 0) {
+
+            write(cnx, "Voici la liste de vos logement : ", strlen("Voici la liste de vos logement : "));
             int rows = PQntuples(id_logement);
+            printf("Rows : %d\n", rows);
             for (int i = 0; i < rows; i++) {
                 write(cnx, ("(%s)", PQgetvalue(id_logement, i, 0)), strlen(("(%s)", PQgetvalue(id_logement, i, 0))));
-                write(cnx, (" : %d", PQgetvalue(nom_logement, i, 0)), strlen((" : %d", PQgetvalue(nom_logement, i, 0))));
+                write(cnx, (" : %d\n", PQgetvalue(nom_logement, i, 0)), strlen((" : %d\n", PQgetvalue(nom_logement, i, 0))));
             }
             
             write(cnx, "Veuillez choisir un logement : ", strlen("Veuillez choisir un logement : "));
@@ -287,8 +288,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
             sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s AND jour >= '%s' ", input, dateDebut);
             PGresult *calendrier_Debut = PQexec(conn, query);
 
-            if (PQntuples(calendrier_Debut) > 0)
-            {
+            if (PQntuples(calendrier_Debut) > 0) {
 
                 //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
                 sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %s AND jour >= '%s' ", input, dateDebut);
@@ -310,7 +310,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
                         write(cnx, "{\n", strlen("{\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \""));
-                            write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("    \"%s\": ", PQfname(calendrier_Debut, j))));
+                            write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
                             write(cnx, "\"", strlen("\""));
                             write(cnx, " : ", strlen(" : "));
                             write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
