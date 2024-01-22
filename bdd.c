@@ -167,7 +167,7 @@ int getLogement(char cle[15], int cnx) {
                     printf("-------------------------Début de la création du JSON------------------------\n");
 
                     // Création d'un pointeur pour stocker les données
-                    size_t size = rows; // taille initiale estimée
+                    size_t size = rows;
                     char *data = (char *)malloc(size * sizeof(char));
 
                     write(cnx, "[\n", strlen("[\n"));
@@ -301,17 +301,18 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                 printf("-------------------------Début de la création du JSON------------------------\n");
 
                     // Création d'un pointeur pour stocker les données
-                    size_t size = rows; // taille initiale estimée
+                    size_t size = rows;
                     char *data = (char *)malloc(size * sizeof(char));
 
                     write(cnx, "[\n", strlen("[\n"));
-                    while (i < rows && strcmp(PQgetvalue(date_Debut, i, n), dateFin) != 0) {
+                    while (i < rows || strcmp(PQgetvalue(date_Debut, i, n), dateFin) != 0) {
                         write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \""));
                             write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
                             write(cnx, "\"", strlen("\""));
                             write(cnx, " : ", strlen(" : "));
+                            //Ici je transforme les t en true et f en false car quand je souhiate récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
                             if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
                                 write(cnx, "true", strlen("true"));
                             } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), "f") == 0) {
@@ -319,6 +320,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                             } else {
                                 write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
                             }
+
                             if (j < cols - 1) {
                                 write(cnx, ",", strlen(","));
                             }
@@ -336,6 +338,9 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     printf("%s\n", data);
                     
                     PQclear(nom_logement);
+                    PQclear(id_logement);
+                    PQclear(id_res);
+                    PQclear(calendrier_Debut);
 
                     printf("--------------------------Fin de la création du JSON-------------------------\n");
                     PQfinish(conn);
@@ -344,12 +349,17 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             } else {
                 printf("Il n'y a pas de réservation pour cette date\n");
                 PQclear(calendrier_Debut);
+                PQclear(nom_logement);
+                PQclear(id_logement);
+                PQclear(id_res);
                 PQfinish(conn);
                 return 0;
             }
         } else {
             printf("La personne n'a pas de logement\n");
             PQclear(nom_logement);
+            PQclear(id_logement);
+            PQclear(id_res);
             PQfinish(conn);
             return 0;
         }
