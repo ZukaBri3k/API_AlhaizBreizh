@@ -471,21 +471,28 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         printf("%d\n", PQntuples(date_Debut));
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
             if (PQntuples(date_Debut) < 0) {
+                if (i < PQntuples(calendrier_Debut)) {
+                    char escaped_value[1024];
+                    PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
 
-                char escaped_value[1024];
-                PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
+                    char query[1024];
+                    sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
+                    PQgetvalue(privilege, i, 0), dateDebut, "false", PQgetvalue(calendrier_Debut, i, 3), PQgetvalue(calendrier_Debut, i, 4), 
+                    PQgetvalue(calendrier_Debut, i, 5), PQgetvalue(calendrier_Debut, i, 6), PQgetvalue(calendrier_Debut, i, 7), 
+                    PQgetvalue(calendrier_Debut, i, 8), input);
+                    PGresult *res = PQexec(conn, query);
 
-                char query[1024];
-                sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", PQgetvalue(privilege, i, 0), dateDebut, "false", PQgetvalue(calendrier_Debut, i, 3), PQgetvalue(calendrier_Debut, i, 4), PQgetvalue(calendrier_Debut, i, 5), PQgetvalue(calendrier_Debut, i, 6), PQgetvalue(calendrier_Debut, i, 7), PQgetvalue(calendrier_Debut, i, 8), input);
-                PGresult *res = PQexec(conn, query);
-
-                if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
-                PQclear(res);
-                PQfinish(conn);
-                return 1;
+                    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                        fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
+                        PQclear(res);
+                        PQfinish(conn);
+                        return 1;
+                    }
+                } else {
+                    printf("La ligne n'existe pas\n");
                 }
-            } /* else {
+
+            } else {
                 char escaped_value[1024];
                 PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, 0, 6), sizeof(escaped_value), NULL);
                 char query[1024];
@@ -498,7 +505,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     PQfinish(conn);
                     return 1;
                 }
-            } */
+            }
             i++;
         }
         if (strcmp(PQgetvalue(date_Debut, i, 0), dateFin) == 0) {
