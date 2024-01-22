@@ -51,26 +51,27 @@ int main() {
     printf("Votre choix : ");
     int choix;
     scanf("%d", &choix);
+    char response[1024];
     do {
-        if (choix == 1) {
-            send(sock, &command, sizeof(command), 0);
-            recv(sock, &response, sizeof(response), 0);
-            printf("Liste des biens du client :\n");
-            printf(response);
-        }else if (choix == 2) {
-            send(sock, &command, sizeof(command), 0);
-            recv(sock, &response, sizeof(response), 0);
-            printf("Disponibilité du bien :\n");
-            printf(response);
-            printf("Erreur du serveur lors de la consultation de la disponibilité d'un bien. Code d'erreur : %d\n", response.status);
-        }else if (choix == 3) {
-            send(sock, &command, sizeof(command), 0);
-            recv(sock, &response, sizeof(response), 0);
-            printf("Dates d'indisponibilité modifiées avec succès.\n");
-            printf(response);
-        }else if (choix == 4) {
-            send(sock, getLogement, sizeof(getLogement), 0);
-            recv(sock, &response, sizeof(response), 0);
+        //if (choix == 1) {
+        //    send(sock, &command, sizeof(command), 0);
+        //    recv(sock, &response, sizeof(response), 0);
+        //    printf("Liste des biens du client :\n");
+        //    printf(response);
+        //}else if (choix == 2) {
+        //    send(sock, &command, sizeof(command), 0);
+        //    recv(sock, &response, sizeof(response), 0);
+        //    printf("Disponibilité du bien :\n");
+        //    printf(response);
+        //    printf("Erreur du serveur lors de la consultation de la disponibilité d'un bien. Code d'erreur : %d\n", response.status);
+        //}else if (choix == 3) {
+        //    send(sock, &command, sizeof(command), 0);
+        //    recv(sock, &response, sizeof(response), 0);
+        //    printf("Dates d'indisponibilité modifiées avec succès.\n");
+        //    printf(response);
+        /*}else*/if (choix == 4) {
+            send(sock, "getLogement", sizeof("getLogement"), 0);
+            recv(sock, response, sizeof(response), 0);
             printf("La liste de tous les biens :\n");
             printf(response);
         } else if (choix == 0) {
