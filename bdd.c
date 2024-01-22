@@ -227,7 +227,7 @@ int getLogement(char cle[15], int cnx) {
 //******************************************************************//
 //**********************Code pour getLogement***********************//
 //******************************************************************//
-int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
+int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
@@ -262,7 +262,6 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
         //Ici je vais chercher l'id d'un logement de la personne qui a la clé
         sprintf(query, "SELECT id_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
         PGresult *id_logement = PQexec(conn, query);
-        printf("id_logement : %s\n", PQgetvalue(id_logement, 0, 0));
 
         //Ici je vais chercher le nom d'un logement de la personne qui a la clé
         sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
@@ -283,10 +282,9 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
             printf("Reçu : %s\n", input);
 
             //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
-            printf("ok\n");
             sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s AND jour >= '%s' ", input, dateDebut);
             PGresult *calendrier_Debut = PQexec(conn, query);
-
+            printf("ok\n");
             if (PQntuples(calendrier_Debut) > 0) {
 
                 //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
