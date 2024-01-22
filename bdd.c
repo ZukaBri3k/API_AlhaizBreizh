@@ -270,8 +270,8 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         if (PQntuples(id_logement) > 0) {
 
             write(cnx, "Voici la liste de vos logement : \n", strlen("Voici la liste de vos logement : \n"));
-            int rows = PQntuples(id_logement);
-            for (int i = 0; i < rows ; i++) {
+            int ligne = PQntuples(id_logement);
+            for (int i = 0; i < ligne ; i++) {
                 write(cnx, "(", strlen("("));
                 write(cnx, ("%s", PQgetvalue(id_logement, i, 0)), strlen(("%s", PQgetvalue(id_logement, i, 0))));
                 write(cnx, ")", strlen(")"));
@@ -305,7 +305,6 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     char *data = (char *)malloc(size * sizeof(char));
 
                     write(cnx, "[\n", strlen("[\n"));
-                    printf("%s\n", data);
                     while (i < rows && strcmp(PQgetvalue(date_Debut, i, n), dateFin)) {
                         write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
