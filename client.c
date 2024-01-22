@@ -47,6 +47,7 @@ int main() {
     read(sock, buffer, sizeof(buffer));
     printf("%s\n", buffer);
     scanf("%s", response);
+    send(sock, response, sizeof(response), 0);
     printf("Que souhaitez-vous faire ?\n");
     printf("1. Consulter la liste des biens\n");
     printf("2. Consulter la disponibilité d'un bien\n");
