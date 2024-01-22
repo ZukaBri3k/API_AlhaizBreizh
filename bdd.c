@@ -280,7 +280,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                 write(cnx, "\n", strlen("\n"));
             }
             
-            write(cnx, "Veuillez choisir un logement : ", strlen("Veuillez choisir un logement : "));
+            write(cnx, "Veuillez choisir l'id de l'un logement : ", strlen("Veuillez choisir l'id de l'un logement : "));
             read(cnx, input, BUFFSIZE);
             input[strcspn(input, "\r\n\0")] = 0;
             printf("Reçu : %s\n", input);
@@ -306,14 +306,16 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
 
                     write(cnx, "[\n", strlen("[\n"));
                     printf("%s\n", data);
-                    while (i < rows && strcmp(PQgetvalue(date_Debut, i, n), dateFin)) {
+                    while (i < rows || strcmp(PQgetvalue(date_Debut, i, n), dateFin)) {
                         write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \""));
                             write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
+                            printf("%s\n", PQfname(calendrier_Debut, j));
                             write(cnx, "\"", strlen("\""));
                             write(cnx, " : ", strlen(" : "));
                             write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
+                            printf("%s\n", PQgetvalue(calendrier_Debut, i, j));
                             if (j < cols - 1) {
                                 write(cnx, ",", strlen(","));
                             }
