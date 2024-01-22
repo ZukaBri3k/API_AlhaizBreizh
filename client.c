@@ -75,8 +75,6 @@ int main() {
             printf("La liste de tous les biens :\n");
             printf(response);
         } else if (choix == 0) {
-            command.command = 0;
-            send(sock, &command, sizeof(command), 0);
             printf("Opération terminée.\n");
             close(sock);
         }else {
