@@ -96,7 +96,7 @@ int main(int argc, char* argv[]) {
         } else {
             printf("Erreur du serveur lors de la consultation de la liste des biens. Code d'erreur : %d\n", response.status);
         }
-    } else if (userChoice == 2) {
+    } else if (choix == 2) {
         command.command = 3;
         send(sock, &command, sizeof(command), 0);
         recv(sock, &response, sizeof(response), 0);
@@ -106,7 +106,7 @@ int main(int argc, char* argv[]) {
         } else {
             printf("Erreur du serveur lors de la consultation de la disponibilité d'un bien. Code d'erreur : %d\n", response.status);
         }
-    } else if (userChoice == 3) {
+    } else if (choix == 3) {
         command.command = 4;
         send(sock, &command, sizeof(command), 0);
         recv(sock, &response, sizeof(response), 0);
@@ -116,7 +116,7 @@ int main(int argc, char* argv[]) {
         } else {
             printf("Erreur du serveur lors de la modification des dates d'indisponibilité. Code d'erreur : %d\n", response.status);
         }
-    } else if (userChoice == 4) {
+    } else if (choix == 4) {
         command.command = 5;
         send(sock, &command, sizeof(command), 0);
         recv(sock, &response, sizeof(response), 0);
