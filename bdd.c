@@ -272,8 +272,12 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             write(cnx, "Voici la liste de vos logement : \n", strlen("Voici la liste de vos logement : \n"));
             int rows = PQntuples(id_logement);
             for (int i = 0; i < rows ; i++) {
-                write(cnx, ("(%s)", PQgetvalue(id_logement, i, 0)), strlen(("(%s)", PQgetvalue(id_logement, i, 0))));
-                write(cnx, (" : %d\n", PQgetvalue(nom_logement, i, 0)), strlen((" : %d\n", PQgetvalue(nom_logement, i, 0))));
+                write(cnx, "(", strlen("("));
+                write(cnx, ("%s", PQgetvalue(id_logement, i, 0)), strlen(("%s", PQgetvalue(id_logement, i, 0))));
+                write(cnx, ")", strlen(")"));
+                write(cnx, " : ", strlen(" : "));
+                write(cnx, ("%d", PQgetvalue(nom_logement, i, 0)), strlen(("%d", PQgetvalue(nom_logement, i, 0))));
+                write(cnx, "\n", strlen("\n"));
             }
             
             write(cnx, "Veuillez choisir un logement : ", strlen("Veuillez choisir un logement : "));
@@ -284,7 +288,6 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
             sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s AND jour >= '%s' ", input, dateDebut);
             PGresult *calendrier_Debut = PQexec(conn, query);
-            printf("ok\n");
             if (PQntuples(calendrier_Debut) > 0) {
 
                 //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
@@ -304,7 +307,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     write(cnx, "[\n", strlen("[\n"));
                     printf("%s\n", data);
                     while (i < rows && strcmp(PQgetvalue(date_Debut, i, n), dateFin)) {
-                        write(cnx, "{\n", strlen("{\n"));
+                        write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \""));
                             write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
