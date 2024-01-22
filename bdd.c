@@ -90,7 +90,7 @@ int getLogement(char cle[15], int cnx) {
     char input[BUFFSIZE];
     char query[256];
 
-    printf("La clé est %s\n", cle);
+    printf("La clé est %s", cle);
 
     //Ici je vais chercher les privilège de la personne qui a la clé
     sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
@@ -267,7 +267,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
         //Ici je vais chercher le nom d'un logement de la personne qui a la clé
         sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
         PGresult *nom_logement = PQexec(conn, query);
-        printf("nom_logement : %s\n", PQgetvalue(nom_logement, 0, 0));
+        printf("nom_logement : %s\n", PQgetvalue(nom_logement, 1, 0));
 
         if (PQntuples(id_logement) > 0)
         {
