@@ -49,6 +49,8 @@ int main() {
     send(sock, response, strlen(response), 0);
     read(sock, buffer, strlen(buffer));
     printf("%s\n", buffer);
+    int choix;
+    choix=1;
     do {
         printf("Que souhaitez-vous faire ?\n");
         printf("1. Consulter la liste des biens\n");
@@ -57,7 +59,6 @@ int main() {
         printf("4. Consulter la liste de tous les biens (admin)\n");
         printf("0. Quitter\n");
         printf("Votre choix : ");
-        int choix;
         scanf("%d", &choix);
     
         //if (choix == 1) {
