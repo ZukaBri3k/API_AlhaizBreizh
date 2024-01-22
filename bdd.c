@@ -265,7 +265,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
         printf("id_logement : %s\n", PQgetvalue(id_logement, 0, 0));
 
         //Ici je vais chercher le nom d'un logement de la personne qui a la clé
-        sprintf(query, "SELECT nom_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
+        sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
         PGresult *nom_logement = PQexec(conn, query);
         printf("nom_logement : %s\n", PQgetvalue(nom_logement, 0, 0));
 
