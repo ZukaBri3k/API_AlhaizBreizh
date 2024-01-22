@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#define _XOPEN_SOURCE
 #include <time.h>
 
 #define LENCLE 20
