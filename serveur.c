@@ -153,9 +153,6 @@ int main(int argc, char* argv[]) {
             fprintf(logs, "accept=%d\n", ret);
             printf("accept=%d\n", ret);
         }
-        printf("-------------- TEST ---------------\n");
-        int test = getLogement("123456789", cnx);
-        printf("%d\n", test);
 
         char buffer[BUFFER_SIZE];
         int res;
@@ -171,29 +168,31 @@ int main(int argc, char* argv[]) {
         sscanf(buffer, "cle %s", cleAPI);
         printf("cleAPI : %s\n", cleAPI);
         buffer[res] = '\0';
+        strcpy(cleAPI, buffer);
 
         if (VERBOSE)
         {
             afficherHeureIP(logs, conn_addr);
-            fprintf(logs, "Clé API saisie : %s", buffer);
-            printf("Clé API saisie : %s", buffer);
+            fprintf(logs, "Clé API saisie : %s", cleAPI);
+            printf("Clé API saisie : %s", cleAPI);
         }
 
 
         //ecriture de la clé dans le tube
-        serveur2bdd = open("serveur2bdd", O_WRONLY);
+        /*serveur2bdd = open("serveur2bdd", O_WRONLY);
         res = write(serveur2bdd, buffer, strlen(buffer));
         sleep(1);
-        close(serveur2bdd);
+        close(serveur2bdd);*/
 
         //récupération de la réponse depuis le tube
-        bdd2serveur = open("bdd2serveur", O_RDONLY);
+        /*bdd2serveur = open("bdd2serveur", O_RDONLY);
         res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
         buffer[res] = '\0';
         sleep(1);
         close(bdd2serveur);
-        printf("buffer : %s\n", buffer);
-        if(strcmp(buffer, "true\0") != 0) {
+        printf("buffer : %s\n", buffer);*/
+
+        if(verifCle(cleAPI) != true) {
             //si la clé n'est pas bonne
             strcpy(msgClient, "Clé API incorrecte fermeture de la session\n\0");
 
@@ -213,7 +212,7 @@ int main(int argc, char* argv[]) {
             {
                 afficherHeureIP(logs, conn_addr);
                 fprintf(logs, msgClient);
-                printf(msgClient);
+                printf("%s", msgClient);
             }               
             res = write(cnx, msgClient, strlen(msgClient));
             
@@ -239,30 +238,30 @@ int main(int argc, char* argv[]) {
                         afficherHeureIP(logs, conn_addr);
                         fprintf(logs, "request(lenght=%d) : %s", res, buffer);
                         printf("request(lenght=%d) : %s", res, buffer);
-                        serveur2bdd = open("serveur2bdd", O_WRONLY);
+                        /* serveur2bdd = open("serveur2bdd", O_WRONLY);
                         strcpy(buffer, strcat(buffer, cleAPI));
                         res = write(serveur2bdd, buffer, strlen(buffer));
                         sleep(1);
-                        close(serveur2bdd);
+                        close(serveur2bdd); */
+                        if (strcmp(buffer, "getLogement\r\n\0") == 0)
+                        {
+                            getLogement(cleAPI, cnx);
+                        } else {
+                            strcpy(msgClient, "Requête inconnue\n\0");
+                            res = write(cnx, msgClient, strlen(msgClient));
+                        }
+                        
 
                         //récupération de la réponse depuis le tube
-
-
-                        bdd2serveur = open("bdd2serveur", O_RDONLY);
-                        res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
-                        buffer[res] = '\n';
-                        buffer[res+1] = '\0';
-                        sleep(1);
-                        close(bdd2serveur);
-                        afficherHeureIP(logs, conn_addr);
+                        /* afficherHeureIP(logs, conn_addr);
                         fprintf(logs, "response(lenght=%d) :%s\n", res, buffer);
-                        printf("response(lenght=%d) : %s\n", res, buffer);
-                        res = write(cnx, buffer, strlen(buffer));
+                        printf("response(lenght=%d) : %s\n", res, buffer); */
+                        //res = write(cnx, buffer, strlen(buffer));
 
                                                         
                     }
                     
-                    if (strcmp(buffer, "0\n\0") == 0)
+                    /* if (strcmp(buffer, "0\n\0") == 0)
                     {
                         
                         int fic = open("json.txt", O_RDONLY);
@@ -273,7 +272,7 @@ int main(int argc, char* argv[]) {
                             write(cnx, buffer, strlen(buffer));
                         };
                         close(fic);                               
-                    }
+                    } */
                 }
                 
             } while (strcmp(buffer, "exit\r\n\0") != 0);
