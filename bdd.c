@@ -296,7 +296,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
 
                 int rows = PQntuples(calendrier_Debut);
                 int cols = PQnfields(calendrier_Debut);
-                int i = 0, n = 0, b = 0;
+                int i = 0, n = 0;
 
                 printf("-------------------------Début de la création du JSON------------------------\n");
 
@@ -305,8 +305,8 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     char *data = (char *)malloc(size * sizeof(char));
 
                     write(cnx, "[\n", strlen("[\n"));
-                    while (i < rows && strcmp(PQgetvalue(date_Debut, b, n), dateFin) != 0) {
-                        i = 0;
+                    while (i < rows && strcmp(PQgetvalue(date_Debut, i, n), dateFin) != 0) {
+                        printf("%s\n", PQgetvalue(date_Debut, i, n));
                         write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \"")); 
@@ -334,7 +334,6 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         write(cnx, "\n", strlen("\n"));
                         i++;
                         n++;
-                        b++;
                     }
                     write(cnx, "]\n", strlen("]\n"));
                     printf("%s\n", data);
