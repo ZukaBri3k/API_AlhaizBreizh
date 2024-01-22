@@ -29,8 +29,29 @@ int main() {
         perror("bind");
         exit(EXIT_FAILURE);
     }
-    printf("Client connecté\n");
-    close(cnx);
+
+    printf("Serveur démarré sur le port %d\n", PORT);
+
+    while (1) {
+        ret = listen(sock, 1);
+        if (ret == -1) {
+            perror("listen");
+            exit(EXIT_FAILURE);
+        }
+
+        printf("En attente de connexion...\n");
+
+        struct sockaddr_in conn_addr;
+        socklen_t size = sizeof(conn_addr);
+        int cnx = accept(sock, (struct sockaddr *)&conn_addr, &size);
+        if (cnx == -1) {
+            perror("accept");
+            exit(EXIT_FAILURE);
+        }
+
+        printf("Client connecté\n");
+        close(cnx);
     }
+
     return 0;
 }
