@@ -15,7 +15,7 @@ int main() {
     int ret;
     struct sockaddr_in addr;
 
-    sock = socket(AF_INET, SOCK_STREAM, 0);
+        sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
         perror("socket");
         exit(EXIT_FAILURE);
@@ -36,7 +36,7 @@ int main() {
 
     ret = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
     if (ret == -1) {
-        perror("connect");
+        fprintf(stderr, "connect: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
