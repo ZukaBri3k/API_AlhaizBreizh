@@ -305,7 +305,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     char *data = (char *)malloc(size * sizeof(char));
 
                     write(cnx, "[\n", strlen("[\n"));
-                    while (i < rows || strcmp(PQgetvalue(date_Debut, i, n), dateFin) != 0) {
+                    while (strcmp(PQgetvalue(date_Debut, i, n), dateFin) != 0) {
                         write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \""));
