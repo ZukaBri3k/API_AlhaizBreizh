@@ -470,6 +470,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         PGresult *date_Debut = PQexec(conn, query);
         printf("%d\n", PQntuples(date_Debut));
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+            printf("%s\n", PQgetvalue(date_Debut, i, 0));
             if (PQntuples(date_Debut) < 0) {
                 if (i < PQntuples(calendrier_Debut)) {
                     char escaped_value[1024];
@@ -494,7 +495,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
 
             } else {
                 char escaped_value[1024];
-                PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, 0, 6), sizeof(escaped_value), NULL);
+                PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
                 char query[1024];
                 sprintf(query, "UPDATE calendrier SET disponibilite = 'false' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
                 PGresult *res = PQexec(conn, query);
