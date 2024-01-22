@@ -56,7 +56,6 @@ int main() {
     printf("Votre choix : ");
     int choix;
     scanf("%d", &choix);
-    char response[1024];
     do {
         //if (choix == 1) {
         //    send(sock, &command, sizeof(command), 0);
