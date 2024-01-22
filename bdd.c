@@ -128,7 +128,7 @@ int getLogement(char cle[15], int cnx) {
                     write(cnx, "{\n", strlen("{\n"));
                     for (int j = 0; j < cols; j++) {
                         write(cnx, "    \"", strlen("    \""));
-                        write(cnx, ("%s", PQfname(logement, j)), strlen(("    \"%s\": ", PQfname(logement, j))));
+                        write(cnx, ("%s", PQfname(logement, j)), strlen(("%s", PQfname(logement, j))));
                         write(cnx, "\"", strlen("\""));
                         write(cnx, " : ", strlen(" : "));
                         write(cnx, ("%s", PQgetvalue(logement, i, j)), strlen(("%s", PQgetvalue(logement, i, j))));
@@ -267,14 +267,15 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
         //Ici je vais chercher le nom d'un logement de la personne qui a la clé
         sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
         PGresult *nom_logement = PQexec(conn, query);
-        printf("nom_logement : %s\n", PQgetvalue(nom_logement, 1, 0));
 
         if (PQntuples(id_logement) > 0) {
 
             write(cnx, "Voici la liste de vos logement : ", strlen("Voici la liste de vos logement : "));
             int rows = PQntuples(id_logement);
             printf("Rows : %d\n", rows);
-            for (int i = 0; i < rows; i++) {
+            printf("nom_logement : %s\n", PQgetvalue(nom_logement, 0, 0));
+            printf("nom_logement : %s\n", PQgetvalue(nom_logement, 1, 0));
+            for (int i = 0; i < rows - 1; i++) {
                 write(cnx, ("(%s)", PQgetvalue(id_logement, i, 0)), strlen(("(%s)", PQgetvalue(id_logement, i, 0))));
                 write(cnx, (" : %d\n", PQgetvalue(nom_logement, i, 0)), strlen((" : %d\n", PQgetvalue(nom_logement, i, 0))));
             }
