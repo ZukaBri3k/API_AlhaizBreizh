@@ -1,3 +1,5 @@
+#define _XOPEN_SOURCE
+#include <time.h>
 #include "bdd.h"
 #include <postgresql/libpq-fe.h>
 #include <stdio.h>
@@ -6,8 +8,6 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
-#define _XOPEN_SOURCE
-#include <time.h>
 
 #define LENCLE 20
 #define BUFFSIZE 100
