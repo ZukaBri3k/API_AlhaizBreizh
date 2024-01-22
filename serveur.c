@@ -249,6 +249,10 @@ int main(int argc, char* argv[]) {
                         } else if (strcmp(buffer, "getCalendrier\r\n\0") == 0)
                         {
                             getCalendrier(cleAPI, cnx, "2023-12-15", "2023-12-16");
+                        }
+                        else if (strcmp(buffer, "miseIndispo\r\n\0") == 0)
+                        {
+                            miseIndispo(cleAPI, cnx, "2023-12-15", "2023-12-14");
                         } else {
                             strcpy(msgClient, "Requête inconnue\n\0");
                             res = write(cnx, msgClient, strlen(msgClient));
