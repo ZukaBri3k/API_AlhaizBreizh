@@ -6,6 +6,7 @@
 #include <stdbool.h>
 #include <string.h>
 #include <stdlib.h>
+#include <time.h>
 
 #define LENCLE 20
 #define BUFFSIZE 100
@@ -471,23 +472,41 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         printf("%d\n", PQntuples(date_Debut));
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
             printf("%s\n", PQgetvalue(date_Debut, i, 0));
-            if (PQntuples(date_Debut) < 0) {
+            if (PQntuples(date_Debut) < 0 && strcmp(dateDebut, dateFin) > 0) {
                 if (i < PQntuples(calendrier_Debut)) {
                     char escaped_value[1024];
                     PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
 
-                    char query[1024];
-                    sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
-                    PQgetvalue(privilege, i, 0), dateDebut, "false", PQgetvalue(calendrier_Debut, i, 3), PQgetvalue(calendrier_Debut, i, 4), 
-                    PQgetvalue(calendrier_Debut, i, 5), PQgetvalue(calendrier_Debut, i, 6), PQgetvalue(calendrier_Debut, i, 7), 
-                    PQgetvalue(calendrier_Debut, i, 8), input);
-                    PGresult *res = PQexec(conn, query);
+                    // Convertir les dates en struct tm
+                    struct tm dateDebut_tm, dateFin_tm;
+                    strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
+                    strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
 
-                    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                        fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
-                        PQclear(res);
-                        PQfinish(conn);
-                        return 1;
+                    // Convertir les struct tm en time_t pour la comparaison
+                    time_t start = mktime(&dateDebut_tm);
+                    time_t end = mktime(&dateFin_tm);
+
+                    for (time_t current = start; current <= end; current += 24 * 60 * 60) {
+                        // Convertir le temps courant en struct tm
+                        struct tm *current_tm = localtime(&current);
+
+                        // Formater la date courante en chaîne
+                        char current_date[11];
+                        strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
+
+                        char query[1024];
+                        sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
+                        PQgetvalue(privilege, i, 0), current_date, "true", PQgetvalue(calendrier_Debut, i, 3), PQgetvalue(calendrier_Debut, i, 4), 
+                        PQgetvalue(calendrier_Debut, i, 5), PQgetvalue(calendrier_Debut, i, 6), PQgetvalue(calendrier_Debut, i, 7), 
+                        PQgetvalue(calendrier_Debut, i, 8), input);
+                        PGresult *res = PQexec(conn, query);
+
+                        if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                            fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
+                            PQclear(res);
+                            PQfinish(conn);
+                            return 1;
+                        }
                     }
                 } else {
                     printf("La ligne n'existe pas\n");
@@ -497,7 +516,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                 char escaped_value[1024];
                 PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
                 char query[1024];
-                sprintf(query, "UPDATE calendrier SET disponibilite = 'false' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
+                sprintf(query, "UPDATE calendrier SET disponibilite = 'true' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
                 PGresult *res = PQexec(conn, query);
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK) {
