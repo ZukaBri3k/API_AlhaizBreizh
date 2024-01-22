@@ -6,8 +6,9 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <netdb.h>
 
-#define PORT 8080
+#define PORT 8000
 
 int main() {
     int sock;
@@ -20,38 +21,27 @@ int main() {
         exit(EXIT_FAILURE);
     }
 
-    addr.sin_addr.s_addr = inet_addr("0.0.0.0");
-    addr.sin_family = AF_INET;
-    addr.sin_port = htons(PORT);
+    char *hostname = "site-sae-ubisoufte.bigpapoo.com";
+    struct hostent *host = gethostbyname(hostname);
 
-    ret = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
-    if (ret == -1) {
-        perror("bind");
+    if (host == NULL) {
+        perror("gethostbyname");
         exit(EXIT_FAILURE);
     }
 
-    printf("Serveur démarré sur le port %d\n", PORT);
+    memcpy(&addr.sin_addr, host->h_addr_list[0], host->h_length);
 
-    while (1) {
-        ret = listen(sock, 1);
-        if (ret == -1) {
-            perror("listen");
-            exit(EXIT_FAILURE);
-        }
+    addr.sin_family = AF_INET;
+    addr.sin_port = htons(PORT);
 
-        printf("En attente de connexion...\n");
-
-        struct sockaddr_in conn_addr;
-        socklen_t size = sizeof(conn_addr);
-        int cnx = accept(sock, (struct sockaddr *)&conn_addr, &size);
-        if (cnx == -1) {
-            perror("accept");
-            exit(EXIT_FAILURE);
-        }
-
-        printf("Client connecté\n");
-        close(cnx);
+    ret = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
+    if (ret == -1) {
+        perror("connect");
+        exit(EXIT_FAILURE);
     }
+
+    printf("Connected to the server\n");
+    close(sock);
 
     return 0;
 }
