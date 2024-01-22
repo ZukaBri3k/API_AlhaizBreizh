@@ -470,7 +470,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
         sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %s AND jour >= '%s' ", input, dateDebut);
         PGresult *date_Debut = PQexec(conn, query);
-
+        printf("%d\n", PQntuples(date_Debut));
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
             if (PQntuples(date_Debut) > 0) {
                 char query[1024];
