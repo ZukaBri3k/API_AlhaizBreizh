@@ -270,12 +270,9 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
 
         if (PQntuples(id_logement) > 0) {
 
-            write(cnx, "Voici la liste de vos logement : ", strlen("Voici la liste de vos logement : "));
+            write(cnx, "Voici la liste de vos logement : \n", strlen("Voici la liste de vos logement : \n"));
             int rows = PQntuples(id_logement);
-            printf("Rows : %d\n", rows);
-            printf("nom_logement : %s\n", PQgetvalue(nom_logement, 0, 0));
-            printf("nom_logement : %s\n", PQgetvalue(nom_logement, 1, 0));
-            for (int i = 0; i < rows - 1; i++) {
+            for (int i = 0; i < rows ; i++) {
                 write(cnx, ("(%s)", PQgetvalue(id_logement, i, 0)), strlen(("(%s)", PQgetvalue(id_logement, i, 0))));
                 write(cnx, (" : %d\n", PQgetvalue(nom_logement, i, 0)), strlen((" : %d\n", PQgetvalue(nom_logement, i, 0))));
             }
@@ -286,6 +283,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
             printf("Reçu : %s\n", input);
 
             //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
+            printf("ok\n");
             sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s AND jour >= '%s' ", input, dateDebut);
             PGresult *calendrier_Debut = PQexec(conn, query);
 
