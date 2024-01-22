@@ -51,34 +51,38 @@ int main() {
     printf("Votre choix : ");
     int choix;
     scanf("%d", &choix);
-    if (choix == 1) {
-        command.command = 2;
-        send(sock, &command, sizeof(command), 0);
-        recv(sock, &response, sizeof(response), 0);
-        printf("Liste des biens du client :\n");
-        printf(response);
-    }else if (choix == 2) {
-        command.command = 3;
-        send(sock, &command, sizeof(command), 0);
-        recv(sock, &response, sizeof(response), 0);
-        printf("Disponibilité du bien :\n");
-        printf(response);
-        printf("Erreur du serveur lors de la consultation de la disponibilité d'un bien. Code d'erreur : %d\n", response.status);
-    }else if (choix == 3) {
-        command.command = 4;
-        send(sock, &command, sizeof(command), 0);
-        recv(sock, &response, sizeof(response), 0);
-        printf("Dates d'indisponibilité modifiées avec succès.\n");
-        printf(response);
-    }else if (choix == 4) {
-        command.command = 5;
-        send(sock, &command, sizeof(command), 0);
-        recv(sock, &response, sizeof(response), 0);
-        printf("La liste de tous les biens :\n");
-        printf(response);
-    } else {
-        printf("Opération terminée.\n");
-        close(sock);
-    }
+    do {
+        if (choix == 1) {
+            command.command = 2;
+            send(sock, &command, sizeof(command), 0);
+            recv(sock, &response, sizeof(response), 0);
+            printf("Liste des biens du client :\n");
+            printf(response);
+        }else if (choix == 2) {
+            command.command = 3;
+            send(sock, &command, sizeof(command), 0);
+            recv(sock, &response, sizeof(response), 0);
+            printf("Disponibilité du bien :\n");
+            printf(response);
+            printf("Erreur du serveur lors de la consultation de la disponibilité d'un bien. Code d'erreur : %d\n", response.status);
+        }else if (choix == 3) {
+            command.command = 4;
+            send(sock, &command, sizeof(command), 0);
+            recv(sock, &response, sizeof(response), 0);
+            printf("Dates d'indisponibilité modifiées avec succès.\n");
+            printf(response);
+        }else if (choix == 4) {
+            command.command = 5;
+            send(sock, &command, sizeof(command), 0);
+            recv(sock, &response, sizeof(response), 0);
+            printf("La liste de tous les biens :\n");
+            printf(response);
+        } else if (choix == 0) {
+            printf("Opération terminée.\n");
+            close(sock);
+        }else {
+            printf("Choix non reconnu. Veuillez entrer un nombre entre 1 et 4.\n");
+        }
+    } while (choix != 0);
     return 0;
 }
