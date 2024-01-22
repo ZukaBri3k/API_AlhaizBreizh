@@ -305,15 +305,20 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     char *data = (char *)malloc(size * sizeof(char));
 
                     write(cnx, "[\n", strlen("[\n"));
-                    while (i < rows && strcmp(PQgetvalue(date_Debut, i, n), dateFin)) {
+                    while (i < rows && strcmp(PQgetvalue(date_Debut, i, n), dateFin) != 0) {
                         write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \""));
                             write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
                             write(cnx, "\"", strlen("\""));
                             write(cnx, " : ", strlen(" : "));
-                            write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
-                            printf("%s\n", PQgetvalue(calendrier_Debut, i, j));
+                            if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
+                                write(cnx, "true", strlen("true"));
+                            } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), "f") == 0) {
+                                write(cnx, "false", strlen("false"));
+                            } else {
+                                write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
+                            }
                             if (j < cols - 1) {
                                 write(cnx, ",", strlen(","));
                             }
