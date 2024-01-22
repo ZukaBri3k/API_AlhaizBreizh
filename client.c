@@ -42,6 +42,11 @@ int main() {
     }
 
     printf("Connected to the server\n");
+    char buffer[1024];
+    char response[1024];
+    read(sock, buffer, sizeof(buffer));
+    printf("%s\n", buffer);
+    scanf("%s", response);
     printf("Que souhaitez-vous faire ?\n");
     printf("1. Consulter la liste des biens\n");
     printf("2. Consulter la disponibilité d'un bien\n");
