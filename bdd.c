@@ -498,7 +498,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             i++;
         }
         if (strcmp(PQgetvalue(date_Debut, i, 0), dateFin) == 0) {
-            if (PQntuples(date_Debut) > 0) {
+            if (PQntuples(date_Debut) < 0) {
                 char *query = ("INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
                 PQgetvalue(privilege, 0, 0), dateDebut, "false", PQgetvalue(calendrier_Debut, 0, 3), PQgetvalue(calendrier_Debut, 0, 4), 
                 PQgetvalue(calendrier_Debut, 0, 5), PQgetvalue(calendrier_Debut, 0, 6), PQgetvalue(calendrier_Debut, 0, 7), PQgetvalue(calendrier_Debut, 0, 8), input);
