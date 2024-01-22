@@ -311,7 +311,6 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \""));
                             write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
-                            printf("%s\n", PQfname(calendrier_Debut, j));
                             write(cnx, "\"", strlen("\""));
                             write(cnx, " : ", strlen(" : "));
                             write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
