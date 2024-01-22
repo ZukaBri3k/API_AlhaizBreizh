@@ -472,7 +472,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         PGresult *date_Debut = PQexec(conn, query);
         printf("%d\n", PQntuples(date_Debut));
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
-            if (PQntuples(date_Debut) > 0) {
+            if (PQntuples(date_Debut) < 0) {
 
                 char escaped_value[1024];
                 PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, 0, 6), sizeof(escaped_value), NULL);
@@ -504,7 +504,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             i++;
         }
         if (strcmp(PQgetvalue(date_Debut, i, 0), dateFin) == 0) {
-            if (PQntuples(date_Debut) > 0) {
+            if (PQntuples(date_Debut) < 0) {
                 char escaped_value[1024];
                 PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, 0, 6), sizeof(escaped_value), NULL);
                 char query[1024];
