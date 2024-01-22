@@ -51,16 +51,16 @@ int main() {
     printf("%s", buffer);
     int choix;
     choix=1;
-    
-    printf("Que souhaitez-vous faire ?\n");
-    printf("1. Consulter la liste des biens\n");
-    printf("2. Consulter la disponibilité d'un bien\n");
-    printf("3. Modifier les dates d'indisponibilité d'un bien\n");
-    printf("4. Consulter la liste de tous les biens (admin)\n");
-    printf("0. Quitter\n");
-    printf("Votre choix : ");
-    scanf("%d", &choix);
     do {
+        printf("Que souhaitez-vous faire ?\n");
+        printf("1. Consulter la liste des biens\n");
+        printf("2. Consulter la disponibilité d'un bien\n");
+        printf("3. Modifier les dates d'indisponibilité d'un bien\n");
+        printf("4. Consulter la liste de tous les biens (admin)\n");
+        printf("0. Quitter\n");
+        printf("Votre choix : ");
+        scanf("%d", &choix);
+        
         //if (choix == 1) {
         //    send(sock, &command, sizeof(command), 0);
         //    recv(sock, &response, sizeof(response), 0);
