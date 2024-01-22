@@ -42,7 +42,43 @@ int main() {
     }
 
     printf("Connected to the server\n");
-    close(sock);
-
+    printf("Que souhaitez-vous faire ?\n");
+    printf("1. Consulter la liste des biens\n");
+    printf("2. Consulter la disponibilité d'un bien\n");
+    printf("3. Modifier les dates d'indisponibilité d'un bien\n");
+    printf("4. Consulter la liste de tous les biens (admin)\n");
+    printf("0. Quitter\n");
+    printf("Votre choix : ");
+    int choix;
+    scanf("%d", &choix);
+    if (choix == 1) {
+        command.command = 2;
+        send(sock, &command, sizeof(command), 0);
+        recv(sock, &response, sizeof(response), 0);
+        printf("Liste des biens du client :\n");
+        printf(response);
+    }else if (choix == 2) {
+        command.command = 3;
+        send(sock, &command, sizeof(command), 0);
+        recv(sock, &response, sizeof(response), 0);
+        printf("Disponibilité du bien :\n");
+        printf(response);
+        printf("Erreur du serveur lors de la consultation de la disponibilité d'un bien. Code d'erreur : %d\n", response.status);
+    }else if (choix == 3) {
+        command.command = 4;
+        send(sock, &command, sizeof(command), 0);
+        recv(sock, &response, sizeof(response), 0);
+        printf("Dates d'indisponibilité modifiées avec succès.\n");
+        printf(response);
+    }else if (choix == 4) {
+        command.command = 5;
+        send(sock, &command, sizeof(command), 0);
+        recv(sock, &response, sizeof(response), 0);
+        printf("La liste de tous les biens :\n");
+        printf(response);
+    } else {
+        printf("Opération terminée.\n");
+        close(sock);
+    }
     return 0;
 }
