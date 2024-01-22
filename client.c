@@ -7,6 +7,7 @@
 #include <unistd.h>
 #include <string.h>
 #include <netdb.h>
+#include <errno.h>
 
 #define PORT 8000
 
