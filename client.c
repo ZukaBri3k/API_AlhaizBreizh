@@ -40,8 +40,7 @@ int main() {
         fprintf(stderr, "connect: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
-
-    printf("Connected to the server\n");
+    
     char buffer[1024];
     char response[1024];
     read(sock, buffer, sizeof(buffer));
