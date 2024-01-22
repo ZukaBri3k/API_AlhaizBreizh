@@ -37,27 +37,27 @@ int main() {
 
     ret = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
     if (ret == -1) {
-        fprintf(stderr, "connect: %s\n", strerror(errno));
+        fprintf(stderr, "connect: %s", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
     char buffer[1024];
     char response[1024];
     read(sock, buffer, sizeof(buffer));
-    printf("%s\n", buffer);
+    printf("%s", buffer);
     scanf("%s", response);
     send(sock, response, sizeof(response), 0);
     read(sock, buffer, sizeof(buffer));
-    printf("%s\n", buffer);
+    printf("%s", buffer);
     int choix;
     choix=1;
     do {
-        printf("Que souhaitez-vous faire ?\n");
-        printf("1. Consulter la liste des biens\n");
-        printf("2. Consulter la disponibilité d'un bien\n");
-        printf("3. Modifier les dates d'indisponibilité d'un bien\n");
-        printf("4. Consulter la liste de tous les biens (admin)\n");
-        printf("0. Quitter\n");
+        printf("Que souhaitez-vous faire ?");
+        printf("1. Consulter la liste des biens");
+        printf("2. Consulter la disponibilité d'un bien");
+        printf("3. Modifier les dates d'indisponibilité d'un bien");
+        printf("4. Consulter la liste de tous les biens (admin)");
+        printf("0. Quitter");
         printf("Votre choix : ");
         scanf("%d", &choix);
     
@@ -80,13 +80,13 @@ int main() {
         /*}else*/if (choix == 4) {
             send(sock, "getLogement", sizeof("getLogement"), 0);
             recv(sock, response, strlen(response), 0);
-            printf("La liste de tous les biens :\n");
+            printf("La liste de tous les biens :");
             printf(response);
         } else if (choix == 0) {
-            printf("Opération terminée.\n");
+            printf("Opération terminée.");
             close(sock);
         }else {
-            printf("Choix non reconnu. Veuillez entrer un nombre entre 1 et 4.\n");
+            printf("Choix non reconnu. Veuillez entrer un nombre entre 1 et 4.");
         }
     } while (choix != 0);
     return 0;
