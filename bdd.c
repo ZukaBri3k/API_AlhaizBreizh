@@ -262,17 +262,17 @@ int getCalendrier(char cle[15], int cnx, char dateDebut, char dateFin) {
         //Ici je vais chercher l'id d'un logement de la personne qui a la clé
         sprintf(query, "SELECT id_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
         PGresult *id_logement = PQexec(conn, query);
+        printf("id_logement : %s\n", PQgetvalue(id_logement, 0, 0));
 
         //Ici je vais chercher le nom d'un logement de la personne qui a la clé
         sprintf(query, "SELECT nom_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
         PGresult *nom_logement = PQexec(conn, query);
+        printf("nom_logement : %s\n", PQgetvalue(nom_logement, 0, 0));
 
         if (PQntuples(id_logement) > 0)
         {
-            char *id_logement_str = PQgetvalue(id_logement, 0, 0);
             write(cnx, "Voici la liste de vos logement : ", strlen("Voici la liste de vos logement "));
             int rows = PQntuples(id_logement);
-
             for (int i = 0; i < rows; i++) {
                 write(cnx, ("(%s)", PQgetvalue(id_logement, i, 0)), strlen(("(%s)", PQgetvalue(id_logement, i, 0))));
                 write(cnx, (" : %d", PQgetvalue(nom_logement, i, 0)), strlen((" : %d", PQgetvalue(nom_logement, i, 0))));
