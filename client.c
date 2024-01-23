@@ -93,7 +93,7 @@ int main() {
                 buffer[len] = '\0';
                 printf("%s\n", buffer);
             } while (len > 0);
-            printf("%s\n", buffer);
+            printf("FINI\n");
             
 
         } else if (choix == 0) {
