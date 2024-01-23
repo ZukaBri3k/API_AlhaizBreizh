@@ -32,16 +32,28 @@ int main() {
         fprintf(stderr, "connect: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
+
     char buffer[1024];
-    char response[1024];
-    read(sock, buffer, sizeof(buffer));
-    printf("%s", buffer);
-    scanf("%s", response);
-    send(sock, response, strlen(response), 0);
-    read(sock, buffer, sizeof(buffer));
-    printf("%s", buffer);
-    int choix;
-    choix=1;
+char response[1024];
+ssize_t len;
+
+len = read(sock, buffer, sizeof(buffer) - 1);
+if (len > 0) {
+    buffer[len] = '\0';
+}
+printf("%s", buffer);
+
+scanf("%s", response);
+send(sock, response, strlen(response), 0);
+
+len = read(sock, buffer, sizeof(buffer) - 1);
+if (len > 0) {
+    buffer[len] = '\0';
+}
+printf("%s", buffer);
+
+int choix;
+choix = 1;
     do {
         printf("Que souhaitez-vous faire ?\n");
         printf("1. Consulter la liste des biens\n");
@@ -65,9 +77,13 @@ int main() {
         //    printf("Dates d'indisponibilité modifiées avec succès.\n");
         //    printf("%s", response);
         /*}else*/if (choix == 4) {
-            send(sock, "getLogement", sizeof("getLogement"), 0);
-            recv(sock, response, sizeof(response), 0);
-            printf("La liste de tous les biens :\n");
+            char command[] = "getAllLogements";
+            send(sock, command, sizeof(command), 0);
+            len = recv(sock, response, sizeof(response) - 1, 0);
+            if (len > 0) {
+                response[len] = '\0';
+            }
+            printf("Liste de tous les biens :\n");
             printf("%s", response);
         } else if (choix == 0) {
             printf("Opération terminée.\n");
