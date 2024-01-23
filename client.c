@@ -79,8 +79,8 @@ int main() {
         /*}else*/
         if (choix == 4) {
             printf("client : Choix 4\n");
-            char command[] = "getAllLogements";
-            write(sock, command, sizeof(command));
+            int res = write(sock, "getLogements", sizeof("getLogements"));
+            printf("client : res = %d\n", res);
             len = read(sock, response, sizeof(response));
             /*if (len > 0) {
                 response[len] = '\0';
