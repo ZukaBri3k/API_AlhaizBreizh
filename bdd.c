@@ -496,7 +496,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         }
         printf("Ligne : %d\n", PQntuples(date_Debut));
         printf("Date : %s\n", dateFin);
-        if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
+        if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
             printf("ok\n");
                 int num_rows = PQntuples(calendrier_Debut);
                 for (int i = 0; i < num_rows; i++) {
@@ -543,6 +543,9 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         PQclear(res);
                     }
                 }
+            } else {
+                printf("La ligne existe déjà\n");
+                write(cnx, "La ligne existe déjà\n", strlen("La ligne existe déjà\n"));
             }
 
         PQclear(calendrier_Debut);
