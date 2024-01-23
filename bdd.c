@@ -470,6 +470,9 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         printf("%d\n", PQntuples(date_Debut));
         int rows = PQntuples(date_Debut);
         int i = 0;
+        printf("%s\n", PQgetvalue(date_Debut, 0, 0));
+        printf("%s\n", PQgetvalue(date_Debut, 1, 0));
+        printf("%s\n", PQgetvalue(date_Debut, 2, 0));
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
             printf("Date : %s\n", strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0);
             printf("Ligne : %d\n", rows);
