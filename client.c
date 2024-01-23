@@ -61,6 +61,7 @@ int main() {
         printf("3. Modifier les dates d'indisponibilité d'un bien\n");
         printf("4. Consulter la liste de tous les biens (admin)\n");
         printf("0. Quitter\n");
+        printf("Votre choix : ");
         scanf("%d", &choix);
         //if (choix == 1) {
         //    send(sock, &command, sizeof(command), 0);
@@ -77,7 +78,8 @@ int main() {
         //    recv(sock, &response, sizeof(response), 0);
         //    printf("Dates d'indisponibilité modifiées avec succès.\n");
         //    printf("%s", response);
-        /*}else*/if (choix == 4) {
+        /*}else*/
+        if (choix == 4) {
             char command[] = "getAllLogements";
             send(sock, command, sizeof(command), 0);
             len = recv(sock, response, sizeof(response) - 1, 0);
