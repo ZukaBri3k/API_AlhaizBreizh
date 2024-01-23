@@ -365,7 +365,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                 }
                 
                 write(cnx, "]\n", strlen("]\n"));
-                printf("%s\n", data);
+                write(cnx, "", strlen(""));
                 
                 PQclear(nom_logement);
                 PQclear(id_logement);
@@ -448,6 +448,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             write(cnx, " : ", strlen(" : "));
             write(cnx, ("%d", PQgetvalue(nom_logement, i, 0)), strlen(("%d", PQgetvalue(nom_logement, i, 0))));
             write(cnx, "\n", strlen("\n"));
+            write(cnx, "", strlen(""));
         }
         
         write(cnx, "Veuillez choisir l'id du logement à modifier : ", strlen("Veuillez choisir l'id du logement à modifier : "));
@@ -476,14 +477,19 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                 char query[1024];
                 sprintf(query, "UPDATE calendrier SET disponibilite = 'false' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
                 PGresult *res = PQexec(conn, query);
-                printf("Changement de disponibilité fait\n");
-                write(cnx, "Mise en indisponibilité pour le logement : \n", strlen("Mise en indisponibilité pour le logement :\n"));
-                write(cnx, input, strlen(input));
-                write(cnx, " réussi pour les dates : ", strlen(" réussi pour les dates : "));
-                write(cnx, dateDebut, strlen(dateDebut));
-                write(cnx, " - ", strlen(" - "));
-                write(cnx, dateFin, strlen(dateFin));
-                write(cnx, "\n", strlen("\n"));
+                if (i == 0)
+                {
+                    printf("Changement de disponibilité fait\n");
+                    write(cnx, "Mise en indisponibilité pour le logement : \n", strlen("Mise en indisponibilité pour le logement :\n"));
+                    write(cnx, input, strlen(input));
+                    write(cnx, " réussi pour les dates : ", strlen(" réussi pour les dates : "));
+                    write(cnx, dateDebut, strlen(dateDebut));
+                    write(cnx, " - ", strlen(" - "));
+                    write(cnx, dateFin, strlen(dateFin));
+                    write(cnx, "\n", strlen("\n"));
+                    write(cnx, "", strlen(""));
+                }
+                
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                     fprintf(stderr, "UPDATE command failed: %s", PQerrorMessage(conn));
@@ -494,15 +500,13 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             }
             i++;
         }
-        printf("Ligne : %d\n", PQntuples(date_Debut));
-        printf("Date : %s\n", dateFin);
         if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
 
                 struct tm dateDebut_tm = {0};
                 struct tm dateFin_tm = {0};
 
-                dateDebut_tm.tm_isdst = -1; // Permet à mktime de déterminer si l'heure d'été est en vigueur
-                dateFin_tm.tm_isdst = -1; // Permet à mktime de déterminer si l'heure d'été est en vigueur
+                dateDebut_tm.tm_isdst = -1;
+                dateFin_tm.tm_isdst = -1;
 
                 strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
                 strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
@@ -510,15 +514,9 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                 time_t start = mktime(&dateDebut_tm);
                 time_t end = mktime(&dateFin_tm);
 
-                printf("start : %ld\n", start);
-                printf("end : %ld\n", end);
-
-                // Calculer le nombre de jours entre les deux dates
                 int num_days = (end - start) / (24 * 60 * 60);
-                printf("Nombre de jours : %d\n", num_days);
 
                 for (int j = 0; j <= num_days; j++) {
-                    // Ajouter j jours à la date de début
                     time_t current = start + j * 24 * 60 * 60;
 
                     struct tm *current_tm = localtime(&current);
@@ -541,6 +539,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
 
                     printf("Création réussi\n");
                     write(cnx, "Création réussi\n", strlen("Création réussi\n"));
+                    write(cnx, "", strlen(""));
 
                     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                         fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
@@ -553,7 +552,6 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                 }
             } else {
                 printf("La ligne existe déjà\n");
-                write(cnx, "La ligne existe déjà\n", strlen("La ligne existe déjà\n"));
             }
 
         PQclear(calendrier_Debut);
