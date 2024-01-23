@@ -81,11 +81,20 @@ int main() {
             printf("client : Choix 4\n");
             int res = write(sock, "getLogement\r\n\0", sizeof("getLogement\r\n\0"));
             printf("client : res = %d\n", res);
+
+            printf("Liste de tous les biens :\n");
             len = read(sock, buffer, sizeof(buffer));
             buffer[len] = '\0';
 
-            printf("Liste de tous les biens :\n");
+            while (len > 0)
+            {
+                len = read(sock, buffer, sizeof(buffer));
+                buffer[len] = '\0';
+                printf("%s\n", buffer);
+            }
             printf("%s\n", buffer);
+            
+
         } else if (choix == 0) {
             printf("Opération terminée.\n");
             close(sock);
