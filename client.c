@@ -79,7 +79,7 @@ int main() {
         /*}else*/
         if (choix == 4) {
             printf("client : Choix 4\n");
-            int res = write(sock, "getLogements\r\n\0", sizeof("getLogements\r\n\0"));
+            int res = write(sock, "getLogement\r\n\0", sizeof("getLogement\r\n\0"));
             printf("client : res = %d\n", res);
             len = read(sock, buffer, sizeof(buffer));
             buffer[len] = '\0';
