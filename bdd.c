@@ -48,7 +48,7 @@ bool verifCle(char cle[15]) {
     //******************************************************************//
 
         //Ici je vais chercher l'id de la personne qui a la clé
-        sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
+        sprintf(query, "SELECT id_peronnes FROM cle WHERE cle = '%s'", cle);
         PGresult *id_res = PQexec(conn, query);
         if (PQntuples(id_res) > 0) {
             sleep(1);
@@ -98,7 +98,7 @@ int getLogement(char cle[15], int cnx) {
     sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
     PGresult *privilege = PQexec(conn, query);
     if (PQntuples(privilege) > 0) {
-        sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
+        sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
         PGresult *id_res = PQexec(conn, query);
 
         char *id_str = PQgetvalue(id_res, 0, 0);
@@ -255,7 +255,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
     char input[BUFFSIZE];
     char query[256];
 
-    sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
+    sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
     PGresult *id_res = PQexec(conn, query);
 
     char *id_proprio = PQgetvalue(id_res, 0, 0);
@@ -425,7 +425,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
     char input[BUFFSIZE];
     char query[256];
 
-    sprintf(query, "SELECT id_proprio FROM cle WHERE cle = '%s'", cle);
+    sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
     PGresult *id_res = PQexec(conn, query);
 
     char *id_proprio = PQgetvalue(id_res, 0, 0);
