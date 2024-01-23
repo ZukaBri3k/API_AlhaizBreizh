@@ -35,6 +35,7 @@ int main() {
 
     char buffer[1024];
     char response[1024];
+    char buf2;
     int len;
 
     len = read(sock, buffer, sizeof(buffer));
@@ -83,7 +84,7 @@ int main() {
             printf("client : res = %d\n", res);
 
             printf("Liste de tous les biens :\n");
-            char buf2;
+            
             len = read(sock, buf2, sizeof(buf2));
             //buffer[len] = '\0';
 
