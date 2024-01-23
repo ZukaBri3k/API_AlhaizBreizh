@@ -528,9 +528,10 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         char query[1024];
                         sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
                         PQgetvalue(privilege, i, 0), current_date, "true", PQgetvalue(calendrier_Debut, i, 3), PQgetvalue(calendrier_Debut, i, 4), 
-                        PQgetvalue(calendrier_Debut, i, 5), PQgetvalue(calendrier_Debut, i, 6), PQgetvalue(calendrier_Debut, i, 7), 
+                        PQgetvalue(calendrier_Debut, i, 5), escaped_value, PQgetvalue(calendrier_Debut, i, 7), 
                         PQgetvalue(calendrier_Debut, i, 8), input);
                         PGresult *res = PQexec(conn, query);
+
                         printf("Création réussi\n");
                         write(cnx, "Création réussi\n", strlen("Création réussi\n"));
 
