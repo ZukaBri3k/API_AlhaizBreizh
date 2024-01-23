@@ -53,23 +53,22 @@ int main() {
         //    send(sock, &command, sizeof(command), 0);
         //    recv(sock, &response, sizeof(response), 0);
         //    printf("Liste des biens du client :\n");
-        //    printf(response);
+        //    printf("%s", response);
         //}else if (choix == 2) {
         //    send(sock, &command, sizeof(command), 0);
         //    recv(sock, &response, sizeof(response), 0);
         //    printf("Disponibilité du bien :\n");
-        //    printf(response);
-        //    printf("Erreur du serveur lors de la consultation de la disponibilité d'un bien. Code d'erreur : %d\n", response.status);
+        //    printf("%s", response);
         //}else if (choix == 3) {
         //    send(sock, &command, sizeof(command), 0);
         //    recv(sock, &response, sizeof(response), 0);
         //    printf("Dates d'indisponibilité modifiées avec succès.\n");
-        //    printf(response);
+        //    printf("%s", response);
         /*}else*/if (choix == 4) {
             send(sock, "getLogement", sizeof("getLogement"), 0);
             recv(sock, response, sizeof(response), 0);
             printf("La liste de tous les biens :\n");
-            printf(response);
+            printf("%s", response);
         } else if (choix == 0) {
             printf("Opération terminée.\n");
             close(sock);
