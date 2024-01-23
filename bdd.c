@@ -472,18 +472,19 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         PGresult *date_Debut = PQexec(conn, query);
         printf("%d\n", PQntuples(date_Debut));
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+            printf("%s\n", strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0);
+            printf("%d\n", rows);
+            printf("%d\n", i);
             printf("%s\n", PQgetvalue(date_Debut, i, 0));
             if (PQntuples(date_Debut) < 0 && strcmp(dateDebut, dateFin) > 0) {
                 if (i < PQntuples(calendrier_Debut)) {
                     char escaped_value[1024];
                     PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
 
-                    // Convertir les dates en struct tm
                     struct tm dateDebut_tm, dateFin_tm;
                     strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
                     strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
 
-                    // Convertir les struct tm en time_t pour la comparaison
                     time_t start = mktime(&dateDebut_tm);
                     time_t end = mktime(&dateFin_tm);
 
@@ -514,8 +515,6 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                 }
 
             } else {
-                char escaped_value[1024];
-                PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
                 char query[1024];
                 sprintf(query, "UPDATE calendrier SET disponibilite = 'true' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
                 PGresult *res = PQexec(conn, query);
@@ -529,6 +528,14 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             }
             i++;
         }
+        PQclear(calendrier_Debut);
+        PQclear(nom_logement);
+        PQclear(id_logement);
+        PQclear(id_res);
+        PQclear(date_Debut);
+        PQclear(privilege);
+        PQfinish(conn);
+        return 1;
 
     } else {
         printf("La personne n'a pas de logement\n");
