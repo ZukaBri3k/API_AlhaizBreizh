@@ -76,26 +76,22 @@ int main() {
         //    recv(sock, &response, sizeof(response), 0);
         //    printf("Dates d'indisponibilité modifiées avec succès.\n");
         //    printf("%s", response);
-        /*}else*/
-        if (choix == 4) {
+        /*}else */if (choix == 4) {
             printf("client : Choix 4\n");
             int res = write(sock, "getLogement\r\n\0", sizeof("getLogement\r\n\0"));
             printf("client : res = %d\n", res);
 
             printf("Liste de tous les biens :\n");
             
-            len = read(sock, buffer, sizeof(buffer)-1);
-            buffer[len] = '\0';
-
-            while (len != 0) {
+            do {
                 len = read(sock, buffer, sizeof(buffer)-1);
-                //printf("client : len = %d\n", len);
                 buffer[len] = '\0';
+                if (len == 0 || buffer[0] == '\0') {
+                    break;
+                }
                 printf("%s", buffer);
-            } 
-            printf("FINI\n");
+            } while (1);
             
-
         } else if (choix == 0) {
             printf("Opération terminée.\n");
             close(sock);
