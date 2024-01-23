@@ -558,7 +558,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         PQclear(privilege);
         PQfinish(conn);
         return 1;
-
+        
     } else {
         printf("La personne n'a pas de logement\n");
         write(cnx, "La personne n'a pas de logement\n", strlen("La personne n'a pas de logement\n"));
