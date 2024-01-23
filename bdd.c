@@ -510,6 +510,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
 
                     // Calculer le nombre de jours entre les deux dates
                     int num_days = (end - start) / (24 * 60 * 60);
+                    printf("Nombre de jours : %d\n", num_days);
 
                     for (int j = 0; j <= num_days; j++) {
                         // Ajouter j jours à la date de début
@@ -531,21 +532,21 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         printf("Date : %s\n", current_date);
 
                         char query[1024];
-                        sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'true', 0, 0, 0, NULL, NULL, NULL, '%s')", 
+                        /* sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'true', 0, 0, 0, NULL, NULL, NULL, '%s')", 
                         booleen, current_date, input);
-                        PGresult *res = PQexec(conn, query);
+                        PGresult *res = PQexec(conn, query); */
 
                         printf("Création réussi\n");
                         write(cnx, "Création réussi\n", strlen("Création réussi\n"));
 
-                        if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                        /* if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                             fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
                             PQclear(res);
                             PQfinish(conn);
                             return 1;
-                        }
+                        } */
 
-                        PQclear(res);
+                        /* PQclear(res); */
                     }
                 }
             } else {
