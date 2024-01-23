@@ -48,7 +48,7 @@ bool verifCle(char cle[15]) {
     //******************************************************************//
 
         //Ici je vais chercher l'id de la personne qui a la clé
-        sprintf(query, "SELECT id_peronnes FROM cle WHERE cle = '%s'", cle);
+        sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
         PGresult *id_res = PQexec(conn, query);
         if (PQntuples(id_res) > 0) {
             sleep(1);
