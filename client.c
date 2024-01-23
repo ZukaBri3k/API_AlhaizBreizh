@@ -35,7 +35,7 @@ int main() {
 
     char buffer[1024];
     char response[1024];
-    char buf2;
+    char buf2[1];
     int len;
 
     len = read(sock, buffer, sizeof(buffer));
