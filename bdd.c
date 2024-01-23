@@ -539,14 +539,14 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         printf("Création réussi\n");
                         write(cnx, "Création réussi\n", strlen("Création réussi\n"));
 
-                        if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                        /* if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                             fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
                             PQclear(res);
                             PQfinish(conn);
                             return 1;
-                        }
+                        } */
 
-                        PQclear(res);
+                        /* PQclear(res); */
                     }
                 }
             } else {
