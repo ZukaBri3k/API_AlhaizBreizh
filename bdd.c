@@ -528,6 +528,8 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                             strcpy(booleen, "true");
                         }
 
+                        printf("Date : %s\n", current_date);
+
                         char query[1024];
                         sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'true', 0, 0, 0, NULL, NULL, NULL, '%s')", 
                         booleen, current_date, input);
