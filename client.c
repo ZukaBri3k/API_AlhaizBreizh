@@ -35,7 +35,6 @@ int main() {
 
     char buffer[1024];
     char response[1024];
-    char buf2[1];
     int len;
 
     len = read(sock, buffer, sizeof(buffer));
@@ -85,14 +84,14 @@ int main() {
 
             printf("Liste de tous les biens :\n");
             
-            len = read(sock, buf2, sizeof(buf2));
+            len = read(sock, buffer, sizeof(buffer));
             //buffer[len] = '\0';
 
             while (len != 0) {
-                len = read(sock, buf2, sizeof(buf2));
+                len = read(sock, buffer, sizeof(buffer));
                 //printf("client : len = %d\n", len);
                 //buffer[len] = '\0';
-                printf("%s\n", buf2);
+                printf("%s\n", buffer);
             } 
             printf("FINI\n");
             
