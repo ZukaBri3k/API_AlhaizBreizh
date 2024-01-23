@@ -89,12 +89,12 @@ int main() {
             while (len > 0)
             {
                 len = read(sock, buffer, sizeof(buffer));
-                if (len > 0)
-                {
-                    buffer[len] = '\0';
-                    printf("%s\n", buffer);
-                }
-            } 
+                printf("client : len = %d\n", len);
+                buffer[len] = '\0';
+                printf("%s\n", buffer);
+            }
+            printf("%s\n", buffer);
+            
 
         } else if (choix == 0) {
             printf("Opération terminée.\n");
