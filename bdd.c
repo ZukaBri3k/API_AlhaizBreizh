@@ -500,8 +500,6 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             printf("ok\n");
                 int num_rows = PQntuples(calendrier_Debut);
                 for (int i = 0; i < num_rows; i++) {
-                    char escaped_value[1024];
-                    PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
 
                     struct tm dateDebut_tm, dateFin_tm;
                     strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
@@ -523,6 +521,9 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         // Formater la date courante en chaîne
                         char current_date[11];
                         strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
+
+                        char escaped_value[1024];
+                        PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
 
                         char query[1024];
                         sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
