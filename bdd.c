@@ -498,7 +498,12 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         printf("Date : %s\n", dateFin);
         if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
 
-                struct tm dateDebut_tm, dateFin_tm;
+                struct tm dateDebut_tm = {0};
+                struct tm dateFin_tm = {0};
+
+                dateDebut_tm.tm_isdst = -1; // Permet à mktime de déterminer si l'heure d'été est en vigueur
+                dateFin_tm.tm_isdst = -1; // Permet à mktime de déterminer si l'heure d'été est en vigueur
+
                 strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
                 strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
 
