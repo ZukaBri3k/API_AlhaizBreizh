@@ -505,6 +505,9 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                 time_t start = mktime(&dateDebut_tm);
                 time_t end = mktime(&dateFin_tm);
 
+                printf("start : %ld\n", start);
+                printf("end : %ld\n", end);
+
                 // Calculer le nombre de jours entre les deux dates
                 int num_days = (end - start) / (24 * 60 * 60);
                 printf("Nombre de jours : %d\n", num_days);
@@ -513,10 +516,8 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     // Ajouter j jours à la date de début
                     time_t current = start + j * 24 * 60 * 60;
 
-                    // Convertir le temps courant en struct tm
                     struct tm *current_tm = localtime(&current);
 
-                    // Formater la date courante en chaîne
                     char current_date[11];
                     strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
 
