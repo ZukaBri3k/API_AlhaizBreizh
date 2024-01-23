@@ -469,13 +469,13 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         PGresult *date_Debut = PQexec(conn, query);
         int rows = PQntuples(date_Debut);
         int i = 0;
-        printf("%s\n", PQgetvalue(date_Debut, 0, 0));
+        /* printf("%s\n", PQgetvalue(date_Debut, 0, 0));
         printf("%s\n", PQgetvalue(date_Debut, 1, 0));
         printf("%s\n", PQgetvalue(date_Debut, 2, 0));
         printf("%s\n", dateFin);
         printf("Ligne : %d\n", rows);
         printf("i : %d\n", i);
-        printf("Bool : %i\n", strcmp(PQgetvalue(date_Debut, i, 0), dateFin));
+        printf("Bool : %i\n", strcmp(PQgetvalue(date_Debut, i, 0), dateFin)); */
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
             printf("ok\n");
             /* printf("Date : %s\n", strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0); */
@@ -519,8 +519,16 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
 
             } else {
                 char query[1024];
-                sprintf(query, "UPDATE calendrier SET disponibilite = 'true' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
+                sprintf(query, "UPDATE calendrier SET disponibilite = 'false' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
                 PGresult *res = PQexec(conn, query);
+                printf("Changement de disponibilité fait\n");
+                write(cnx, "Mise en indisponibilité pour le logement : \n", strlen("Mise en indisponibilité pour le logement :\n"));
+                write(cnx, input, strlen(input));
+                write(cnx, " réussi pour les dates : ", strlen(" réussi pour les dates : "));
+                write(cnx, dateDebut, strlen(dateDebut));
+                write(cnx, " - ", strlen(" - "));
+                write(cnx, dateFin, strlen(dateFin));
+                write(cnx, "\n", strlen("\n"));
 
                 if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                     fprintf(stderr, "UPDATE command failed: %s", PQerrorMessage(conn));
