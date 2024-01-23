@@ -499,55 +499,53 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
             printf("ok\n");
                 int num_rows = PQntuples(calendrier_Debut);
-                for (int i = 0; i < num_rows; i++) {
 
-                    struct tm dateDebut_tm, dateFin_tm;
-                    strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
-                    strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
+                struct tm dateDebut_tm, dateFin_tm;
+                strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
+                strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
 
-                    time_t start = mktime(&dateDebut_tm);
-                    time_t end = mktime(&dateFin_tm);
+                time_t start = mktime(&dateDebut_tm);
+                time_t end = mktime(&dateFin_tm);
 
-                    // Calculer le nombre de jours entre les deux dates
-                    int num_days = (end - start) / (24 * 60 * 60);
-                    printf("Nombre de jours : %d\n", num_days);
+                // Calculer le nombre de jours entre les deux dates
+                int num_days = (end - start) / (24 * 60 * 60);
+                printf("Nombre de jours : %d\n", num_days);
 
-                    for (int j = 0; j <= num_days; j++) {
-                        // Ajouter j jours à la date de début
-                        time_t current = start + j * 24 * 60 * 60;
+                for (int j = 0; j <= num_days; j++) {
+                    // Ajouter j jours à la date de début
+                    time_t current = start + j * 24 * 60 * 60;
 
-                        // Convertir le temps courant en struct tm
-                        struct tm *current_tm = localtime(&current);
+                    // Convertir le temps courant en struct tm
+                    struct tm *current_tm = localtime(&current);
 
-                        // Formater la date courante en chaîne
-                        char current_date[11];
-                        strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
+                    // Formater la date courante en chaîne
+                    char current_date[11];
+                    strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
 
-                        char booleen[6] = "false";
+                    char booleen[6] = "false";
 
-                        if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
-                            strcpy(booleen, "true");
-                        }
-
-                        printf("Date : %s\n", current_date);
-
-                        char query[1024];
-                        /* sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'true', 0, 0, 0, NULL, NULL, NULL, '%s')", 
-                        booleen, current_date, input);
-                        PGresult *res = PQexec(conn, query); */
-
-                        printf("Création réussi\n");
-                        write(cnx, "Création réussi\n", strlen("Création réussi\n"));
-
-                        /* if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                            fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
-                            PQclear(res);
-                            PQfinish(conn);
-                            return 1;
-                        } */
-
-                        /* PQclear(res); */
+                    if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
+                        strcpy(booleen, "true");
                     }
+
+                    printf("Date : %s\n", current_date);
+
+                    char query[1024];
+                    /* sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'true', 0, 0, 0, NULL, NULL, NULL, '%s')", 
+                    booleen, current_date, input);
+                    PGresult *res = PQexec(conn, query); */
+
+                    printf("Création réussi\n");
+                    write(cnx, "Création réussi\n", strlen("Création réussi\n"));
+
+                    /* if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                        fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
+                        PQclear(res);
+                        PQfinish(conn);
+                        return 1;
+                    } */
+
+                    /* PQclear(res); */
                 }
             } else {
                 printf("La ligne existe déjà\n");
