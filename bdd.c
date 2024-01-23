@@ -471,6 +471,31 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         int i = 0;
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
             if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
+                printf("La ligne n'existe pas\n");
+                write(cnx, "La ligne n'existe pas\n", strlen("La ligne n'existe pas\n"));
+            } else {
+                char query[1024];
+                sprintf(query, "UPDATE calendrier SET disponibilite = 'false' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
+                PGresult *res = PQexec(conn, query);
+                printf("Changement de disponibilité fait\n");
+                write(cnx, "Mise en indisponibilité pour le logement : \n", strlen("Mise en indisponibilité pour le logement :\n"));
+                write(cnx, input, strlen(input));
+                write(cnx, " réussi pour les dates : ", strlen(" réussi pour les dates : "));
+                write(cnx, dateDebut, strlen(dateDebut));
+                write(cnx, " - ", strlen(" - "));
+                write(cnx, dateFin, strlen(dateFin));
+                write(cnx, "\n", strlen("\n"));
+
+                if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                    fprintf(stderr, "UPDATE command failed: %s", PQerrorMessage(conn));
+                    PQclear(res);
+                    PQfinish(conn);
+                    return 1;
+                }
+            }
+            i++;
+        }
+        if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
                 if (i < PQntuples(calendrier_Debut)) {
                     char escaped_value[1024];
                     PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
@@ -507,29 +532,8 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                 } else {
                     printf("La ligne n'existe pas\n");
                 }
-
-            } else {
-                char query[1024];
-                sprintf(query, "UPDATE calendrier SET disponibilite = 'false' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
-                PGresult *res = PQexec(conn, query);
-                printf("Changement de disponibilité fait\n");
-                write(cnx, "Mise en indisponibilité pour le logement : \n", strlen("Mise en indisponibilité pour le logement :\n"));
-                write(cnx, input, strlen(input));
-                write(cnx, " réussi pour les dates : ", strlen(" réussi pour les dates : "));
-                write(cnx, dateDebut, strlen(dateDebut));
-                write(cnx, " - ", strlen(" - "));
-                write(cnx, dateFin, strlen(dateFin));
-                write(cnx, "\n", strlen("\n"));
-
-                if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                    fprintf(stderr, "UPDATE command failed: %s", PQerrorMessage(conn));
-                    PQclear(res);
-                    PQfinish(conn);
-                    return 1;
-                }
             }
-            i++;
-        }
+            
         PQclear(calendrier_Debut);
         PQclear(nom_logement);
         PQclear(id_logement);
