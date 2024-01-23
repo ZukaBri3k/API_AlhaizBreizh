@@ -35,9 +35,9 @@ int main() {
 
     char buffer[1024];
     char response[1024];
-    ssize_t len;
+    int len;
 
-    len = read(sock, buffer, sizeof(buffer) - 1);
+    len = read(sock, buffer, sizeof(buffer));
     if (len > 0) {
         buffer[len] = '\0';
     }
@@ -46,11 +46,9 @@ int main() {
     scanf("%s", response);
     send(sock, response, strlen(response), 0);
 
-    len = read(sock, buffer, sizeof(buffer) - 1);
-    if (len > 0) {
-        buffer[len] = '\0';
-    }
-    printf("%s", buffer);
+    len = read(sock, buffer, sizeof(buffer));
+
+    printf("%s\n", buffer);
 
     int choix;
     choix = 1;
@@ -59,7 +57,7 @@ int main() {
         printf("1. Consulter la liste des biens\n");
         printf("2. Consulter la disponibilité d'un bien\n");
         printf("3. Modifier les dates d'indisponibilité d'un bien\n");
-        printf("4. Consulter la liste de tous les biens (admin)\n");
+        printf("4. Consulter la liste de tous les biens (clé privilégiée)\n");
         printf("0. Quitter\n");
         printf("Votre choix : ");
         scanf("%d", &choix);
@@ -81,13 +79,13 @@ int main() {
         /*}else*/
         if (choix == 4) {
             char command[] = "getAllLogements";
-            send(sock, command, sizeof(command), 0);
-            len = recv(sock, response, sizeof(response) - 1, 0);
-            if (len > 0) {
+            write(sock, command, sizeof(command));
+            len = read(sock, response, sizeof(response));
+            /*if (len > 0) {
                 response[len] = '\0';
-            }
+            }*/
             printf("Liste de tous les biens :\n");
-            printf("%s", response);
+            printf("%s\n", response);
         } else if (choix == 0) {
             printf("Opération terminée.\n");
             close(sock);
