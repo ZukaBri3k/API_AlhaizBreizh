@@ -34,26 +34,26 @@ int main() {
     }
 
     char buffer[1024];
-char response[1024];
-ssize_t len;
+    char response[1024];
+    ssize_t len;
 
-len = read(sock, buffer, sizeof(buffer) - 1);
-if (len > 0) {
-    buffer[len] = '\0';
-}
-printf("%s", buffer);
+    len = read(sock, buffer, sizeof(buffer) - 1);
+    if (len > 0) {
+        buffer[len] = '\0';
+    }
+    printf("%s", buffer);
 
-scanf("%s", response);
-send(sock, response, strlen(response), 0);
+    scanf("%s", response);
+    send(sock, response, strlen(response), 0);
 
-len = read(sock, buffer, sizeof(buffer) - 1);
-if (len > 0) {
-    buffer[len] = '\0';
-}
-printf("%s", buffer);
+    len = read(sock, buffer, sizeof(buffer) - 1);
+    if (len > 0) {
+        buffer[len] = '\0';
+    }
+    printf("%s", buffer);
 
-int choix;
-choix = 1;
+    int choix;
+    choix = 1;
     do {
         printf("Que souhaitez-vous faire ?\n");
         printf("1. Consulter la liste des biens\n");
