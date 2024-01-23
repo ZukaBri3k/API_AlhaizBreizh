@@ -462,7 +462,6 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
         sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s", input);
         PGresult *calendrier_Debut = PQexec(conn, query);
-        printf("Ligne : %d\n", PQntuples(calendrier_Debut));
 
         //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
         sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %s AND jour >= '%s'", input, dateDebut);
@@ -496,10 +495,10 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             i++;
         }
         printf("Ligne : %d\n", PQntuples(date_Debut));
-        printf("Date : %s\n", PQgetvalue(date_Debut, i, 0));
         printf("Date : %s\n", dateFin);
         if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
-                if (i < PQntuples(calendrier_Debut)) {
+                int num_rows = PQntuples(calendrier_Debut);
+                for (int i = 0; i < num_rows; i++) {
                     char escaped_value[1024];
                     PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
 
@@ -510,7 +509,13 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     time_t start = mktime(&dateDebut_tm);
                     time_t end = mktime(&dateFin_tm);
 
-                    for (time_t current = start; current <= end; current += 24 * 60 * 60) {
+                    // Calculer le nombre de jours entre les deux dates
+                    int num_days = (end - start) / (24 * 60 * 60);
+
+                    for (int j = 0; j <= num_days; j++) {
+                        // Ajouter j jours à la date de début
+                        time_t current = start + j * 24 * 60 * 60;
+
                         // Convertir le temps courant en struct tm
                         struct tm *current_tm = localtime(&current);
 
@@ -526,7 +531,6 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         PGresult *res = PQexec(conn, query);
                         printf("Création réussi\n");
                         write(cnx, "Création réussi\n", strlen("Création réussi\n"));
-                        i++;
 
                         if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                             fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
@@ -534,9 +538,9 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                             PQfinish(conn);
                             return 1;
                         }
+
+                        PQclear(res);
                     }
-                } else {
-                    printf("La ligne n'existe pas\n");
                 }
             }
 
