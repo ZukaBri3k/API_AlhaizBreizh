@@ -469,16 +469,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         PGresult *date_Debut = PQexec(conn, query);
         int rows = PQntuples(date_Debut);
         int i = 0;
-        /* printf("%s\n", PQgetvalue(date_Debut, 0, 0));
-        printf("%s\n", PQgetvalue(date_Debut, 1, 0));
-        printf("%s\n", PQgetvalue(date_Debut, 2, 0));
-        printf("%s\n", dateFin);
-        printf("Ligne : %d\n", rows);
-        printf("i : %d\n", i);
-        printf("Bool : %i\n", strcmp(PQgetvalue(date_Debut, i, 0), dateFin)); */
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
-            printf("ok\n");
-            /* printf("Date : %s\n", strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0); */
             if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
                 if (i < PQntuples(calendrier_Debut)) {
                     char escaped_value[1024];
