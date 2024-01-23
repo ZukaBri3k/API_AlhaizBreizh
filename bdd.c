@@ -525,7 +525,13 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         char escaped_value[1024];
                         PQescapeStringConn(conn, escaped_value, PQgetvalue(calendrier_Debut, i, 6), sizeof(escaped_value), NULL);
 
-                        printf("Value 1 : %s\n", PQgetvalue(calendrier_Debut, i, 0));
+                        char booleen[6] = "false";
+
+                        if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
+                            strcpy(booleen, "true");
+                        }
+
+                        printf("Value 1 : %s\n", booleen);
                         printf("Value 2 : %s\n", current_date);
                         printf("Value 3 : %s\n", "true");
                         printf("Value 4 : %s\n", PQgetvalue(calendrier_Debut, i, 3));
@@ -534,11 +540,11 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         printf("Value 7 : %s\n", escaped_value);
                         printf("Value 8 : %s\n", PQgetvalue(calendrier_Debut, i, 7));
                         printf("Value 9 : %s\n", PQgetvalue(calendrier_Debut, i, 8));
-
+                        printf("Value 10 : %s\n", input);
 
                         char query[1024];
                         sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s', '%s')", 
-                        PQgetvalue(privilege, i, 0), current_date, "true", PQgetvalue(calendrier_Debut, i, 3), PQgetvalue(calendrier_Debut, i, 4), 
+                        booleen, current_date, "true", PQgetvalue(calendrier_Debut, i, 3), PQgetvalue(calendrier_Debut, i, 4), 
                         PQgetvalue(calendrier_Debut, i, 5), escaped_value, PQgetvalue(calendrier_Debut, i, 7), 
                         PQgetvalue(calendrier_Debut, i, 8), input);
                         PGresult *res = PQexec(conn, query);
