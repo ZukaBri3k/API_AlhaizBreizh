@@ -463,19 +463,18 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s ", input);
         PGresult *calendrier_Debut = PQexec(conn, query);
 
-        int rows = PQntuples(calendrier_Debut);
-        int cols = PQnfields(calendrier_Debut);
-        int i = 0;
 
         //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
         sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %s AND jour >= '%s'", input, dateDebut);
         PGresult *date_Debut = PQexec(conn, query);
         printf("%d\n", PQntuples(date_Debut));
+        int rows = PQntuples(date_Debut);
+        int i = 0;
         while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
-            printf("%s\n", strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0);
-            printf("%d\n", rows);
-            printf("%d\n", i);
-            printf("%s\n", PQgetvalue(date_Debut, i, 0));
+            printf("Date : %s\n", strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0);
+            printf("Ligne : %d\n", rows);
+            printf("i : %d\n", i);
+            printf("Bool : %s\n", PQgetvalue(date_Debut, i, 0));
             if (PQntuples(date_Debut) < 0 && strcmp(dateDebut, dateFin) > 0) {
                 if (i < PQntuples(calendrier_Debut)) {
                     char escaped_value[1024];
