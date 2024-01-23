@@ -83,14 +83,15 @@ int main() {
             printf("client : res = %d\n", res);
 
             printf("Liste de tous les biens :\n");
-            len = read(sock, buffer, sizeof(buffer));
-            buffer[len] = '\0';
+            char buf2;
+            len = read(sock, buf2, sizeof(buf2));
+            //buffer[len] = '\0';
 
             while (len != 0) {
-                len = read(sock, buffer, sizeof(buffer));
-                printf("client : len = %d\n", len);
-                buffer[len] = '\0';
-                printf("%s\n", buffer);
+                len = read(sock, buf2, sizeof(buf2));
+                //printf("client : len = %d\n", len);
+                //buffer[len] = '\0';
+                printf("%s\n", buf2);
             } 
             printf("FINI\n");
             
