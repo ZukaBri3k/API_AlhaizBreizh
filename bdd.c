@@ -125,7 +125,6 @@ int getLogement(char cle[15], int cnx) {
                 char *data = (char *)malloc(size * sizeof(char));
 
                 write(cnx, "[\n", strlen("[\n"));
-                printf("%s\n", data);
                 for (int i = 0; i < rows; i++) {
                     write(cnx, "{\n", strlen("{\n"));
                     for (int j = 0; j < cols; j++) {
@@ -146,7 +145,7 @@ int getLogement(char cle[15], int cnx) {
                     write(cnx, "\n", strlen("\n"));
                 }
                 write(cnx, "]\n", strlen("]\n"));
-                printf("%s\n", data);
+                write(cnx, "", strlen(""));
                 
                 PQclear(logement);
 
@@ -173,7 +172,6 @@ int getLogement(char cle[15], int cnx) {
                     char *data = (char *)malloc(size * sizeof(char));
 
                     write(cnx, "[\n", strlen("[\n"));
-                    printf("%s\n", data);
                     for (int i = 0; i < rows; i++) {
                         write(cnx, "{\n", strlen("{\n"));
                         for (int j = 0; j < cols; j++) {
@@ -194,7 +192,7 @@ int getLogement(char cle[15], int cnx) {
                         write(cnx, "\n", strlen("\n"));
                     }
                     write(cnx, "]\n", strlen("]\n"));
-                    printf("%s\n", data);
+                    write(cnx, "", strlen(""));
                     
                     PQclear(nom_logement);
                     PQclear(res);
@@ -334,6 +332,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     }
                     write(cnx, "\n", strlen("\n"));
                     i++;
+                    write(cnx, "", strlen(""));
                 }
 
                 if (strcmp(PQgetvalue(date_Debut, i, 0), dateFin) == 0) {
@@ -362,6 +361,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         write(cnx, ",", strlen(","));
                     }
                     write(cnx, "\n", strlen("\n"));
+                    write(cnx, "", strlen(""));
                 }
                 
                 write(cnx, "]\n", strlen("]\n"));
@@ -528,22 +528,22 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
 
                     printf("Date : %s\n", current_date);
 
-                    char query[1024];
+                    /* char query[1024];
                     sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'true', 0, 0, 0, NULL, NULL, NULL, '%s')", 
                     booleen, current_date, input);
-                    PGresult *res = PQexec(conn, query);
+                    PGresult *res = PQexec(conn, query); */
 
                     printf("Création réussi\n");
                     write(cnx, "Création réussi\n", strlen("Création réussi\n"));
 
-                    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                    /* if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                         fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
                         PQclear(res);
                         PQfinish(conn);
                         return 1;
                     }
 
-                    PQclear(res);
+                    PQclear(res); */
                 }
             } else {
                 printf("La ligne existe déjà\n");
@@ -558,7 +558,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         PQclear(privilege);
         PQfinish(conn);
         return 1;
-        
+
     } else {
         printf("La personne n'a pas de logement\n");
         write(cnx, "La personne n'a pas de logement\n", strlen("La personne n'a pas de logement\n"));
