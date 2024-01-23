@@ -41,14 +41,14 @@ int main() {
     if (len > 0) {
         buffer[len] = '\0';
     }
-    printf("%s", buffer);
+    printf("client : %s", buffer);
 
     scanf("%s", response);
     send(sock, response, strlen(response), 0);
 
     len = read(sock, buffer, sizeof(buffer));
 
-    printf("%s\n", buffer);
+    printf("client : %s\n", buffer);
 
     int choix;
     choix = 1;
@@ -78,6 +78,7 @@ int main() {
         //    printf("%s", response);
         /*}else*/
         if (choix == 4) {
+            printf("client : Choix 4\n");
             char command[] = "getAllLogements";
             write(sock, command, sizeof(command));
             len = read(sock, response, sizeof(response));
