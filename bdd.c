@@ -495,6 +495,9 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             }
             i++;
         }
+        printf("Ligne : %d\n", PQntuples(date_Debut));
+        printf("Date : %s\n", PQgetvalue(date_Debut, i, 0));
+        printf("Date : %s\n", dateFin);
         if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
                 if (i < PQntuples(calendrier_Debut)) {
                     char escaped_value[1024];
@@ -521,6 +524,9 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                         PQgetvalue(calendrier_Debut, i, 5), PQgetvalue(calendrier_Debut, i, 6), PQgetvalue(calendrier_Debut, i, 7), 
                         PQgetvalue(calendrier_Debut, i, 8), input);
                         PGresult *res = PQexec(conn, query);
+                        printf("Création réussi\n");
+                        write(cnx, "Création réussi\n", strlen("Création réussi\n"));
+                        i++;
 
                         if (PQresultStatus(res) != PGRES_COMMAND_OK) {
                             fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
@@ -533,7 +539,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
                     printf("La ligne n'existe pas\n");
                 }
             }
-            
+
         PQclear(calendrier_Debut);
         PQclear(nom_logement);
         PQclear(id_logement);
