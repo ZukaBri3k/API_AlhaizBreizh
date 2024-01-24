@@ -71,8 +71,14 @@ int main() {
             int res = write(sock, "getCalendrier\r\n\0", sizeof("getCalendrier\r\n\0"));
             //printf("client : res = %d\n", res);
 
+            len = read(sock, buffer, sizeof(buffer)-1);
+            buffer[len] = '\0';
+
+            printf("client : %s", buffer);
+            scanf("%s", buffer);
+            write(sock, buffer, strlen(buffer));
+
             printf("Disponibilité du bien :\n");
-            
             len = read(sock, buffer, sizeof(buffer)-1);
             buffer[len] = '\0';
 
