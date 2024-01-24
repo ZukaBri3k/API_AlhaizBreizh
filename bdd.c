@@ -278,7 +278,6 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
             write(cnx, " : ", strlen(" : "));
             write(cnx, ("%d", PQgetvalue(nom_logement, i, 0)), strlen(("%d", PQgetvalue(nom_logement, i, 0))));
             write(cnx, "\n", strlen("\n"));
-            write(cnx, "", strlen(""));
         }
         
         write(cnx, "Veuillez choisir l'id de l'un logement : ", strlen("Veuillez choisir l'id de l'un logement : "));
