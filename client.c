@@ -72,7 +72,7 @@ int main() {
             //printf("client : res = %d\n", res);
 
             while (len != 0) {
-                len = read(sock, buffer, strlen(buffer));
+                len = read(sock, buffer, strlen(buffer)-1);
                 //printf("client : len = %d\n", len);
                 buffer[len] = '\0';
                 printf("%s", buffer);
