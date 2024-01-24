@@ -71,7 +71,7 @@ int main() {
             int res = write(sock, "getCalendrier\r\n\0", sizeof("getCalendrier\r\n\0"));
             //printf("client : res = %d\n", res);
 
-            while (len < 0) {
+            while (len != 0) {
                 len = read(sock, buffer, strlen(buffer));
                 //printf("client : len = %d\n", len);
                 buffer[len] = '\0';
