@@ -74,7 +74,13 @@ int main() {
             len = read(sock, buffer, sizeof(buffer)-1);
             buffer[len] = '\0';
 
-            printf("client : %s", buffer);
+            while (len != 0) {
+                len = read(sock, buffer, strlen(buffer)-1);
+                //printf("client : len = %d\n", len);
+                buffer[len] = '\0';
+                printf("%s", buffer);
+            }
+            
             scanf("%s", buffer);
             write(sock, buffer, strlen(buffer));
 
