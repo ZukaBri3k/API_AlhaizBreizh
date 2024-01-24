@@ -34,23 +34,12 @@ Suite à cela un menu avec 5 outils s'offre à vous :
 
 ### Fonctionnalités spécifiques
 
-#### Liste des biens que vous possédez
-
-En sélectionnant cette commande, apparait sur votre terminal toutes vos propriétés qui sont à louer sur le site.
-
-#### Calendrier des disponibilités
-
-Pour cette opération après avoir listé tous les biens que vous possèdez, il vous demandera de choisir un ID de cette liste.
-
-Pour cela c'est très simple il vous suffit de choisir le nombre à côté du nom de votre logement comme ici `4` pour la `(4) villa stylée`.
-
-#### Régler la période d'indisponibilité
-
-A RAJOUTER
-
-#### Voir tous les biens du site
-
-Si vous avez une clé API admin vous pouvez utiliser cette fonctionnalité qui vous donnera dans le terminal toutes les habitations directement après avoir sélectionné dans le menu général.
+| Fonctionnalité | Utilisation |
+|--- |--- |
+| Liste des biens que vous possédez | En sélectionnant cette commande, apparait sur votre terminal toutes vos propriétés qui sont à louer sur le site |
+| Calendrier des disponibilités | Pour cette opération après avoir listé tous les biens que vous possèdez, il vous demandera de choisir un ID de cette liste. Pour cela c'est très simple il vous suffit de choisir le nombre à côté du nom de votre logement comme ici `4` pour la `(4) villa stylée` |
+| Régler la période d'indisponibilité | A RAJOUTER |
+Voir tous les biens du site | Si vous avez une clé API admin vous pouvez utiliser cette fonctionnalité qui vous donnera dans le terminal toutes les habitations directement après avoir sélectionné dans le menu général |
 
 ---
 
