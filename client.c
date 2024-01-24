@@ -88,7 +88,7 @@ int main() {
         //    recv(sock, &response, sizeof(response), 0);
         //    printf("Dates d'indisponibilité modifiées avec succès.\n");
         //    printf("%s", response);
-        }elseif (choix == 4) {
+        }else if (choix == 4) {
             //printf("client : Choix 4\n");
             int res = write(sock, "getLogement\r\n\0", sizeof("getLogement\r\n\0"));
             //printf("client : res = %d\n", res);
