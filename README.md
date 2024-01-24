@@ -41,8 +41,6 @@ Suite à cela un menu avec 5 outils s'offre à vous :
 | Régler la période d'indisponibilité | A RAJOUTER |
 Voir tous les biens du site | Si vous avez une clé API admin vous pouvez utiliser cette fonctionnalité qui vous donnera dans le terminal toutes les habitations directement après avoir sélectionné dans le menu général |
 
----
-
 ### Terminer le script `serveur.c`
 
 Pour terminer le programme il suffit de taper la commande `exit`.
