@@ -452,6 +452,7 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         }
         
         write(cnx, "Veuillez choisir l'id du logement à modifier : ", strlen("Veuillez choisir l'id du logement à modifier : "));
+        write(cnx, "", strlen(""));
         read(cnx, input, BUFFSIZE);
         input[strcspn(input, "\r\n\0")] = 0;
         printf("Reçu : %s\n", input);
