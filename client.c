@@ -66,21 +66,32 @@ int main() {
         //    recv(sock, &response, sizeof(response), 0);
         //    printf("Liste des biens du client :\n");
         //    printf("%s", response);
-        //}else if (choix == 2) {
-        //    send(sock, &command, sizeof(command), 0);
-        //    recv(sock, &response, sizeof(response), 0);
-        //    printf("Disponibilité du bien :\n");
-        //    printf("%s", response);
+        /*}else */if (choix == 2) {
+            //printf("client : Choix 2\n");
+            int res = write(sock, "getCalendrier\r\n\0", sizeof("getCalendrier\r\n\0"));
+            //printf("client : res = %d\n", res);
+
+            printf("Disponibilité du bien :\n");
+            
+            len = read(sock, buffer, sizeof(buffer)-1);
+            buffer[len] = '\0';
+
+            while (len != 0) {
+                len = read(sock, buffer, strlen(buffer)-1);
+                //printf("client : len = %d\n", len);
+                buffer[len] = '\0';
+                printf("%s", buffer);
+            } 
+            //printf("FINI\n");
         //}else if (choix == 3) {
         //    send(sock, &command, sizeof(command), 0);
         //    recv(sock, &response, sizeof(response), 0);
         //    printf("Dates d'indisponibilité modifiées avec succès.\n");
         //    printf("%s", response);
-        /*}else*/
-        if (choix == 4) {
-            printf("client : Choix 4\n");
+        }elseif (choix == 4) {
+            //printf("client : Choix 4\n");
             int res = write(sock, "getLogement\r\n\0", sizeof("getLogement\r\n\0"));
-            printf("client : res = %d\n", res);
+            //printf("client : res = %d\n", res);
 
             printf("Liste de tous les biens :\n");
             
@@ -93,7 +104,7 @@ int main() {
                 buffer[len] = '\0';
                 printf("%s", buffer);
             } 
-            printf("FINI\n");
+            //printf("FINI\n");
             
 
         } else if (choix == 0) {
