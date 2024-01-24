@@ -71,12 +71,12 @@ int main() {
             int res = write(sock, "getCalendrier\r\n\0", sizeof("getCalendrier\r\n\0"));
             //printf("client : res = %d\n", res);
 
-            do {
+            while (len != 0) {
                 len = read(sock, buffer, sizeof(buffer));
                 //printf("client : len = %d\n", len);
                 buffer[len] = '\0';
                 printf("%s", buffer);
-            } while (len != 0);
+            }
 
             scanf("%s", buffer);
             write(sock, buffer, strlen(buffer));
@@ -85,7 +85,7 @@ int main() {
             len = read(sock, buffer, sizeof(buffer)-1);
             buffer[len] = '\0';
 
-            while (len != "") {
+            while (len != 0) {
                 len = read(sock, buffer, strlen(buffer)-1);
                 //printf("client : len = %d\n", len);
                 buffer[len] = '\0';
