@@ -74,11 +74,19 @@ int main() {
             len = read(sock, buffer, sizeof(buffer)-1);
             buffer[len] = '\0';
 
-            while (len != 0) {
-                len = read(sock, buffer, sizeof(buffer)-1);
-                printf("client : len = %d\n", len);
-                buffer[len] = '\0';
-                printf("%s", buffer);
+            int pid = fork();
+
+            if(pid == 0) {
+                while (len != 0) {
+                    len = read(sock, buffer, sizeof(buffer)-1);
+                    printf("client : len = %d\n", len);
+                    buffer[len] = '\0';
+                    printf("%s", buffer);
+                }
+            } else {
+                sleep(2);
+                kill(pid, SIGKILL);
+                return 0;
             }
 
             scanf("%s", buffer);
