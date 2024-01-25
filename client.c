@@ -84,10 +84,10 @@ int main() {
                     buffer[len] = '\0';
                     printf("%s", buffer);
                 }
+                return 0;
             }
             sleep(2);
             kill(pid, SIGKILL);
-            return 0;
 
             scanf("%s", buffer);
             write(sock, buffer, strlen(buffer));
