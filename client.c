@@ -8,6 +8,7 @@
 #include <string.h>
 #include <netdb.h>
 #include <errno.h>
+#include <signal.h>
 #define PORT 8000
 int main() {
     int sock;
