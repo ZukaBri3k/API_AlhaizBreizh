@@ -74,8 +74,8 @@ int main() {
             len = read(sock, buffer, sizeof(buffer)-1);
             buffer[len] = '\0';
 
-            while (strcmp(buffer, "\0") != 0) {
-                len = read(sock, buffer, 1024);
+            while (len != 0) {
+                len = read(sock, buffer, sizeof(buffer)-1);
                 printf("client : len = %d\n", len);
                 buffer[len] = '\0';
                 printf("%s", buffer);
