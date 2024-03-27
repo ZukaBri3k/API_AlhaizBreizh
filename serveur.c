@@ -191,12 +191,14 @@ int main(int argc, char* argv[]) {
             //si la clé est bonne
             strcpy(msgClient, "Clé API correcte\n\0");
 
+
             if (VERBOSE)
             {
                 afficherHeureIP(logs, conn_addr);
                 fprintf(logs, msgClient);
                 printf("%s", msgClient);
             }               
+
             res = write(cnx, msgClient, strlen(msgClient));
             token = strtok(NULL, "/");
             
@@ -212,39 +214,34 @@ int main(int argc, char* argv[]) {
                 }
                     
             } else if (strcmp(token, "exit\r\n\0") != 0){
-                if (VERBOSE)
-                {
-                    //ecriture de la requete dans le fichier bdd
-                    afficherHeureIP(logs, conn_addr);
-                    fprintf(logs, "request(lenght=%d) : %s", res, buffer);
-                    printf("request(lenght=%d) : %s", res, buffer);
 
-                    if (strcmp(token, "getLogement\r\n\0") == 0)
-                    {
-                        getLogement(cleAPI, cnx);
-                    } else if (strcmp(token, "getCalendrier") == 0)
-                    {
-                        char *id = strtok(NULL, "/");
-                        int idLogement = atoi(id);
-                        printf("1");
-                        char *dateDebut = strtok(NULL, "/");
-                        printf("2");
-                        char *dateFin = strtok(NULL, "/");
-                        printf("3");
-                        getCalendrier(cleAPI, cnx, idLogement, dateDebut, dateFin);
-                    }
-                    else if (strcmp(token, "miseIndispo") == 0)
-                    {
-                        char *id = strtok(NULL, "/");
-                        int idLogement = atoi(id);
-                        char *dateDebut = strtok(NULL, "/");
-                        char *dateFin = strtok(NULL, "/");
-                        miseIndispo(cleAPI, cnx, idLogement, dateDebut, dateFin);
-                    } else {
-                        strcpy(msgClient, "Requête inconnue\n\0");
-                        res = write(cnx, msgClient, strlen(msgClient));
-                    }                                                     
+                //ecriture de la requete dans le fichier bdd
+                afficherHeureIP(logs, conn_addr);
+                fprintf(logs, "request(lenght=%d) : %s", res, buffer);
+                printf("request(lenght=%d) : %s", res, buffer);
+
+                if (strcmp(token, "getLogement\r\n\0") == 0)
+                {
+                    getLogement(cleAPI, cnx);
+                } else if (strcmp(token, "getCalendrier") == 0)
+                {
+                    char *id = strtok(NULL, "/");
+                    int idLogement = atoi(id);
+                    char *dateDebut = strtok(NULL, "/");
+                    char *dateFin = strtok(NULL, "/");
+                    getCalendrier(cleAPI, cnx, idLogement, dateDebut, dateFin);
                 }
+                else if (strcmp(token, "miseIndispo") == 0)
+                {
+                    char *id = strtok(NULL, "/");
+                    int idLogement = atoi(id);
+                    char *dateDebut = strtok(NULL, "/");
+                    char *dateFin = strtok(NULL, "/");
+                    miseIndispo(cleAPI, cnx, idLogement, dateDebut, dateFin);
+                } else {
+                    strcpy(msgClient, "Requête inconnue\n\0");
+                    res = write(cnx, msgClient, strlen(msgClient));
+                }                                                     
             }
             
             strcpy(msgClient, "Fermeture de la session\n\0");
