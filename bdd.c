@@ -388,11 +388,8 @@ int miseIndispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char 
     sprintf(query, "SELECT id_proprio_logement FROM logement WHERE id_logement = %d", idLogement);
     PGresult *id_proprio = PQexec(conn, query);
 
-    int tt = PQgetvalue(tab_cle, 1, 1);
-    int yy = PQgetvalue(id_proprio, 1, 1);
-
-    printf("id_proprio : %d\n", tt);
-    printf("id_personnes : %d\n", yy);
+    printf("id_logement : %d\n", PQgetvalue(tab_cle, 0, 0));
+    printf("id_proprio : %d\n", PQgetvalue(id_proprio, 0, 0));
 
     if (PQgetvalue(tab_cle, 0, 0) == PQgetvalue(id_proprio, 0, 0)) {
 
