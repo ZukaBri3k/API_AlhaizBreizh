@@ -223,7 +223,7 @@ int main(int argc, char* argv[]) {
                     if (strcmp(token, "getLogement\r\n\0") == 0)
                     {
                         getLogement(cleAPI, cnx);
-                    } else if (strcmp(token, "getCalendrier\r\n\0") == 0)
+                    } else if (strcmp(token, "getCalendrier") == 0)
                     {
                         char *id = strtok(NULL, "/");
                         int idLogement = atoi(id);
@@ -231,7 +231,7 @@ int main(int argc, char* argv[]) {
                         char *dateFin = strtok(NULL, "/");
                         getCalendrier(cleAPI, cnx, idLogement, dateDebut, dateFin);
                     }
-                    else if (strcmp(token, "miseIndispo\r\n\0") == 0)
+                    else if (strcmp(token, "miseIndispo") == 0)
                     {
                         char *id = strtok(NULL, "/");
                         int idLogement = atoi(id);
