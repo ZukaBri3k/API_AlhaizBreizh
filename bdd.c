@@ -260,6 +260,7 @@ int getCalendrier(char cle[15], int cnx, int idLogement, char dateDebut[12], cha
     PGresult *cle_dispo = PQexec(conn, query);
     printf("1 - bdd\n");
 
+    printf("Nombre de ligne %d\n", PQntuples(cle_dispo));
     if (PQntuples(cle_dispo) > 0) {
         //Ici je vais chercher l'id d'un logement de la personne qui a la clé
         sprintf(query, "SELECT * FROM logement WHERE id_logement = %s", idLogement);
