@@ -255,10 +255,10 @@ int getCalendrier(char cle[15], int cnx, int idLogement, char dateDebut[12], cha
     char input[BUFFSIZE];
     char query[256];
 
-    sprintf(query, "SELECT disponibilite FROM cle WHERE cle = '%s'", cle);
+    sprintf(query, "SELECT * FROM cle WHERE cle = '%s'", cle);
     PGresult *cle_dispo = PQexec(conn, query);
 
-    if (PQgetvalue(cle_dispo, 0, 0) == "t") {
+    if (PQntuples(cle_dispo) > 0) {
         //Ici je vais chercher l'id d'un logement de la personne qui a la clé
         sprintf(query, "SELECT * FROM logement WHERE id_logement = %s", idLogement);
         PGresult *id_logement = PQexec(conn, query);
