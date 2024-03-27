@@ -225,18 +225,18 @@ int main(int argc, char* argv[]) {
                         getLogement(cleAPI, cnx);
                     } else if (strcmp(token, "getCalendrier\r\n\0") == 0)
                     {
-                        char id[64] = strtok(NULL, "/");
+                        char *id = strtok(NULL, "/");
                         int idLogement = atoi(id);
-                        char dateDebut[12] = strtok(NULL, "/");
-                        char dateFin[12] = strtok(NULL, "/");
+                        char *dateDebut = strtok(NULL, "/");
+                        char *dateFin = strtok(NULL, "/");
                         getCalendrier(cleAPI, cnx, idLogement, dateDebut, dateFin);
                     }
                     else if (strcmp(token, "miseIndispo\r\n\0") == 0)
                     {
-                        char id[64] = strtok(NULL, "/");
+                        char *id = strtok(NULL, "/");
                         int idLogement = atoi(id);
-                        char dateDebut[12] = strtok(NULL, "/");
-                        char dateFin[12] = strtok(NULL, "/");
+                        char *dateDebut = strtok(NULL, "/");
+                        char *dateFin = strtok(NULL, "/");
                         miseIndispo(cleAPI, cnx, "2023-12-24", "2023-12-26");
                     } else {
                         strcpy(msgClient, "Requête inconnue\n\0");
