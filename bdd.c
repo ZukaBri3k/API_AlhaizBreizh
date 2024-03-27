@@ -274,8 +274,8 @@ int getCalendrier(char cle[15], int cnx, int idLogement, char dateDebut[12], cha
                 sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour >= '%s' ", idLogement, dateDebut);
                 PGresult *date_Debut = PQexec(conn, query);
 
-                int rows = PQntuples(calendrier_Debut)-1;
-                int cols = PQnfields(calendrier_Debut);
+                int rows = PQntuples(calendrier_Debut);
+                int cols = PQnfields(calendrier_Debut)-1;
                 int i = 0;
 
                 printf("\n-------------------------Début de la création du JSON------------------------\n");
