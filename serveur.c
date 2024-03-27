@@ -199,7 +199,6 @@ int main(int argc, char* argv[]) {
             }               
             res = write(cnx, msgClient, strlen(msgClient));
             token = strtok(NULL, "/");
-            printf("token = %s\n", token);
             
             if(strcmp(token, "\r\n\0") == 0 || strcmp(token, "") == 0) {
                 strcpy(buffer, "exit\r\n\0");
@@ -227,8 +226,11 @@ int main(int argc, char* argv[]) {
                     {
                         char *id = strtok(NULL, "/");
                         int idLogement = atoi(id);
+                        printf("1");
                         char *dateDebut = strtok(NULL, "/");
+                        printf("2");
                         char *dateFin = strtok(NULL, "/");
+                        printf("3");
                         getCalendrier(cleAPI, cnx, idLogement, dateDebut, dateFin);
                     }
                     else if (strcmp(token, "miseIndispo") == 0)
