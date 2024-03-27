@@ -233,7 +233,7 @@ int getLogement(char cle[15], int cnx) {
 //******************************************************************//
 //**********************Code pour getCalendier**********************//
 //******************************************************************//
-int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
+int getCalendrier(char cle[15], int cnx, int idLogement, char dateDebut[12], char dateFin[12]) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
@@ -255,144 +255,128 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
     char input[BUFFSIZE];
     char query[256];
 
-    sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
-    PGresult *id_res = PQexec(conn, query);
+    sprintf(query, "SELECT disponibilite FROM cle WHERE cle = '%s'", cle);
+    PGresult *cle_dispo = PQexec(conn, query);
 
-    char *id_proprio = PQgetvalue(id_res, 0, 0);
-    //Ici je vais chercher l'id d'un logement de la personne qui a la clé
-    sprintf(query, "SELECT id_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
-    PGresult *id_logement = PQexec(conn, query);
+    if (PQgetvalue(cle_dispo, 0, 0) == "t") {
+        //Ici je vais chercher l'id d'un logement de la personne qui a la clé
+        sprintf(query, "SELECT * FROM logement WHERE id_logement = %s", idLogement);
+        PGresult *id_logement = PQexec(conn, query);
+    
+        //Ici je vais chercher l'id d'un logement de la personne qui a la clé
+        sprintf(query, "SELECT * FROM logement WHERE id_logement = %s", idLogement);
+        PGresult *id_logement = PQexec(conn, query);
 
-    //Ici je vais chercher le nom d'un logement de la personne qui a la clé
-    sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
-    PGresult *nom_logement = PQexec(conn, query);
+        if (PQntuples(id_logement) > 0) {
 
-    if (PQntuples(id_logement) > 0) {
+            //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
+            sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s AND jour >= '%s' ", input, dateDebut);
+            PGresult *calendrier_Debut = PQexec(conn, query);
+            if (PQntuples(calendrier_Debut) > 0) {
 
-        write(cnx, "Voici la liste de vos logement : \n", strlen("Voici la liste de vos logement : \n"));
-        int ligne = PQntuples(id_logement);
-        for (int i = 0; i < ligne ; i++) {
-            write(cnx, "(", strlen("("));
-            write(cnx, ("%s", PQgetvalue(id_logement, i, 0)), strlen(("%s", PQgetvalue(id_logement, i, 0))));
-            write(cnx, ")", strlen(")"));
-            write(cnx, " : ", strlen(" : "));
-            write(cnx, ("%d", PQgetvalue(nom_logement, i, 0)), strlen(("%d", PQgetvalue(nom_logement, i, 0))));
-            write(cnx, "\n", strlen("\n"));
-        }
-        
-        write(cnx, "Veuillez choisir l'id de l'un logement : ", strlen("Veuillez choisir l'id de l'un logement : "));
-        write(cnx, "", strlen(""));
-        read(cnx, input, BUFFSIZE);
-        input[strcspn(input, "\r\n\0")] = 0;
-        printf("Reçu : %s\n", input);
+                //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
+                sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %s AND jour >= '%s' ", input, dateDebut);
+                PGresult *date_Debut = PQexec(conn, query);
 
-        //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
-        sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s AND jour >= '%s' ", input, dateDebut);
-        PGresult *calendrier_Debut = PQexec(conn, query);
-        if (PQntuples(calendrier_Debut) > 0) {
+                int rows = PQntuples(calendrier_Debut);
+                int cols = PQnfields(calendrier_Debut);
+                int i = 0;
 
-            //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
-            sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %s AND jour >= '%s' ", input, dateDebut);
-            PGresult *date_Debut = PQexec(conn, query);
+                printf("\n-------------------------Début de la création du JSON------------------------\n");
 
-            int rows = PQntuples(calendrier_Debut);
-            int cols = PQnfields(calendrier_Debut);
-            int i = 0;
+                    // Création d'un pointeur pour stocker les données
+                    size_t size = rows;
+                    char *data = (char *)malloc(size * sizeof(char));
 
-            printf("\n-------------------------Début de la création du JSON------------------------\n");
+                    write(cnx, "[\n", strlen("[\n"));
+                    while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+                        write(cnx, "  {\n", strlen("  {\n"));
+                        for (int j = 0; j < cols; j++) {
+                            write(cnx, "    \"", strlen("    \"")); 
+                            write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
+                            write(cnx, "\"", strlen("\""));
+                            write(cnx, " : ", strlen(" : "));
+                            //Ici je transforme les t en true et f en false car quand je souhiate récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
+                            if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
+                                write(cnx, "true", strlen("true"));
+                            } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), "f") == 0) {
+                                write(cnx, "false", strlen("false"));
+                            } else {
+                                write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
+                            }
 
-                // Création d'un pointeur pour stocker les données
-                size_t size = rows;
-                char *data = (char *)malloc(size * sizeof(char));
-
-                write(cnx, "[\n", strlen("[\n"));
-                while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
-                    write(cnx, "  {\n", strlen("  {\n"));
-                    for (int j = 0; j < cols; j++) {
-                        write(cnx, "    \"", strlen("    \"")); 
-                        write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
-                        write(cnx, "\"", strlen("\""));
-                        write(cnx, " : ", strlen(" : "));
-                        //Ici je transforme les t en true et f en false car quand je souhiate récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
-                        if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
-                            write(cnx, "true", strlen("true"));
-                        } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), "f") == 0) {
-                            write(cnx, "false", strlen("false"));
-                        } else {
-                            write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
-                        }
-
-                        if (j < cols - 1) {
+                            if (j < cols - 1) {
+                                write(cnx, ",", strlen(","));
+                            }
+                            write(cnx, "\n", strlen("\n"));
+                        } 
+                        write(cnx, "  }", strlen("  }"));
+                        if (i < rows - 1) {
                             write(cnx, ",", strlen(","));
                         }
                         write(cnx, "\n", strlen("\n"));
-                    } 
-                    write(cnx, "  }", strlen("  }"));
-                    if (i < rows - 1) {
-                        write(cnx, ",", strlen(","));
+                        i++;
+                        write(cnx, "", strlen(""));
                     }
-                    write(cnx, "\n", strlen("\n"));
-                    i++;
-                    write(cnx, "", strlen(""));
-                }
 
-                if (strcmp(PQgetvalue(date_Debut, i, 0), dateFin) == 0) {
-                    write(cnx, "  {\n", strlen("  {\n"));
-                    for (int j = 0; j < cols; j++) {
-                        write(cnx, "    \"", strlen("    \"")); 
-                        write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
-                        write(cnx, "\"", strlen("\""));
-                        write(cnx, " : ", strlen(" : "));
-                        //Ici je transforme les t en true et f en false car quand je souhiate récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
-                        if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
-                            write(cnx, "true", strlen("true"));
-                        } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), "f") == 0) {
-                            write(cnx, "false", strlen("false"));
-                        } else {
-                            write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
-                        }
+                    if (strcmp(PQgetvalue(date_Debut, i, 0), dateFin) == 0) {
+                        write(cnx, "  {\n", strlen("  {\n"));
+                        for (int j = 0; j < cols; j++) {
+                            write(cnx, "    \"", strlen("    \"")); 
+                            write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
+                            write(cnx, "\"", strlen("\""));
+                            write(cnx, " : ", strlen(" : "));
+                            //Ici je transforme les t en true et f en false car quand je souhiate récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
+                            if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
+                                write(cnx, "true", strlen("true"));
+                            } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), "f") == 0) {
+                                write(cnx, "false", strlen("false"));
+                            } else {
+                                write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
+                            }
 
-                        if (j < cols - 1) {
+                            if (j < cols - 1) {
+                                write(cnx, ",", strlen(","));
+                            }
+                            write(cnx, "\n", strlen("\n"));
+                        } 
+                        write(cnx, "  }", strlen("  }"));
+                        if (i < rows - 1) {
                             write(cnx, ",", strlen(","));
                         }
                         write(cnx, "\n", strlen("\n"));
-                    } 
-                    write(cnx, "  }", strlen("  }"));
-                    if (i < rows - 1) {
-                        write(cnx, ",", strlen(","));
+                        write(cnx, "", strlen(""));
                     }
-                    write(cnx, "\n", strlen("\n"));
+                    
+                    write(cnx, "]\n", strlen("]\n"));
                     write(cnx, "", strlen(""));
-                }
-                
-                write(cnx, "]\n", strlen("]\n"));
-                write(cnx, "", strlen(""));
-                
-                PQclear(nom_logement);
-                PQclear(id_logement);
-                PQclear(id_res);
+                    
+                    PQclear(id_logement);
+                    PQclear(calendrier_Debut);
+
+                    printf("\n--------------------------Fin de la création du JSON-------------------------\n");
+                    PQfinish(conn);
+                    free(data);
+                    return 1;
+            } else {
+                printf("Il n'y a pas de réservation pour ces date\n");
+                write(cnx, "Il n'y a pas de réservation pour ces date\n", strlen("Il n'y a pas de réservation pour ces date\n"));
                 PQclear(calendrier_Debut);
-
-                printf("\n--------------------------Fin de la création du JSON-------------------------\n");
+                PQclear(id_logement);
                 PQfinish(conn);
-                free(data);
-                return 1;
+                return 0;
+            }
         } else {
-            printf("Il n'y a pas de réservation pour ces date\n");
-            write(cnx, "Il n'y a pas de réservation pour ces date\n", strlen("Il n'y a pas de réservation pour ces date\n"));
-            PQclear(calendrier_Debut);
-            PQclear(nom_logement);
+            printf("La personne n'a pas de logement\n");
+            write(cnx, "La personne n'a pas de logement\n", strlen("La personne n'a pas de logement\n"));
             PQclear(id_logement);
-            PQclear(id_res);
             PQfinish(conn);
             return 0;
         }
     } else {
-        printf("La personne n'a pas de logement\n");
-        write(cnx, "La personne n'a pas de logement\n", strlen("La personne n'a pas de logement\n"));
-        PQclear(nom_logement);
-        PQclear(id_logement);
-        PQclear(id_res);
+        printf("Vous n'avez pas les droits pour effectuer cette action\n");
+        write(cnx, "Vous n'avez pas les droits pour effectuer cette action\n", strlen("Vous n'avez pas les droits pour effectuer cette action\n"));
+        PQclear(cle_dispo);
         PQfinish(conn);
         return 0;
     }
@@ -404,7 +388,7 @@ int getCalendrier(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
 //******************************************************************//
 //**********************Code pour miseIndispo***********************//
 //******************************************************************//
-int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
+int miseIndispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dateFin[12]) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
@@ -427,150 +411,142 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
     char query[256];
 
     sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
-    PGresult *id_res = PQexec(conn, query);
+    PGresult *tab_cle = PQexec(conn, query);
 
-    char *id_proprio = PQgetvalue(id_res, 0, 0);
     //Ici je vais chercher l'id d'un logement de la personne qui a la clé
-    sprintf(query, "SELECT id_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
+    sprintf(query, "SELECT * FROM logement WHERE id_logement = %s", idLogement);
     PGresult *id_logement = PQexec(conn, query);
 
-    //Ici je vais chercher le nom d'un logement de la personne qui a la clé
-    sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
-    PGresult *nom_logement = PQexec(conn, query);
+    //Ici je vais chercher l'id du propriétaire du logement de la personne qui a la clé afin de faire une vérification
+    sprintf(query, "SELECT id_proprio_logement FROM logement WHERE id_logement = %s", idLogement);
+    PGresult *id_proprio = PQexec(conn, query);
 
-    if (PQntuples(id_logement) > 0) {
+    if (PQgetvalue(tab_cle, 0, 0) == PQgetvalue(id_proprio, 0, 0)) {
 
-        write(cnx, "Voici la liste de vos logement : \n", strlen("Voici la liste de vos logement : \n"));
-        int ligne = PQntuples(id_logement);
-        for (int i = 0; i < ligne ; i++) {
-            write(cnx, "(", strlen("("));
-            write(cnx, ("%s", PQgetvalue(id_logement, i, 0)), strlen(("%s", PQgetvalue(id_logement, i, 0))));
-            write(cnx, ")", strlen(")"));
-            write(cnx, " : ", strlen(" : "));
-            write(cnx, ("%d", PQgetvalue(nom_logement, i, 0)), strlen(("%d", PQgetvalue(nom_logement, i, 0))));
-            write(cnx, "\n", strlen("\n"));
-            write(cnx, "", strlen(""));
-        }
-        
-        write(cnx, "Veuillez choisir l'id du logement à modifier : ", strlen("Veuillez choisir l'id du logement à modifier : "));
-        write(cnx, "", strlen(""));
-        read(cnx, input, BUFFSIZE);
-        input[strcspn(input, "\r\n\0")] = 0;
-        printf("Reçu : %s\n", input);
-        
-        //Ici je vais chercher les privilège de la personne qui a la clé
-        sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
-        PGresult *privilege = PQexec(conn, query);
+        if (PQntuples(id_logement) > 0) {
+            
+            //Ici je vais chercher les privilège de la personne qui a la clé
+            sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
+            PGresult *privilege = PQexec(conn, query);
 
-        //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
-        sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s", input);
-        PGresult *calendrier_Debut = PQexec(conn, query);
+            //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
+            sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s", input);
+            PGresult *calendrier_Debut = PQexec(conn, query);
 
-        //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
-        sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %s AND jour >= '%s'", input, dateDebut);
-        PGresult *date_Debut = PQexec(conn, query);
-        int rows = PQntuples(date_Debut);
-        int i = 0;
-        while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
-            if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
-                printf("La ligne n'existe pas\n");
-                write(cnx, "La ligne n'existe pas\n", strlen("La ligne n'existe pas\n"));
-            } else {
-                char query[1024];
-                sprintf(query, "UPDATE calendrier SET disponibilite = 'false' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
-                PGresult *res = PQexec(conn, query);
-                if (i == 0)
-                {
-                    printf("Changement de disponibilité fait\n");
-                    write(cnx, "Mise en indisponibilité pour le logement : \n", strlen("Mise en indisponibilité pour le logement :\n"));
-                    write(cnx, input, strlen(input));
-                    write(cnx, " réussi pour les dates : ", strlen(" réussi pour les dates : "));
-                    write(cnx, dateDebut, strlen(dateDebut));
-                    write(cnx, " - ", strlen(" - "));
-                    write(cnx, dateFin, strlen(dateFin));
-                    write(cnx, "\n", strlen("\n"));
-                    write(cnx, "", strlen(""));
-                }
-                
-
-                if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                    fprintf(stderr, "UPDATE command failed: %s", PQerrorMessage(conn));
-                    PQclear(res);
-                    PQfinish(conn);
-                    return 1;
-                }
-            }
-            i++;
-        }
-        if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
-
-                struct tm dateDebut_tm = {0};
-                struct tm dateFin_tm = {0};
-
-                dateDebut_tm.tm_isdst = -1;
-                dateFin_tm.tm_isdst = -1;
-
-                strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
-                strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
-
-                time_t start = mktime(&dateDebut_tm);
-                time_t end = mktime(&dateFin_tm);
-
-                int num_days = (end - start) / (24 * 60 * 60);
-
-                for (int j = 0; j <= num_days; j++) {
-                    time_t current = start + j * 24 * 60 * 60;
-
-                    struct tm *current_tm = localtime(&current);
-
-                    char current_date[11];
-                    strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
-
-                    char booleen[6] = "false";
-
-                    if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
-                        strcpy(booleen, "true");
-                    }
-
-                    printf("Date : %s\n", current_date);
-
+            //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
+            sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %s AND jour >= '%s'", input, dateDebut);
+            PGresult *date_Debut = PQexec(conn, query);
+            int rows = PQntuples(date_Debut);
+            int i = 0;
+            while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+                if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
+                    printf("La ligne n'existe pas\n");
+                    write(cnx, "La ligne n'existe pas\n", strlen("La ligne n'existe pas\n"));
+                } else {
                     char query[1024];
-                    sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'false', 0, 0, 0, NULL, NULL, NULL, '%s')", 
-                    booleen, current_date, input);
+                    sprintf(query, "UPDATE calendrier SET disponibilite = 'false' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
                     PGresult *res = PQexec(conn, query);
-
-                    printf("Création réussi\n");
-                    write(cnx, "Création réussi\n", strlen("Création réussi\n"));
-                    write(cnx, "", strlen(""));
+                    if (i == 0)
+                    {
+                        printf("Changement de disponibilité fait\n");
+                        write(cnx, "Mise en indisponibilité pour le logement : \n", strlen("Mise en indisponibilité pour le logement :\n"));
+                        write(cnx, input, strlen(input));
+                        write(cnx, " réussi pour les dates : ", strlen(" réussi pour les dates : "));
+                        write(cnx, dateDebut, strlen(dateDebut));
+                        write(cnx, " - ", strlen(" - "));
+                        write(cnx, dateFin, strlen(dateFin));
+                        write(cnx, "\n", strlen("\n"));
+                        write(cnx, "", strlen(""));
+                    }
+                    
 
                     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                        fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
+                        fprintf(stderr, "UPDATE command failed: %s", PQerrorMessage(conn));
                         PQclear(res);
                         PQfinish(conn);
                         return 1;
                     }
-
-                    PQclear(res);
                 }
-            } else {
-                printf("La ligne existe déjà\n");
+                i++;
             }
+            if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
 
-        PQclear(calendrier_Debut);
-        PQclear(nom_logement);
-        PQclear(id_logement);
-        PQclear(id_res);
-        PQclear(date_Debut);
-        PQclear(privilege);
-        PQfinish(conn);
-        return 1;
+                    struct tm dateDebut_tm = {0};
+                    struct tm dateFin_tm = {0};
 
+                    dateDebut_tm.tm_isdst = -1;
+                    dateFin_tm.tm_isdst = -1;
+
+                    strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
+                    strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
+
+                    time_t start = mktime(&dateDebut_tm);
+                    time_t end = mktime(&dateFin_tm);
+
+                    int num_days = (end - start) / (24 * 60 * 60);
+
+                    for (int j = 0; j <= num_days; j++) {
+                        time_t current = start + j * 24 * 60 * 60;
+
+                        struct tm *current_tm = localtime(&current);
+
+                        char current_date[11];
+                        strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
+
+                        char booleen[6] = "false";
+
+                        if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
+                            strcpy(booleen, "true");
+                        }
+
+                        printf("Date : %s\n", current_date);
+
+                        char query[1024];
+                        sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'false', 0, 0, 0, NULL, NULL, NULL, '%s')", 
+                        booleen, current_date, input);
+                        PGresult *res = PQexec(conn, query);
+
+                        printf("Création réussi\n");
+                        write(cnx, "Création réussi\n", strlen("Création réussi\n"));
+                        write(cnx, "", strlen(""));
+
+                        if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                            fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
+                            PQclear(res);
+                            PQfinish(conn);
+                            return 1;
+                        }
+
+                        PQclear(res);
+                    }
+                } else {
+                    printf("La ligne existe déjà\n");
+                }
+
+            PQclear(calendrier_Debut);
+            PQclear(id_logement);
+            PQclear(date_Debut);
+            PQclear(privilege);
+            PQclear(id_proprio);
+            PQclear(tab_cle);
+            PQfinish(conn);
+            return 1;
+
+        } else {
+            printf("La personne n'a pas de logement\n");
+            write(cnx, "La personne n'a pas de logement\n", strlen("La personne n'a pas de logement\n"));
+            PQclear(id_logement);
+            PQclear(id_proprio);
+            PQclear(tab_cle);
+            PQfinish(conn);
+            return 0;
+        }
     } else {
-        printf("La personne n'a pas de logement\n");
-        write(cnx, "La personne n'a pas de logement\n", strlen("La personne n'a pas de logement\n"));
-        PQclear(nom_logement);
+        printf("Vous n'avez pas les droits pour effectuer cette action\n");
+        write(cnx, "Vous n'avez pas les droits pour effectuer cette action\n", strlen("Vous n'avez pas les droits pour effectuer cette action\n"));
+        PQclear(tab_cle);
+        PQclear(id_proprio);
         PQclear(id_logement);
-        PQclear(id_res);
         PQfinish(conn);
         return 0;
     }
@@ -580,9 +556,9 @@ int miseIndispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
 
 
 //******************************************************************//
-//**********************Code pour miseDispo***********************//
+//**********************Code pour getDispo***********************//
 //******************************************************************//
-int miseDispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
+int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dateFin[12]) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
@@ -600,155 +576,137 @@ int miseDispo(char cle[15], int cnx, char dateDebut[12], char dateFin[12]) {
         PQfinish(conn);
         return 0;
     }
+
 //****Création des variables****//
     char input[BUFFSIZE];
     char query[256];
 
-    sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
-    PGresult *id_res = PQexec(conn, query);
+    sprintf(query, "SELECT disponibilite FROM cle WHERE cle = '%s'", cle);
+    PGresult *cle_dispo = PQexec(conn, query);
 
-    char *id_proprio = PQgetvalue(id_res, 0, 0);
-    //Ici je vais chercher l'id d'un logement de la personne qui a la clé
-    sprintf(query, "SELECT id_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
-    PGresult *id_logement = PQexec(conn, query);
+    if (PQgetvalue(cle_dispo, 0, 0) == "t") {
+        //Ici je vais chercher l'id d'un logement de la personne qui a la clé
+        sprintf(query, "SELECT * FROM logement WHERE id_logement = %s", idLogement);
+        PGresult *id_logement = PQexec(conn, query);
 
-    //Ici je vais chercher le nom d'un logement de la personne qui a la clé
-    sprintf(query, "SELECT libelle_logement FROM logement WHERE id_proprio_logement = %s", id_proprio);
-    PGresult *nom_logement = PQexec(conn, query);
+        if (PQntuples(id_logement) > 0) {
+            
+            //Ici je vais chercher les privilège de la personne qui a la clé
+            sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
+            PGresult *privilege = PQexec(conn, query);
 
-    if (PQntuples(id_logement) > 0) {
+            //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
+            sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s", input);
+            PGresult *calendrier_Debut = PQexec(conn, query);
 
-        write(cnx, "Voici la liste de vos logement : \n", strlen("Voici la liste de vos logement : \n"));
-        int ligne = PQntuples(id_logement);
-        for (int i = 0; i < ligne ; i++) {
-            write(cnx, "(", strlen("("));
-            write(cnx, ("%s", PQgetvalue(id_logement, i, 0)), strlen(("%s", PQgetvalue(id_logement, i, 0))));
-            write(cnx, ")", strlen(")"));
-            write(cnx, " : ", strlen(" : "));
-            write(cnx, ("%d", PQgetvalue(nom_logement, i, 0)), strlen(("%d", PQgetvalue(nom_logement, i, 0))));
-            write(cnx, "\n", strlen("\n"));
-            write(cnx, "", strlen(""));
-        }
-        
-        write(cnx, "Veuillez choisir l'id du logement à modifier : ", strlen("Veuillez choisir l'id du logement à modifier : "));
-        write(cnx, "", strlen(""));
-        read(cnx, input, BUFFSIZE);
-        input[strcspn(input, "\r\n\0")] = 0;
-        printf("Reçu : %s\n", input);
-        
-        //Ici je vais chercher les privilège de la personne qui a la clé
-        sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
-        PGresult *privilege = PQexec(conn, query);
-
-        //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
-        sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %s", input);
-        PGresult *calendrier_Debut = PQexec(conn, query);
-
-        //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
-        sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %s AND jour >= '%s'", input, dateDebut);
-        PGresult *date_Debut = PQexec(conn, query);
-        int rows = PQntuples(date_Debut);
-        int i = 0;
-        while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
-            if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
-                printf("La ligne n'existe pas\n");
-                write(cnx, "La ligne n'existe pas\n", strlen("La ligne n'existe pas\n"));
-            } else {
-                char query[1024];
-                sprintf(query, "UPDATE calendrier SET disponibilite = 'true' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
-                PGresult *res = PQexec(conn, query);
-                if (i == 0)
-                {
-                    printf("Changement de disponibilité fait\n");
-                    write(cnx, "Mise en disponibilité pour le logement : \n", strlen("Mise en disponibilité pour le logement :\n"));
-                    write(cnx, input, strlen(input));
-                    write(cnx, " réussi pour les dates : ", strlen(" réussi pour les dates : "));
-                    write(cnx, dateDebut, strlen(dateDebut));
-                    write(cnx, " - ", strlen(" - "));
-                    write(cnx, dateFin, strlen(dateFin));
-                    write(cnx, "\n", strlen("\n"));
-                    write(cnx, "", strlen(""));
-                }
-                
-
-                if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                    fprintf(stderr, "UPDATE command failed: %s", PQerrorMessage(conn));
-                    PQclear(res);
-                    PQfinish(conn);
-                    return 1;
-                }
-            }
-            i++;
-        }
-        if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
-
-                struct tm dateDebut_tm = {0};
-                struct tm dateFin_tm = {0};
-
-                dateDebut_tm.tm_isdst = -1;
-                dateFin_tm.tm_isdst = -1;
-
-                strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
-                strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
-
-                time_t start = mktime(&dateDebut_tm);
-                time_t end = mktime(&dateFin_tm);
-
-                int num_days = (end - start) / (24 * 60 * 60);
-
-                for (int j = 0; j <= num_days; j++) {
-                    time_t current = start + j * 24 * 60 * 60;
-
-                    struct tm *current_tm = localtime(&current);
-
-                    char current_date[11];
-                    strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
-
-                    char booleen[6] = "false";
-
-                    if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
-                        strcpy(booleen, "true");
-                    }
-
-                    printf("Date : %s\n", current_date);
-
+            //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
+            sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %s AND jour >= '%s'", input, dateDebut);
+            PGresult *date_Debut = PQexec(conn, query);
+            int rows = PQntuples(date_Debut);
+            int i = 0;
+            while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+                if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
+                    printf("La ligne n'existe pas\n");
+                } else {
                     char query[1024];
-                    sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'true', 0, 0, 0, NULL, NULL, NULL, '%s')", 
-                    booleen, current_date, input);
+                    sprintf(query, "UPDATE calendrier SET disponibilite = 'true' WHERE id_logement = '%s' AND jour >= '%s'", input, dateDebut);
                     PGresult *res = PQexec(conn, query);
-
-                    printf("Création réussi\n");
-                    write(cnx, "Création réussi\n", strlen("Création réussi\n"));
-                    write(cnx, "", strlen(""));
+                    if (i == 0)
+                    {
+                        printf("Changement de disponibilité fait\n");
+                        write(cnx, "Mise en disponibilité pour le logement : \n", strlen("Mise en disponibilité pour le logement :\n"));
+                        write(cnx, input, strlen(input));
+                        write(cnx, " réussi pour les dates : ", strlen(" réussi pour les dates : "));
+                        write(cnx, dateDebut, strlen(dateDebut));
+                        write(cnx, " - ", strlen(" - "));
+                        write(cnx, dateFin, strlen(dateFin));
+                        write(cnx, "\n", strlen("\n"));
+                        write(cnx, "", strlen(""));
+                    }
+                    
 
                     if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                        fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
+                        fprintf(stderr, "UPDATE command failed: %s", PQerrorMessage(conn));
                         PQclear(res);
                         PQfinish(conn);
                         return 1;
                     }
-
-                    PQclear(res);
                 }
-            } else {
-                printf("La ligne existe déjà\n");
+                i++;
             }
+            if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
 
-        PQclear(calendrier_Debut);
-        PQclear(nom_logement);
-        PQclear(id_logement);
-        PQclear(id_res);
-        PQclear(date_Debut);
-        PQclear(privilege);
-        PQfinish(conn);
-        return 1;
+                    struct tm dateDebut_tm = {0};
+                    struct tm dateFin_tm = {0};
+
+                    dateDebut_tm.tm_isdst = -1;
+                    dateFin_tm.tm_isdst = -1;
+
+                    strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
+                    strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
+
+                    time_t start = mktime(&dateDebut_tm);
+                    time_t end = mktime(&dateFin_tm);
+
+                    int num_days = (end - start) / (24 * 60 * 60);
+
+                    for (int j = 0; j <= num_days; j++) {
+                        time_t current = start + j * 24 * 60 * 60;
+
+                        struct tm *current_tm = localtime(&current);
+
+                        char current_date[11];
+                        strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
+
+                        char booleen[6] = "false";
+
+                        if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
+                            strcpy(booleen, "true");
+                        }
+
+                        printf("Date : %s\n", current_date);
+
+                        char query[1024];
+                        sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'true', 0, 0, 0, NULL, NULL, NULL, '%s')", 
+                        booleen, current_date, input);
+                        PGresult *res = PQexec(conn, query);
+
+                        printf("Création réussi\n");
+                        write(cnx, "Création réussi\n", strlen("Création réussi\n"));
+                        write(cnx, "", strlen(""));
+
+                        if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                            fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
+                            PQclear(res);
+                            PQfinish(conn);
+                            return 1;
+                        }
+
+                        PQclear(res);
+                    }
+                } else {
+                    printf("La ligne existe déjà\n");
+                }
+
+            PQclear(calendrier_Debut);
+            PQclear(id_logement);
+            PQclear(date_Debut);
+            PQclear(privilege);
+            PQfinish(conn);
+            return 1;
+
+        } else {
+            printf("La personne n'a pas de logement\n");
+            write(cnx, "La personne n'a pas de logement\n", strlen("La personne n'a pas de logement\n"));
+            PQclear(id_logement);
+            PQfinish(conn);
+            return 0;
+        }
 
     } else {
-        printf("La personne n'a pas de logement\n");
-        write(cnx, "La personne n'a pas de logement\n", strlen("La personne n'a pas de logement\n"));
-        PQclear(nom_logement);
-        PQclear(id_logement);
-        PQclear(id_res);
+        printf("Vous n'avez pas les droits pour effectuer cette action\n");
+        write(cnx, "Vous n'avez pas les droits pour effectuer cette action\n", strlen("Vous n'avez pas les droits pour effectuer cette action\n"));
+        PQclear(cle_dispo);
         PQfinish(conn);
         return 0;
     }
