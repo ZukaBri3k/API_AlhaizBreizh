@@ -397,21 +397,20 @@ int miseIndispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char 
             //Ici je vais chercher les privilège de la personne qui a la clé
             sprintf(query, "SELECT privilege FROM cle WHERE cle = '%s'", cle);
             PGresult *privilege = PQexec(conn, query);
-            printf("1 - bdd\n");
 
             //Ici je vais chercher le calendrier de la reservation de réservation du logement de la personne qui a la clé
             sprintf(query, "SELECT * FROM calendrier WHERE id_logement = %d", idLogement);
             PGresult *calendrier_Debut = PQexec(conn, query);
-            printf("2 - bdd\n");
 
             //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
             sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour >= '%s'", idLogement, dateDebut);
             PGresult *date_Debut = PQexec(conn, query);
-            printf("3 - bdd\n");
             int rows = PQntuples(date_Debut);
             int i = 0;
-            printf("4 - bdd\n");
+
             while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+                printf("Date : %s\n", PQgetvalue(date_Debut, i, 0));
+
                 if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
                     printf("La ligne n'existe pas\n");
                     write(cnx, "La ligne n'existe pas\n", strlen("La ligne n'existe pas\n"));
