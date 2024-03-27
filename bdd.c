@@ -390,10 +390,7 @@ int miseIndispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char 
     int id_pers = atoi(PQgetvalue(tab_cle, 0, 0));
     int id_pro = atoi(PQgetvalue(id_proprio, 0, 0));
 
-    printf("id_logement : %d\n", id_pers);
-    printf("id_proprio : %d\n", id_pro);
-
-    if (PQgetvalue(tab_cle, 0, 0) == PQgetvalue(id_proprio, 0, 0)) {
+    if (id_pers == id_pro) {
 
         if (PQntuples(id_logement) > 0) {
             
