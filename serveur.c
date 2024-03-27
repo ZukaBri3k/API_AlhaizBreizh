@@ -237,7 +237,7 @@ int main(int argc, char* argv[]) {
                         int idLogement = atoi(id);
                         char *dateDebut = strtok(NULL, "/");
                         char *dateFin = strtok(NULL, "/");
-                        miseIndispo(cleAPI, cnx, "2023-12-24", "2023-12-26");
+                        miseIndispo(cleAPI, cnx, idLogement, dateDebut, dateFin);
                     } else {
                         strcpy(msgClient, "Requête inconnue\n\0");
                         res = write(cnx, msgClient, strlen(msgClient));
