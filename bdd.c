@@ -842,9 +842,10 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                             write(cnx, "\n", strlen("\n"));
                         } 
                         write(cnx, "  }", strlen("  }"));
-                        if (i < rows - 1) {
+                        if (i < num_days - 1) {
                             write(cnx, ",", strlen(","));
                         }
+                        
                         write(cnx, "\n", strlen("\n"));
                         write(cnx, "", strlen(""));
                         PQclear(jour_check);
@@ -853,17 +854,28 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                         date_actuelle_tm.tm_mday++;
                         mktime(&date_actuelle_tm);
                         //Ici c'est le cas ou la date n'est pas en base
+                        write(cnx, "    \"", strlen("    \""));
+                        write(cnx, ("%s", "jour"), strlen(("%s", "jour")));
+                        write(cnx, "\"", strlen("\""));
+                        write(cnx, " : ", strlen(" : "));
+                        write(cnx, "\"", strlen("\""));
+                        write(cnx, ("%s", date_actuelle), strlen(("%s", date_actuelle)));
+                        write(cnx, "\"", strlen("\""));
+                        write(cnx, ",", strlen(","));
+                        write(cnx, "\n", strlen("\n"));
+                        
                         write(cnx, "  {\n", strlen("  {\n"));
                         write(cnx, "    \"", strlen("    \"")); 
                         write(cnx, ("%s", "disponibilite"), strlen(("%s", "disponibilite")));
                         write(cnx, "\"", strlen("\""));
                         write(cnx, " : ", strlen(" : "));
                         write(cnx, "true", strlen("true"));
-                        write(cnx, ("%s", date_actuelle), strlen(("%s", date_actuelle)));
                         write(cnx, ",", strlen(","));
                         write(cnx, "\n", strlen("\n"));
+
                         write(cnx, "  }", strlen("  }"));
-                        if (i < rows - 1) {
+
+                        if (i < num_days - 1) {
                             write(cnx, ",", strlen(","));
                         }
                         write(cnx, "\n", strlen("\n"));
