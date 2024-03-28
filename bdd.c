@@ -738,14 +738,6 @@ int miseDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char da
 
 
 //******************************************************************//
-//**********************Code pour getDispo***********************//
-//******************************************************************//
-
-
-
-
-
-//******************************************************************//
 //**********************Code pour getDispo**********************//
 //******************************************************************//
 int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dateFin[12]) {
@@ -800,6 +792,13 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
 
                     write(cnx, "[\n", strlen("[\n"));
                     while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+
+                    //Ici je vais chercher les jour que je parcours actuellement
+                    sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour = '%s' ", idLogement, PQgetvalue(date_Debut, i, 0));
+                    PGresult *jour_check = PQexec(conn, query);
+
+                    if (PQntuples(jour_check) > 0) {
+                    
                         write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \"")); 
@@ -809,8 +808,6 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                             //Ici je transforme les t en true et f en false car quand je souhiate récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
                             if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
                                 write(cnx, "true", strlen("true"));
-                            } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), "f") == 0) {
-                                write(cnx, "false", strlen("false"));
                             } else {
                                 write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
                             }
@@ -825,11 +822,28 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                             write(cnx, ",", strlen(","));
                         }
                         write(cnx, "\n", strlen("\n"));
-                        i++;
+                        write(cnx, "", strlen(""));
+                    } else {
+                        //Ici c'est le cas ou la date n'est pas en base
+                        write(cnx, "  {\n", strlen("  {\n"));
+                            write(cnx, "    \"", strlen("    \"")); 
+                            write(cnx, ("%s", "disponibilite"), strlen(("%s", "disponibilite")));
+                            write(cnx, "\"", strlen("\""));
+                            write(cnx, " : ", strlen(" : "));
+                            write(cnx, "true", strlen("true"));
+                            write(cnx, ("%s", PQgetvalue(jour_check, 0, 0)), strlen(("%s", PQgetvalue(jour_check, 0, 0))));
+                            write(cnx, ",", strlen(","));
+                            write(cnx, "\n", strlen("\n"));
+                        
+                        write(cnx, "  }", strlen("  }"));
+                        if (i < rows - 1) {
+                            write(cnx, ",", strlen(","));
+                        }
+                        write(cnx, "\n", strlen("\n"));
                         write(cnx, "", strlen(""));
                     }
-
-                    
+                    i++;
+                }
                     write(cnx, "]\n", strlen("]\n"));
                     write(cnx, "", strlen(""));
                     
