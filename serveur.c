@@ -238,6 +238,14 @@ int main(int argc, char* argv[]) {
                     char *dateDebut = strtok(NULL, "/");
                     char *dateFin = strtok(NULL, "/");
                     miseIndispo(cleAPI, cnx, idLogement, dateDebut, dateFin);
+                }
+                else if (strcmp(token, "miseDispo") == 0)
+                {
+                    char *id = strtok(NULL, "/");
+                    int idLogement = atoi(id);
+                    char *dateDebut = strtok(NULL, "/");
+                    char *dateFin = strtok(NULL, "/");
+                    miseDispo(cleAPI, cnx, idLogement, dateDebut, dateFin);
                 } else {
                     strcpy(msgClient, "Requête inconnue\n\0");
                     res = write(cnx, msgClient, strlen(msgClient));
