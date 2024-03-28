@@ -726,12 +726,12 @@ int miseDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char da
                             sprintf(query, "UPDATE calendrier SET disponibilite = 'true' WHERE id_logement = %d AND jour >= '%s'", idLogement, dateDebut);
                             PGresult *res = PQexec(conn, query);
                             if (i == 0) {
-                                printf("Changement de disponibilité fait\n");
+                                printf("\nChangement de disponibilité fait\n");
                                 write(cnx, "Mise en indisponibilité pour le logement : \n", strlen("Mise en indisponibilité pour le logement :\n"));
                                 write(cnx, idLogement, sizeof(idLogement));
-                                write(cnx, " réussi pour les dates : ", strlen(" réussi pour les dates : "));
+                                write(cnx, " réussi pour les dates du : ", strlen(" réussi pour les dates du : "));
                                 write(cnx, dateDebut, strlen(dateDebut));
-                                write(cnx, " - ", strlen(" - "));
+                                write(cnx, " - au - ", strlen(" - au - "));
                                 write(cnx, dateFin, strlen(dateFin));
                                 write(cnx, "\n", strlen("\n"));
                                 write(cnx, "", strlen(""));
