@@ -784,6 +784,20 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                 int cols = PQnfields(calendrier_Debut);
                 int i = 0;
 
+                struct tm dateDebut_tm = {0};
+                struct tm dateFin_tm = {0};
+
+                dateDebut_tm.tm_isdst = -1;
+                dateFin_tm.tm_isdst = -1;
+
+                strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
+                strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
+
+                time_t start = mktime(&dateDebut_tm);
+                time_t end = mktime(&dateFin_tm);
+
+                int num_days = (end - start) / (24 * 60 * 60);
+
                 printf("\n-------------------------Début de la création du JSON------------------------\n");
 
                 // Création d'un pointeur pour stocker les données
@@ -791,7 +805,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                 char *data = (char *)malloc(size * sizeof(char));
 
                 write(cnx, "[\n", strlen("[\n"));
-                while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+                while (i < num_days && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
                     printf("i : %d\n", i);
                     printf("rows : %d\n", rows);
                     printf("dateDebut : %s\n", dateDebut);
@@ -831,15 +845,14 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                     } else {
                         //Ici c'est le cas ou la date n'est pas en base
                         write(cnx, "  {\n", strlen("  {\n"));
-                            write(cnx, "    \"", strlen("    \"")); 
-                            write(cnx, ("%s", "disponibilite"), strlen(("%s", "disponibilite")));
-                            write(cnx, "\"", strlen("\""));
-                            write(cnx, " : ", strlen(" : "));
-                            write(cnx, "true", strlen("true"));
-                            write(cnx, ("%s", PQgetvalue(jour_check, 0, 0)), strlen(("%s", PQgetvalue(jour_check, 0, 0))));
-                            write(cnx, ",", strlen(","));
-                            write(cnx, "\n", strlen("\n"));
-                        
+                        write(cnx, "    \"", strlen("    \"")); 
+                        write(cnx, ("%s", "disponibilite"), strlen(("%s", "disponibilite")));
+                        write(cnx, "\"", strlen("\""));
+                        write(cnx, " : ", strlen(" : "));
+                        write(cnx, "true", strlen("true"));
+                        write(cnx, ("%s", PQgetvalue(jour_check, 0, 0)), strlen(("%s", PQgetvalue(jour_check, 0, 0))));
+                        write(cnx, ",", strlen(","));
+                        write(cnx, "\n", strlen("\n"));
                         write(cnx, "  }", strlen("  }"));
                         if (i < rows - 1) {
                             write(cnx, ",", strlen(","));
