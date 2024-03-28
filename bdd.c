@@ -439,7 +439,7 @@ int miseIndispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char 
                         }
 
                         char query[1024];
-                        sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'false', 0, 0, 0, NULL, NULL, NULL, '%s')", 
+                        sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'false', 0, 0, 0, NULL, NULL, NULL, %d)", 
                         booleen, current_date, idLogement);
                         PGresult *res = PQexec(conn, query);
 
