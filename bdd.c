@@ -408,9 +408,6 @@ int miseIndispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char 
             int rows = PQntuples(date_Debut);
             int i = 0;
 
-            printf("rows : %d\n", rows);
-            printf("dateDebut : %s\n", PQgetvalue(date_Debut, 0, 0));
-
             if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
 
                     struct tm dateDebut_tm = {0};
