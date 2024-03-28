@@ -823,14 +823,6 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                         sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour = '%s'", idLogement, PQgetvalue(date_Debut, i, 0));
                         PGresult *jour_check = PQexec(conn, query);
                         strcpy(date_actuelle, PQgetvalue(jour_check, 0, 0));
-                    } else {
-                        strftime(date_actuelle, sizeof(date_actuelle), "%Y-%m-%d", &date_actuelle_tm);
-                        date_actuelle_tm.tm_mday++;
-                        mktime(&date_actuelle_tm);
-                    }
-
-                    if (strcmp(date_actuelle, PQgetvalue(date_Debut, i, 0)) == 0) {
-                    
                         write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \"")); 
@@ -855,7 +847,11 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                         }
                         write(cnx, "\n", strlen("\n"));
                         write(cnx, "", strlen(""));
+                        PQclear(jour_check);
                     } else {
+                        strftime(date_actuelle, sizeof(date_actuelle), "%Y-%m-%d", &date_actuelle_tm);
+                        date_actuelle_tm.tm_mday++;
+                        mktime(&date_actuelle_tm);
                         //Ici c'est le cas ou la date n'est pas en base
                         write(cnx, "  {\n", strlen("  {\n"));
                         write(cnx, "    \"", strlen("    \"")); 
@@ -880,6 +876,8 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                 
                 PQclear(id_logement);
                 PQclear(calendrier_Debut);
+                PQclear(date_Debut);
+                PQclear(cle_dispo);
 
                 printf("\n--------------------------Fin de la création du JSON-------------------------\n");
                 PQfinish(conn);
