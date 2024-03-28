@@ -786,16 +786,21 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
 
                 printf("\n-------------------------Début de la création du JSON------------------------\n");
 
-                    // Création d'un pointeur pour stocker les données
-                    size_t size = rows;
-                    char *data = (char *)malloc(size * sizeof(char));
+                // Création d'un pointeur pour stocker les données
+                size_t size = rows;
+                char *data = (char *)malloc(size * sizeof(char));
 
-                    write(cnx, "[\n", strlen("[\n"));
-                    while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+                write(cnx, "[\n", strlen("[\n"));
+                while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+                    printf("i : %d\n", i);
+                    printf("rows : %d\n", rows);
+                    printf("dateDebut : %s\n", dateDebut);
 
                     //Ici je vais chercher les jour que je parcours actuellement
-                    sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour = '%s' ", idLogement, PQgetvalue(date_Debut, i, 0));
+                    sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour = '%s'", idLogement, PQgetvalue(date_Debut, i, 0));
                     PGresult *jour_check = PQexec(conn, query);
+
+                    printf("jour_check : %s\n", PQgetvalue(jour_check, 0, 0));
 
                     if (PQntuples(jour_check) > 0) {
                     
@@ -844,16 +849,16 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                     }
                     i++;
                 }
-                    write(cnx, "]\n", strlen("]\n"));
-                    write(cnx, "", strlen(""));
-                    
-                    PQclear(id_logement);
-                    PQclear(calendrier_Debut);
+                write(cnx, "]\n", strlen("]\n"));
+                write(cnx, "", strlen(""));
+                
+                PQclear(id_logement);
+                PQclear(calendrier_Debut);
 
-                    printf("\n--------------------------Fin de la création du JSON-------------------------\n");
-                    PQfinish(conn);
-                    free(data);
-                    return 1;
+                printf("\n--------------------------Fin de la création du JSON-------------------------\n");
+                PQfinish(conn);
+                free(data);
+                return 1;
             } else {
                 printf("Cas ça n'existe pas en base\n");
                 printf("\n-------------------------Début de la création du JSON------------------------\n");
