@@ -812,11 +812,6 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                 struct tm date_actuelle_tm = dateDebut_tm;
 
                 while (i < num_days && strcmp(date_actuelle, dateFin) != 0) {
-                    printf("i : %d\n", i);
-                    printf("rows : %d\n", rows);
-                    printf("nombre de jours : %d\n", num_days);
-                    printf("dateDebut : %s\n", dateDebut);
-                    
 
                     if(i < PQntuples(date_Debut)) {
                         //Ici je vais chercher les jour que je parcours actuellement
