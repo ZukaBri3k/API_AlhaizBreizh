@@ -813,7 +813,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                     sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour = '%s'", idLogement, PQgetvalue(date_Debut, i, 0));
                     PGresult *jour_check = PQexec(conn, query);
                     strcpy(date_actuelle, PQgetvalue(jour_check, 0, 0));
-                    if (strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
+                    if (strcmp(PQgetvalue(calendrier_Debut, i, 3), "t") == 0) {
                         write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
                             write(cnx, "    \"", strlen("    \"")); 
