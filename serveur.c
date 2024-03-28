@@ -62,10 +62,6 @@ int main(int argc, char* argv[]) {
     bool VERBOSE = false;
     FILE *logs = fopen("logs.txt", "a");
     char cleAPI[20];
-
-    //declaration des tubes
-    int bdd2serveur;
-    int serveur2bdd;
     
     //traitement des options longues
     int opt;
@@ -159,42 +155,29 @@ int main(int argc, char* argv[]) {
         char msgClient[100];
 
 
-        //on demande saisir sa clé api
+        /* //on demande saisir sa clé api
         strcpy(msgClient, "Entrez votre clé API:\n");
-        write(cnx, msgClient, strlen(msgClient));
+        write(cnx, msgClient, strlen(msgClient)); */
 
-        //on lit la clé api
+        //on lit la requête du client
         res = read(cnx, buffer, BUFFER_SIZE-1);
-        sscanf(buffer, "cle %s", cleAPI);
-        printf("cleAPI : %s\n", cleAPI);
         buffer[res] = '\0';
-        strcpy(cleAPI, buffer);
+
 
         if (VERBOSE)
         {
             afficherHeureIP(logs, conn_addr);
-            fprintf(logs, "Clé API saisie : %s", cleAPI);
-            printf("Clé API saisie : %s", cleAPI);
+            fprintf(logs, "Requête reçue : %s", buffer);
+            printf("Requête reçue : %s", buffer);
         }
 
+        //découpage des arguments de la requête
+        char *token = strtok(buffer, "/");
+        strcpy(cleAPI, token);
 
-        //ecriture de la clé dans le tube
-        /*serveur2bdd = open("serveur2bdd", O_WRONLY);
-        res = write(serveur2bdd, buffer, strlen(buffer));
-        sleep(1);
-        close(serveur2bdd);*/
-
-        //récupération de la réponse depuis le tube
-        /*bdd2serveur = open("bdd2serveur", O_RDONLY);
-        res = read(bdd2serveur, buffer, BUFFER_SIZE-1);
-        buffer[res] = '\0';
-        sleep(1);
-        close(bdd2serveur);
-        printf("buffer : %s\n", buffer);*/
-
-        if(verifCle(cleAPI) != true) {
+        if(verifCle(token) != true) {
             //si la clé n'est pas bonne
-            strcpy(msgClient, "Clé API incorrecte fermeture de la session\n\0");
+            strcpy(msgClient, "Clé API incorrecte\n\0");
 
             if (VERBOSE)
             {
@@ -208,81 +191,58 @@ int main(int argc, char* argv[]) {
             //si la clé est bonne
             strcpy(msgClient, "Clé API correcte\n\0");
 
+
             if (VERBOSE)
             {
                 afficherHeureIP(logs, conn_addr);
                 fprintf(logs, msgClient);
                 printf("%s", msgClient);
             }               
+
             res = write(cnx, msgClient, strlen(msgClient));
+            token = strtok(NULL, "/");
             
-            do {
-                res = read(cnx, buffer, BUFFER_SIZE-1);
-                buffer[res] = '\0';
-
-                if(strcmp(buffer, "\r\n\0") == 0 || strcmp(buffer, "") == 0) {
-                    strcpy(buffer, "exit\r\n\0");
-                    
-                    if (VERBOSE)
-                    {
-                        afficherHeureIP(logs, conn_addr);
-                        strcpy(msgClient, "Requête vide fermeture de la session\n\0");
-                        printf("%s", msgClient),
-                        fprintf(logs, "%s", msgClient);
-                    }
-                    
-                } else if (strcmp(buffer, "exit\r\n\0") != 0){
-                    if (VERBOSE)
-                    {
-                        //ecriture de la requete dans le fichier bdd
-                        afficherHeureIP(logs, conn_addr);
-                        fprintf(logs, "request(lenght=%d) : %s", res, buffer);
-                        printf("request(lenght=%d) : %s", res, buffer);
-                        /* serveur2bdd = open("serveur2bdd", O_WRONLY);
-                        strcpy(buffer, strcat(buffer, cleAPI));
-                        res = write(serveur2bdd, buffer, strlen(buffer));
-                        sleep(1);
-                        close(serveur2bdd); */
-                        if (strcmp(buffer, "getLogement\r\n\0") == 0)
-                        {
-                            getLogement(cleAPI, cnx);
-                        } else if (strcmp(buffer, "getCalendrier\r\n\0") == 0)
-                        {
-                            getCalendrier(cleAPI, cnx, "2023-12-15", "2023-12-16");
-                        }
-                        else if (strcmp(buffer, "miseIndispo\r\n\0") == 0)
-                        {
-                            miseIndispo(cleAPI, cnx, "2023-12-24", "2023-12-26");
-                        } else {
-                            strcpy(msgClient, "Requête inconnue\n\0");
-                            res = write(cnx, msgClient, strlen(msgClient));
-                        }
-                        
-
-                        //récupération de la réponse depuis le tube
-                        /* afficherHeureIP(logs, conn_addr);
-                        fprintf(logs, "response(lenght=%d) :%s\n", res, buffer);
-                        printf("response(lenght=%d) : %s\n", res, buffer); */
-                        //res = write(cnx, buffer, strlen(buffer));
-
-                                                        
-                    }
-                    
-                    /* if (strcmp(buffer, "0\n\0") == 0)
-                    {
-                        
-                        int fic = open("json.txt", O_RDONLY);
-
-                        while (res = read(fic, buffer, BUFFER_SIZE) > 0) {
-                            printf("%s", buffer);
-                            fprintf(logs, "%s", buffer);
-                            write(cnx, buffer, strlen(buffer));
-                        };
-                        close(fic);                               
-                    } */
-                }
+            if(strcmp(token, "\r\n\0") == 0 || strcmp(token, "") == 0) {
+                strcpy(buffer, "exit\r\n\0");
                 
-            } while (strcmp(buffer, "exit\r\n\0") != 0);
+                if (VERBOSE)
+                {
+                    afficherHeureIP(logs, conn_addr);
+                    strcpy(msgClient, "Requête vide fermeture de la session\n\0");
+                    printf("%s", msgClient),
+                    fprintf(logs, "%s", msgClient);
+                }
+                    
+            } else if (strcmp(token, "exit\r\n\0") != 0){
+
+                //ecriture de la requete dans le fichier bdd
+                afficherHeureIP(logs, conn_addr);
+                fprintf(logs, "request(lenght=%d) : %s", res, buffer);
+                printf("request(lenght=%d) : %s", res, buffer);
+
+                if (strcmp(token, "getLogement\r\n\0") == 0)
+                {
+                    getLogement(cleAPI, cnx);
+                } else if (strcmp(token, "getCalendrier") == 0)
+                {
+                    char *id = strtok(NULL, "/");
+                    int idLogement = atoi(id);
+                    char *dateDebut = strtok(NULL, "/");
+                    char *dateFin = strtok(NULL, "/");
+                    getCalendrier(cleAPI, cnx, idLogement, dateDebut, dateFin);
+                }
+                else if (strcmp(token, "miseIndispo") == 0)
+                {
+                    char *id = strtok(NULL, "/");
+                    int idLogement = atoi(id);
+                    char *dateDebut = strtok(NULL, "/");
+                    char *dateFin = strtok(NULL, "/");
+                    miseIndispo(cleAPI, cnx, idLogement, dateDebut, dateFin);
+                } else {
+                    strcpy(msgClient, "Requête inconnue\n\0");
+                    res = write(cnx, msgClient, strlen(msgClient));
+                }                                                     
+            }
             
             strcpy(msgClient, "Fermeture de la session\n\0");
             res = write(cnx, msgClient, strlen(msgClient));

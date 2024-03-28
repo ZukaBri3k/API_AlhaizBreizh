@@ -6,52 +6,150 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-
-#define PORT 8080
-
+#include <netdb.h>
+#include <errno.h>
+#include <signal.h>
+#define PORT 8000
 int main() {
     int sock;
     int ret;
     struct sockaddr_in addr;
-
-    sock = socket(AF_INET, SOCK_STREAM, 0);
+        sock = socket(AF_INET, SOCK_STREAM, 0);
     if (sock == -1) {
         perror("socket");
         exit(EXIT_FAILURE);
     }
-
-    addr.sin_addr.s_addr = inet_addr("0.0.0.0");
+    char *hostname = "site-sae-ubisoufte.bigpapoo.com";
+    struct hostent *host = gethostbyname(hostname);
+    if (host == NULL) {
+        perror("gethostbyname");
+        exit(EXIT_FAILURE);
+    }
+    memcpy(&addr.sin_addr, host->h_addr_list[0], host->h_length);
     addr.sin_family = AF_INET;
     addr.sin_port = htons(PORT);
-
-    ret = bind(sock, (struct sockaddr *)&addr, sizeof(addr));
+    ret = connect(sock, (struct sockaddr *)&addr, sizeof(addr));
     if (ret == -1) {
-        perror("bind");
+        fprintf(stderr, "connect: %s\n", strerror(errno));
         exit(EXIT_FAILURE);
     }
 
-    printf("Serveur démarré sur le port %d\n", PORT);
+    char buffer[1024];
+    char response[1024];
+    int len;
 
-    while (1) {
-        ret = listen(sock, 1);
-        if (ret == -1) {
-            perror("listen");
-            exit(EXIT_FAILURE);
+    len = read(sock, buffer, sizeof(buffer));
+    buffer[len] = '\0';
+
+    printf("client : %s", buffer);
+
+    scanf("%s", buffer);
+    write(sock, buffer, strlen(buffer));
+
+    len = read(sock, buffer, sizeof(buffer));
+    buffer[len] = '\0';
+
+    printf("client : %s\n", buffer);
+
+    int choix;
+    choix = 1;
+    do {
+        printf("Que souhaitez-vous faire ?\n");
+        printf("1. Consulter la liste des biens\n");
+        printf("2. Consulter la disponibilité d'un bien\n");
+        printf("3. Modifier les dates d'indisponibilité d'un bien\n");
+        printf("4. Consulter la liste de tous les biens (clé privilégiée)\n");
+        printf("0. Quitter\n");
+        printf("Votre choix : ");
+        scanf("%d", &choix);
+        if (choix == 1) {
+            //printf("client : Choix 1\n");
+            int res = write(sock, "getCalendrier\r\n\0", sizeof("getCalendrier\r\n\0"));
+            //printf("client : res = %d\n", res);
+
+            len = read(sock, buffer, sizeof(buffer)-1);
+            buffer[len] = '\0';
+
+            int pid = fork();
+
+            if(pid == 0) {
+                while (len != 0) {
+                    len = read(sock, buffer, sizeof(buffer)-1);
+                    printf("client : len = %d\n", len);
+                    buffer[len] = '\0';
+                    printf("%s", buffer);
+                }
+                return 0;
+            }
+            sleep(2);
+            kill(pid, SIGKILL);
+            
+        }else if (choix == 2) {
+            //printf("client : Choix 2\n");
+            int res = write(sock, "getCalendrier\r\n\0", sizeof("getCalendrier\r\n\0"));
+            //printf("client : res = %d\n", res);
+
+            len = read(sock, buffer, sizeof(buffer)-1);
+            buffer[len] = '\0';
+
+            int pid = fork();
+
+            if(pid == 0) {
+                while (len != 0) {
+                    len = read(sock, buffer, sizeof(buffer)-1);
+                    printf("client : len = %d\n", len);
+                    buffer[len] = '\0';
+                    printf("%s", buffer);
+                }
+                return 0;
+            }
+            sleep(2);
+            kill(pid, SIGKILL);
+
+            scanf("%s", buffer);
+            write(sock, buffer, strlen(buffer));
+
+            printf("Disponibilité du bien :\n");
+            len = read(sock, buffer, strlen(buffer));
+            buffer[len] = '\0';
+
+            while (len != 0) {
+                len = read(sock, buffer, sizeof(buffer));
+                //printf("client : len = %d\n", len);
+                buffer[len] = '\0';
+                printf("%s", buffer);
+            } 
+            //printf("FINI\n");
+        //}else if (choix == 3) {
+        //    send(sock, &command, sizeof(command), 0);
+        //    recv(sock, &response, sizeof(response), 0);
+        //    printf("Dates d'indisponibilité modifiées avec succès.\n");
+        //    printf("%s", response);
+        }else if (choix == 4) {
+            //printf("client : Choix 4\n");
+            int res = write(sock, "getLogement\r\n\0", sizeof("getLogement\r\n\0"));
+            //printf("client : res = %d\n", res);
+
+            printf("Liste de tous les biens :\n");
+            
+            len = read(sock, buffer, sizeof(buffer)-1);
+            buffer[len] = '\0';
+
+            while (len != 0) {
+                len = read(sock, buffer, strlen(buffer)-1);
+                //printf("client : len = %d\n", len);
+                buffer[len] = '\0';
+                printf("%s", buffer);
+            } 
+            //printf("FINI\n");
+            
+
+        } else if (choix == 0) {
+            printf("Opération terminée.\n");
+            close(sock);
+        }else {
+            printf("Choix non reconnu. Veuillez entrer un nombre entre 1 et 4.\n");
         }
-
-        printf("En attente de connexion...\n");
-
-        struct sockaddr_in conn_addr;
-        socklen_t size = sizeof(conn_addr);
-        int cnx = accept(sock, (struct sockaddr *)&conn_addr, &size);
-        if (cnx == -1) {
-            perror("accept");
-            exit(EXIT_FAILURE);
-        }
-
-        printf("Client connecté\n");
-        close(cnx);
-    }
-
+    } while (choix != 0);
     return 0;
 }
