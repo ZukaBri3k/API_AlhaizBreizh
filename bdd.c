@@ -805,18 +805,29 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                 char *data = (char *)malloc(size * sizeof(char));
 
                 write(cnx, "[\n", strlen("[\n"));
-                while (i < num_days && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+
+                char date_actuelle[12] = dateDebut;
+                struct tm date_actuelle_tm = dateDebut_tm;
+
+                while (i < num_days && strcmp(date_actuelle, dateFin) != 0) {
                     printf("i : %d\n", i);
                     printf("rows : %d\n", rows);
+                    printf("nombre de jours : %d\n", num_days);
                     printf("dateDebut : %s\n", dateDebut);
+                    
 
-                    //Ici je vais chercher les jour que je parcours actuellement
-                    sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour = '%s'", idLogement, PQgetvalue(date_Debut, i, 0));
-                    PGresult *jour_check = PQexec(conn, query);
+                    if(i <= PQntuples(date_Debut)) {
+                        //Ici je vais chercher les jour que je parcours actuellement
+                        sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour = '%s'", idLogement, PQgetvalue(date_Debut, i, 0));
+                        PGresult *jour_check = PQexec(conn, query);
+                        strcpy(date_actuelle, PQgetvalue(jour_check, 0, 0));
+                    } else {
+                        strftime(date_actuelle, sizeof(date_actuelle), "%Y-%m-%d", &date_actuelle_tm);
+                        date_actuelle_tm.tm_mday++;
+                        mktime(&date_actuelle_tm);
+                    }
 
-                    printf("jour_check : %s\n", PQgetvalue(jour_check, 0, 0));
-
-                    if (PQntuples(jour_check) > 0) {
+                    if (strcmp(date_actuelle, PQgetvalue(date_Debut, i, 0)) == 0) {
                     
                         write(cnx, "  {\n", strlen("  {\n"));
                         for (int j = 0; j < cols; j++) {
@@ -850,7 +861,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                         write(cnx, "\"", strlen("\""));
                         write(cnx, " : ", strlen(" : "));
                         write(cnx, "true", strlen("true"));
-                        write(cnx, ("%s", PQgetvalue(jour_check, 0, 0)), strlen(("%s", PQgetvalue(jour_check, 0, 0))));
+                        write(cnx, ("%s", date_actuelle), strlen(("%s", date_actuelle)));
                         write(cnx, ",", strlen(","));
                         write(cnx, "\n", strlen("\n"));
                         write(cnx, "  }", strlen("  }"));
