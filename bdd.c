@@ -905,9 +905,9 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                     free(dates[i]);
                     dates[i] = NULL; // Pour éviter les doubles libérations
                 }
-            }
+            }/* 
             free(dates);
-            dates = NULL; // Pour éviter les doubles libérations
+            dates = NULL; // Pour éviter les doubles libérations */
 
             printf("\n--------------------------Fin de la création du JSON-------------------------\n");
             PQfinish(conn);
