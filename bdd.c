@@ -806,7 +806,9 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
 
                 write(cnx, "[\n", strlen("[\n"));
 
-                char date_actuelle[12] = dateDebut;
+                char date_actuelle[12];
+                strcpy(date_actuelle, dateDebut);
+
                 struct tm date_actuelle_tm = dateDebut_tm;
 
                 while (i < num_days && strcmp(date_actuelle, dateFin) != 0) {
