@@ -854,6 +854,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                         date_actuelle_tm.tm_mday++;
                         mktime(&date_actuelle_tm);
                         //Ici c'est le cas ou la date n'est pas en base
+                        write(cnx, "  {\n", strlen("  {\n"));
                         write(cnx, "    \"", strlen("    \""));
                         write(cnx, ("%s", "jour"), strlen(("%s", "jour")));
                         write(cnx, "\"", strlen("\""));
@@ -864,7 +865,6 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                         write(cnx, ",", strlen(","));
                         write(cnx, "\n", strlen("\n"));
                         
-                        write(cnx, "  {\n", strlen("  {\n"));
                         write(cnx, "    \"", strlen("    \"")); 
                         write(cnx, ("%s", "disponibilite"), strlen(("%s", "disponibilite")));
                         write(cnx, "\"", strlen("\""));
