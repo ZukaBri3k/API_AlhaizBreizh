@@ -673,8 +673,12 @@ int miseDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char da
                     }
                 } else {
                     while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
+                        
 
-                        if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0) {
+                        sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour >= '%s'", idLogement, PQgetvalue(date_Debut, i, 0));
+                        PGresult *date_suivante = PQexec(conn, query);
+
+                        if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) > 0 && strcmp(PQgetvalue(date_suivante, 0, 0), dateFin) < 0){
                             struct tm dateDebut_tm = {0};
                             struct tm dateFin_tm = {0};
 
