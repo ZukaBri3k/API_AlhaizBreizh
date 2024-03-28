@@ -915,7 +915,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                     PQfinish(conn);
                     free(data);
                 } else {
-                    /* // La date n'existe pas, créer un nouvel enregistrement
+                    // La date n'existe pas, créer un nouvel enregistrement
                     printf("\n-------------------------Début de la création du JSON------------------------\n");
                     struct tm dateDebut_tm = {0};
                     struct tm dateFin_tm = {0};
@@ -967,7 +967,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                     free(dates);
 
                     printf("\n--------------------------Fin de la création du JSON-------------------------\n");
-                    PQfinish(conn); */
+                    PQfinish(conn);
                 }
 
                 PQclear(check_res);
