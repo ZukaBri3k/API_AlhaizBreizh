@@ -826,9 +826,13 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
 
             // Libérer la mémoire
             for (int i = 0; i <= num_days; i++) {
-                free(dates[i]);
+                if (dates[i] != NULL) {
+                    free(dates[i]);
+                    dates[i] = NULL; // Pour éviter les doubles libérations
+                }
             }
             free(dates);
+            dates = NULL; // Pour éviter les doubles libérations
 
             printf("\n--------------------------Fin de la création du JSON-------------------------\n");
             PQfinish(conn);
