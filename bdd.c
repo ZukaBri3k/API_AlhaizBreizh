@@ -779,7 +779,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
         int i = 0;
 
         if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
-
+            printf("Cas ça n'existe pas en base\n");
             printf("\n-------------------------Début de la création du JSON------------------------\n");
             struct tm dateDebut_tm = {0};
             struct tm dateFin_tm = {0};
@@ -869,6 +869,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                 PGresult *dispo = PQexec(conn, check_query);
 
                 if (PQntuples(check_res) > 0 && strcmp(PQgetvalue(dispo, 0, 0), "t") == 0) {
+                    printf("Cas ça existe en base\n");
                     printf("\n-------------------------Début de la création du JSON------------------------\n");
 
                     // Création d'un pointeur pour stocker les données
@@ -883,11 +884,9 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                             write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
                             write(cnx, "\"", strlen("\""));
                             write(cnx, " : ", strlen(" : "));
-                            //Ici je transforme les t en true et f en false car quand je souhiate récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
+                            //Ici je transforme les t en true et f en false car quand je souhaite récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
                             if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
                                 write(cnx, "true", strlen("true"));
-                            } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), "f") == 0) {
-                                write(cnx, "false", strlen("false"));
                             } else {
                                 write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
                             }
@@ -916,7 +915,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                     PQfinish(conn);
                     free(data);
                 } else {
-                    // La date n'existe pas, créer un nouvel enregistrement
+                    /* // La date n'existe pas, créer un nouvel enregistrement
                     printf("\n-------------------------Début de la création du JSON------------------------\n");
                     struct tm dateDebut_tm = {0};
                     struct tm dateFin_tm = {0};
@@ -968,7 +967,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                     free(dates);
 
                     printf("\n--------------------------Fin de la création du JSON-------------------------\n");
-                    PQfinish(conn);
+                    PQfinish(conn); */
                 }
 
                 PQclear(check_res);
