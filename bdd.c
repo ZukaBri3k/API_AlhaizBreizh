@@ -901,7 +901,6 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
             for (int i = 0; i <= num_days; i++) {
                 free(dates[i]);
             }
-            free(dates);
 
             printf("\n--------------------------Fin de la création du JSON-------------------------\n");
             PQfinish(conn);
