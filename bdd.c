@@ -818,7 +818,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                     printf("dateDebut : %s\n", dateDebut);
                     
 
-                    if(i <= PQntuples(date_Debut)) {
+                    if(i < PQntuples(date_Debut)) {
                         //Ici je vais chercher les jour que je parcours actuellement
                         sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour = '%s'", idLogement, PQgetvalue(date_Debut, i, 0));
                         PGresult *jour_check = PQexec(conn, query);
