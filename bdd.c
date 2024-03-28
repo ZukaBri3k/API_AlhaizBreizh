@@ -410,109 +410,111 @@ int miseIndispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char 
 
             if (PQntuples(date_Debut) <= 0 && strcmp(dateDebut, dateFin) < 0) {
 
-                    struct tm dateDebut_tm = {0};
-                    struct tm dateFin_tm = {0};
+                struct tm dateDebut_tm = {0};
+                struct tm dateFin_tm = {0};
 
-                    dateDebut_tm.tm_isdst = -1;
-                    dateFin_tm.tm_isdst = -1;
+                dateDebut_tm.tm_isdst = -1;
+                dateFin_tm.tm_isdst = -1;
 
-                    strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
-                    strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
+                strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
+                strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
 
-                    time_t start = mktime(&dateDebut_tm);
-                    time_t end = mktime(&dateFin_tm);
+                time_t start = mktime(&dateDebut_tm);
+                time_t end = mktime(&dateFin_tm);
 
-                    int num_days = (end - start) / (24 * 60 * 60);
+                int num_days = (end - start) / (24 * 60 * 60);
 
-                    for (int j = 0; j <= num_days; j++) {
-                        time_t current = start + j * 24 * 60 * 60;
+                for (int j = 0; j <= num_days; j++) {
+                    time_t current = start + j * 24 * 60 * 60;
 
-                        struct tm *current_tm = localtime(&current);
+                    struct tm *current_tm = localtime(&current);
 
-                        char current_date[11];
-                        strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
+                    char current_date[11];
+                    strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
 
-                        char booleen[6] = "false";
+                    char booleen[6] = "false";
 
-                        if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
-                            strcpy(booleen, "true");
-                        }
+                    if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
+                        strcpy(booleen, "true");
+                    }
 
+                    char query[1024];
+                    sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'false', 0, 0, 0, NULL, NULL, NULL, %d)", 
+                    booleen, current_date, idLogement);
+                    PGresult *res = PQexec(conn, query);
+
+                    printf("Création réussi\n");
+                    write(cnx, "Création réussi\n", strlen("Création réussi\n"));
+                    write(cnx, "", strlen(""));
+
+                    if (PQresultStatus(res) != PGRES_COMMAND_OK) {
+                        fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
+                        PQclear(res);
+                        PQfinish(conn);
+                        return 1;
+                    }
+                    free(current_tm);
+                    free(current_date);
+                    PQclear(res);
+                }
+            } else {
+                struct tm dateDebut_tm = {0};
+                struct tm dateFin_tm = {0};
+
+                dateDebut_tm.tm_isdst = -1;
+                dateFin_tm.tm_isdst = -1;
+
+                strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
+                strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
+
+                time_t start = mktime(&dateDebut_tm);
+                time_t end = mktime(&dateFin_tm);
+
+                int num_days = (end - start) / (24 * 60 * 60);
+                for (int j = 0; j <= num_days; j++) {
+                    time_t current = start + j * 24 * 60 * 60;
+
+                    struct tm *current_tm = localtime(&current);
+
+                    char current_date[11];
+                    strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
+
+                    char booleen[6] = "false";
+
+                    if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
+                        strcpy(booleen, "true");
+                    }
+
+                    // Vérifier si la date existe déjà
+                    char check_query[1024];
+                    sprintf(check_query, "SELECT * FROM calendrier WHERE jour = '%s' AND id_logement = %d", current_date, idLogement);
+                    PGresult *check_res = PQexec(conn, check_query);
+
+                    if (PQntuples(check_res) > 0) {
+                        // La date existe déjà, mettre à jour l'enregistrement
+                        char query[1024];
+                        sprintf(query, "UPDATE calendrier SET disponibilite = 'false' WHERE id_logement = %d AND jour = '%s'", idLogement, current_date);
+                        PGresult *res = PQexec(conn, query);
+
+                        printf("Mise à jour réussie\n");
+                        write(cnx, "Mise à jour réussie\n", strlen("Mise à jour réussie\n"));
+                    } else {
+                        // La date n'existe pas, créer un nouvel enregistrement
                         char query[1024];
                         sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'false', 0, 0, 0, NULL, NULL, NULL, %d)", 
                         booleen, current_date, idLogement);
                         PGresult *res = PQexec(conn, query);
 
-                        printf("Création réussi\n");
-                        write(cnx, "Création réussi\n", strlen("Création réussi\n"));
-                        write(cnx, "", strlen(""));
-
-                        if (PQresultStatus(res) != PGRES_COMMAND_OK) {
-                            fprintf(stderr, "INSERT command failed: %s", PQerrorMessage(conn));
-                            PQclear(res);
-                            PQfinish(conn);
-                            return 1;
-                        }
-
-                        PQclear(res);
+                        printf("Création réussie\n");
+                        write(cnx, "Création réussie\n", strlen("Création réussie\n"));
                     }
-                } else {
-                    struct tm dateDebut_tm = {0};
-                    struct tm dateFin_tm = {0};
 
-                    dateDebut_tm.tm_isdst = -1;
-                    dateFin_tm.tm_isdst = -1;
-
-                    strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
-                    strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
-
-                    time_t start = mktime(&dateDebut_tm);
-                    time_t end = mktime(&dateFin_tm);
-
-                    int num_days = (end - start) / (24 * 60 * 60);
-                    for (int j = 0; j <= num_days; j++) {
-                        time_t current = start + j * 24 * 60 * 60;
-
-                        struct tm *current_tm = localtime(&current);
-
-                        char current_date[11];
-                        strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
-
-                        char booleen[6] = "false";
-
-                        if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
-                            strcpy(booleen, "true");
-                        }
-
-                        // Vérifier si la date existe déjà
-                        char check_query[1024];
-                        sprintf(check_query, "SELECT * FROM calendrier WHERE jour = '%s' AND id_logement = %d", current_date, idLogement);
-                        PGresult *check_res = PQexec(conn, check_query);
-
-                        if (PQntuples(check_res) > 0) {
-                            // La date existe déjà, mettre à jour l'enregistrement
-                            char query[1024];
-                            sprintf(query, "UPDATE calendrier SET disponibilite = 'false' WHERE id_logement = %d AND jour = '%s'", idLogement, current_date);
-                            PGresult *res = PQexec(conn, query);
-
-                            printf("Mise à jour réussie\n");
-                            write(cnx, "Mise à jour réussie\n", strlen("Mise à jour réussie\n"));
-                        } else {
-                            // La date n'existe pas, créer un nouvel enregistrement
-                            char query[1024];
-                            sprintf(query, "INSERT INTO calendrier (statut_propriete, jour, disponibilite, tarif_journalier_location, duree_min_location, delai_res_arrivee, contrainte_arrivee, contrainte_depart, id_reserv, id_logement) VALUES ('%s', '%s', 'false', 0, 0, 0, NULL, NULL, NULL, %d)", 
-                            booleen, current_date, idLogement);
-                            PGresult *res = PQexec(conn, query);
-
-                            printf("Création réussie\n");
-                            write(cnx, "Création réussie\n", strlen("Création réussie\n"));
-                        }
-
-                        PQclear(check_res);
-                    }
+                    PQclear(check_res);
+                    free(check_query);
+                    free(current_tm);
+                    free(current_date);
                 }
-            
-
+            }
             PQclear(calendrier_Debut);
             PQclear(id_logement);
             PQclear(date_Debut);
@@ -891,7 +893,6 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                 free(data);
                 return 1;
             } else {
-                printf("Cas ça n'existe pas en base\n");
                 printf("\n-------------------------Début de la création du JSON------------------------\n");
                 struct tm dateDebut_tm = {0};
                 struct tm dateFin_tm = {0};
