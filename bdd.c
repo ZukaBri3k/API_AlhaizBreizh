@@ -846,132 +846,65 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
             time_t end = mktime(&dateFin_tm);
 
             int num_days = (end - start) / (24 * 60 * 60);
-            for (int j = 0; j <= num_days; j++) {
-                time_t current = start + j * 24 * 60 * 60;
+            printf("\n-------------------------Début de la création du JSON------------------------\n");
 
+            // Création d'un tableau pour stocker les dates
+            char **dates = malloc((num_days + 1) * sizeof(char *));
+            for (int i = 0; i <= num_days; i++) {
+                dates[i] = malloc(11 * sizeof(char)); // 10 caractères pour la date + 1 pour le caractère de fin de chaîne
+            }
+
+            // Remplir le tableau avec les dates
+            for (int i = 0; i <= num_days; i++) {
+                time_t current = start + i * 24 * 60 * 60;
                 struct tm *current_tm = localtime(&current);
+                strftime(dates[i], 11, "%Y-%m-%d", current_tm);
+            }
 
-                char current_date[11];
-                strftime(current_date, sizeof(current_date), "%Y-%m-%d", current_tm);
-
-                char booleen[6] = "false";
-
-                if(strcmp(PQgetvalue(calendrier_Debut, i, 0), "t") == 0) {
-                    strcpy(booleen, "true");
-                }
-
+            // Écrire le tableau en format JSON
+            write(cnx, "[\n", strlen("[\n"));
+            for (int i = 0; i <= num_days; i++) {
                 // Vérifier si la date existe déjà
                 char check_query[1024];
-                sprintf(check_query, "SELECT * FROM calendrier WHERE jour = '%s' AND id_logement = %d", current_date, idLogement);
+                sprintf(check_query, "SELECT * FROM calendrier WHERE jour = '%s' AND id_logement = %d", dates[i], idLogement);
                 PGresult *check_res = PQexec(conn, check_query);
 
-                sprintf(check_query, "SELECT disponibilite FROM calendrier WHERE jour = '%s' AND id_logement = %d", current_date, idLogement);
-                PGresult *dispo = PQexec(conn, check_query);
+                write(cnx, "  {\n", strlen("  {\n"));
+                write(cnx, "    \"date\" : \"", strlen("    \"date\" : \""));
+                write(cnx, dates[i], strlen(dates[i]));
+                write(cnx, "\",\n", strlen("\",\n"));
 
-                if (PQntuples(check_res) > 0 && strcmp(PQgetvalue(dispo, 0, 0), "t") == 0) {
-                    printf("Cas ça existe en base\n");
-                    printf("\n-------------------------Début de la création du JSON------------------------\n");
-
-                    // Création d'un pointeur pour stocker les données
-                    size_t size = rows;
-                    char *data = (char *)malloc(size * sizeof(char));
-
-                    write(cnx, "[\n", strlen("[\n"));
-                    while (i < rows && strcmp(PQgetvalue(date_Debut, i, 0), dateFin) != 0) {
-                        write(cnx, "  {\n", strlen("  {\n"));
-                        for (int j = 0; j < cols; j++) {
-                            write(cnx, "    \"", strlen("    \"")); 
-                            write(cnx, ("%s", PQfname(calendrier_Debut, j)), strlen(("%s", PQfname(calendrier_Debut, j))));
-                            write(cnx, "\"", strlen("\""));
-                            write(cnx, " : ", strlen(" : "));
-                            //Ici je transforme les t en true et f en false car quand je souhaite récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
-                            if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
-                                write(cnx, "true", strlen("true"));
-                            } else {
-                                write(cnx, ("%s", PQgetvalue(calendrier_Debut, i, j)), strlen(("%s", PQgetvalue(calendrier_Debut, i, j))));
-                            }
-
-                            if (j < cols - 1) {
-                                write(cnx, ",", strlen(","));
-                            }
-                            write(cnx, "\n", strlen("\n"));
-                        } 
-                        write(cnx, "  }", strlen("  }"));
-                        if (i < rows - 1) {
-                            write(cnx, ",", strlen(","));
-                        }
-                        write(cnx, "\n", strlen("\n"));
-                        i++;
-                        write(cnx, "", strlen(""));
+                if (PQntuples(check_res) > 0) {
+                    // La date existe, récupérer les informations de la base de données
+                    write(cnx, "    \"disponible\" : ", strlen("    \"disponible\" : "));
+                    if (strcmp(PQgetvalue(check_res, 0, 0), "t") == 0) {
+                        write(cnx, "true", strlen("true"));
+                    } else {
+                        write(cnx, "false", strlen("false"));
                     }
-
-                    write(cnx, "]\n", strlen("]\n"));
-                    write(cnx, "", strlen(""));
-
-                    PQclear(id_logement);
-                    PQclear(calendrier_Debut);
-
-                    printf("\n--------------------------Fin de la création du JSON-------------------------\n");
-                    PQfinish(conn);
-                    free(data);
                 } else {
-                    // La date n'existe pas, créer un nouvel enregistrement
-                    printf("\n-------------------------Début de la création du JSON------------------------\n");
-                    struct tm dateDebut_tm = {0};
-                    struct tm dateFin_tm = {0};
-
-                    dateDebut_tm.tm_isdst = -1;
-                    dateFin_tm.tm_isdst = -1;
-
-                    strptime(dateDebut, "%Y-%m-%d", &dateDebut_tm);
-                    strptime(dateFin, "%Y-%m-%d", &dateFin_tm);
-
-                    time_t start = mktime(&dateDebut_tm);
-                    time_t end = mktime(&dateFin_tm);
-
-                    int num_days = (end - start) / (24 * 60 * 60);
-
-                    // Création d'un tableau pour stocker les dates
-                    char **dates = malloc((num_days + 1) * sizeof(char *));
-                    for (int i = 0; i <= num_days; i++) {
-                        dates[i] = malloc(11 * sizeof(char)); // 10 caractères pour la date + 1 pour le caractère de fin de chaîne
-                    }
-
-                    // Remplir le tableau avec les dates
-                    for (int i = 0; i <= num_days; i++) {
-                        time_t current = start + i * 24 * 60 * 60;
-                        struct tm *current_tm = localtime(&current);
-                        strftime(dates[i], 11, "%Y-%m-%d", current_tm);
-                    }
-
-                    // Écrire le tableau en format JSON
-                    write(cnx, "[\n", strlen("[\n"));
-                    for (int i = 0; i <= num_days; i++) {
-                        write(cnx, "  {\n", strlen("  {\n"));
-                        write(cnx, "    \"date\" : \"", strlen("    \"date\" : \""));
-                        write(cnx, dates[i], strlen(dates[i]));
-                        write(cnx, "\",\n", strlen("\",\n"));
-                        write(cnx, "    \"disponible\" : true\n", strlen("    \"disponible\" : true\n"));
-                        write(cnx, "  }", strlen("  }"));
-                        if (i < num_days) {
-                            write(cnx, ",", strlen(","));
-                        }
-                        write(cnx, "\n", strlen("\n"));
-                    }
-                    write(cnx, "]\n", strlen("]\n"));
-
-                    // Libérer la mémoire
-                    for (int i = 0; i <= num_days; i++) {
-                        free(dates[i]);
-                    }
-                    free(dates);
-
-                    printf("\n--------------------------Fin de la création du JSON-------------------------\n");
-                    PQfinish(conn);
+                    // La date n'existe pas, marquer comme disponible
+                    write(cnx, "    \"disponible\" : true", strlen("    \"disponible\" : true"));
                 }
+
+                write(cnx, "\n  }", strlen("\n  }"));
+                if (i < num_days) {
+                    write(cnx, ",", strlen(","));
+                }
+                write(cnx, "\n", strlen("\n"));
 
                 PQclear(check_res);
             }
+            write(cnx, "]\n", strlen("]\n"));
+
+            // Libérer la mémoire
+            for (int i = 0; i <= num_days; i++) {
+                free(dates[i]);
+            }
+            free(dates);
+
+            printf("\n--------------------------Fin de la création du JSON-------------------------\n");
+            PQfinish(conn);
         }
 
         PQclear(calendrier_Debut);
