@@ -761,10 +761,10 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
 //****Création des variables****//
     char query[256];
 
-    sprintf(query, "SELECT * FROM cle WHERE cle = '%s'", cle);
+    sprintf(query, "SELECT disponibilite FROM cle WHERE cle = '%s'", cle);
     PGresult *cle_dispo = PQexec(conn, query);
 
-    if (PQntuples(cle_dispo) > 0) {
+    if (strcmp(PQgetvalue(cle_dispo, 0, 0), "t") == 0) {
         //Ici je vais chercher l'id d'un logement de la personne qui a la clé
         sprintf(query, "SELECT * FROM logement WHERE id_logement = %d", idLogement);
         PGresult *id_logement = PQexec(conn, query);
