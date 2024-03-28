@@ -777,10 +777,10 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
 
             if (PQntuples(calendrier_Debut) > 0) {
                 //Ici je vais chercher les dates du début de la reservation de réservation du logement de la personne qui a la clé
-                sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour >= '%s' ", idLogement, dateDebut);
+                sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour >= '%s' AND jour <= '%s'", idLogement, dateDebut, dateFin);
                 PGresult *date_Debut = PQexec(conn, query);
 
-                int rows = PQntuples(calendrier_Debut);
+                int rows = PQntuples(date_Debut);
                 int cols = PQnfields(calendrier_Debut);
                 int i = 0;
 
@@ -796,7 +796,7 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
                 time_t start = mktime(&dateDebut_tm);
                 time_t end = mktime(&dateFin_tm);
 
-                int num_days = (end - start) / (24 * 60 * 60);
+                int num_days = (end - start) / (24 * 60 * 60) + 1;
 
                 printf("\n-------------------------Début de la création du JSON------------------------\n");
 
