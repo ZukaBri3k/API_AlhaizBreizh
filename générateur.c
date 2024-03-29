@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#include <ctime>
+#include <time.h>
 
 typedef struct {
     char *cle_api;
