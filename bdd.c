@@ -887,14 +887,14 @@ int getDispo(char cle[15], int cnx, int idLogement, char dateDebut[12], char dat
             return 1;
             
         } else {
-            printf("La personne n'a pas de logement\n");
+            printf("\nLa personne n'a pas de logement\n");
             write(cnx, "La personne n'a pas de logement\n", strlen("La personne n'a pas de logement\n"));
             PQclear(id_logement);
             PQfinish(conn);
             return 0;
         }
     } else {
-        printf("Vous n'avez pas les droits pour effectuer cette action\n");
+        printf("\nVous n'avez pas les droits pour effectuer cette action\n");
         write(cnx, "Vous n'avez pas les droits pour effectuer cette action\n", strlen("Vous n'avez pas les droits pour effectuer cette action\n"));
         PQclear(cle_dispo);
         PQfinish(conn);
