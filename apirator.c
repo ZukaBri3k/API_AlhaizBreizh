@@ -151,12 +151,29 @@ int main(int argc, char *argv[]) {
     
     fclose(file);
 
+
     char cle[15];
     strcpy(cle, config.cle_api);
-    int id_logement = atoi(config.id_logement);
-    FILE *json = fopen(config.chemin_donnee, "w");
 
-    getDispo(cle, id_logement, dateDebut, buffer, logs, json);
+    int requete = 0;
+
+    if(!verifCle(cle, logs)) {
+        ecrireLogs(logs, "Clé API incorrecte");
+        return 1;
+    } else {
+        ecrireLogs(logs, "Clé API correcte");
+        int id_logement = atoi(config.id_logement);
+        FILE *json = fopen(config.chemin_donnee, "w");
+
+        requete = getDispo(cle, id_logement, dateDebut, buffer, logs, json);
+    }
+
+    if (requete == 1) {
+        ecrireLogs(logs, "Requête effectuée avec succès");
+    } else {
+        ecrireLogs(logs, "Erreur lors de la requête");
+    }
+    
 
     return 0;
 }
