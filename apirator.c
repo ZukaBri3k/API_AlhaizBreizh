@@ -4,6 +4,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <time.h>
+#include "bdd_apirator.h"
 
 typedef struct {
     char *cle_api;
@@ -13,16 +14,6 @@ typedef struct {
 } Configuration;
 
 void ecrireLogs(FILE *logs, char *message) {
-
-    if (logs == NULL) {
-        printf("Erreur : le fichier de logs n'est pas ouvert.\n");
-        return;
-    }
-
-    if (message == NULL) {
-        printf("Erreur : le message est NULL.\n");
-        return;
-    }
 
     int h, min, s, day, mois, an;
     time_t now = time(NULL);
@@ -35,7 +26,6 @@ void ecrireLogs(FILE *logs, char *message) {
         mois = local->tm_mon + 1;
         an = local->tm_year + 1900;
 
-    // Ecrire le message dans le fichier de logs à la date courante
     fprintf(logs, "[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s", day, mois, an, h, min, s, message);
     fprintf(logs, "\n");
 
@@ -63,6 +53,10 @@ void utilisationJSON(const char *json_str, Configuration configFinal) {
 }
 
 int main(int argc, char *argv[]) {
+    int N;
+    char X;
+    char *message = malloc(256);
+
     Configuration config;
 
     config.cle_api = malloc(256);
@@ -71,7 +65,7 @@ int main(int argc, char *argv[]) {
     config.chemin_donnee = malloc(256);
 
 
-    if (argc != 2) {
+    if (argc != 3) {
         fprintf(stderr, "Utilisation : %s <fichier_json>\n", argv[0]);
         return 1;
     }
@@ -97,22 +91,72 @@ int main(int argc, char *argv[]) {
         length = 0;
     }
 
-        FILE *logs = fopen(config.chemin_logs, "a");
+    FILE *logs = fopen(config.chemin_logs, "a");
 
 
-        if (config.cle_api == NULL || config.id_logement == NULL || config.chemin_logs == NULL || config.chemin_donnee == NULL) {
-            ecrireLogs(logs, "Erreur lors de la récupération des données du fichier JSON");
+    if (config.cle_api == NULL || config.id_logement == NULL || config.chemin_logs == NULL || config.chemin_donnee == NULL) {
+        ecrireLogs(logs, "Erreur lors de la récupération des données du fichier JSON");
+        return 1;
+    } else {
+        ecrireLogs(logs, "Données récupérées avec succès");
+    }
+    
+    ecrireLogs(logs, ("La clé API est : %s\n",config.cle_api));
+    ecrireLogs(logs, ("L'id du logement est : %s\n",config.id_logement));
+    ecrireLogs(logs, ("Le chemin vers les logs est : %s\n",config.chemin_logs));
+    ecrireLogs(logs, ("Le chemin vers le fichier de données est : %s\n",config.chemin_donnee));
+
+
+    if (sscanf(argv[2], "%d%c", &N, &X) != 2) {
+        printf("Erreur : le format de la période est incorrect.\n");
+        return 1;
+    }
+
+    time_t T = time(NULL);
+    struct tm temp_tm;
+    struct tm *tm = localtime(&T);
+    memcpy(&temp_tm, tm, sizeof(struct tm));
+    switch (X) {
+        case 'D':
+            temp_tm.tm_mday += N;
+            sprintf(message, "La période est de : %d jour", N);
+            ecrireLogs(logs, message);
+            break;
+        case 'W':
+            temp_tm.tm_mday += N * 7;
+            sprintf(message, "La période est de : %d semaine", N);
+            ecrireLogs(logs, message);
+            break;
+        case 'M':
+            temp_tm.tm_mon += N;
+            sprintf(message, "La période est de : %d mois", N);
+            ecrireLogs(logs, message);
+            break;
+        default:
+            printf("Erreur : le format de la période est incorrect.\n");
+            ecrireLogs(logs, "Erreur : le format de la période est incorrect.");
             return 1;
-        } else {
-            ecrireLogs(logs, "Données récupérées avec succès");
-        }
-        
-        ecrireLogs(logs, ("La clé API est : %s\n",config.cle_api));
-        ecrireLogs(logs, ("L'id du logement est : %s\n",config.id_logement));
-        ecrireLogs(logs, ("Le chemin vers les logs est : %s\n",config.chemin_logs));
-        ecrireLogs(logs, ("Le chemin vers le fichier de données est : %s\n",config.chemin_donnee));
+    }
 
+    mktime(&temp_tm);
+
+    char buffer[256];
+    char dateDebut[12];
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d", &temp_tm);
+    printf("La date de fin de la période est : %s\n", buffer);
+    ecrireLogs(logs, ("La date de fin de la période est : %s\n", buffer));
+    strftime(dateDebut, sizeof(dateDebut), "%Y-%m-%d", tm);
+    printf("La date de début de la période est : %s\n", dateDebut);
+    ecrireLogs(logs, ("La date de début de la période est : %s\n", dateDebut));
+    
     fclose(file);
+
+    char cle[15];
+    strcpy(cle, config.cle_api);
+    int id_logement = atoi(config.id_logement);
+    FILE *json = fopen(config.chemin_donnee, "w");
+
+    getDispo(cle, id_logement, dateDebut, buffer, logs, json);
 
     return 0;
 }
