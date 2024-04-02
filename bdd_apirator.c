@@ -126,6 +126,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
         //Ici je vais chercher l'id d'un logement de la personne qui a la clé
         sprintf(query, "SELECT * FROM logement WHERE id_logement = %d", idLogement);
         PGresult *id_logement = PQexec(conn, query);
+        
         ecrireLogs(logs, ("L'id du logement est : %d", idLogement));
 
         if (PQntuples(id_logement) > 0) {
