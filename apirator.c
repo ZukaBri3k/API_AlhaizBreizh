@@ -73,6 +73,7 @@ int main(int argc, char *argv[]) {
     }
 
     FILE *logs = fopen(config.chemin_logs, "a");
+    printf("Le fichier logs est : %p\n", logs);
 
 
     if (config.cle_api == NULL || config.id_logement == NULL || config.chemin_logs == NULL || config.chemin_donnee == NULL) {
