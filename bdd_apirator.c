@@ -13,6 +13,28 @@
 #define BUFFSIZE 100
 #define DATE 10
 
+void ecrireLogs(FILE *logs, char *message) {
+
+    int h, min, s, day, mois, an;
+    time_t now = time(NULL);
+
+    struct tm *local = localtime(&now);   
+        h = local->tm_hour;
+        min = local->tm_min;
+        s = local->tm_sec;
+        day = local->tm_mday;
+        mois = local->tm_mon + 1;
+        an = local->tm_year + 1900;
+
+    printf("Le fichier logs est : %p\n", logs);
+
+    fprintf(logs, "[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s", day, mois, an, h, min, s, message);
+    fprintf(logs, "\n");
+    fprintf(logs, "ok");
+
+    printf("[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s\n", day, mois, an, h, min, s, message);
+}
+
 bool verifCle(char cle[15], FILE *logs) {
     //******************************************************************//
     //************************Connexion a la bdd************************//
@@ -95,7 +117,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
         PQfinish(conn);
         return 0;
     }
-    
+
 //****Création des variables****//
     char query[256];
 

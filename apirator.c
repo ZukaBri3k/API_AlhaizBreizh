@@ -13,26 +13,6 @@ typedef struct {
     char *chemin_donnee;
 } Configuration;
 
-void ecrireLogs(FILE *logs, char *message) {
-
-    int h, min, s, day, mois, an;
-    time_t now = time(NULL);
-
-    struct tm *local = localtime(&now);   
-        h = local->tm_hour;
-        min = local->tm_min;
-        s = local->tm_sec;
-        day = local->tm_mday;
-        mois = local->tm_mon + 1;
-        an = local->tm_year + 1900;
-
-    fprintf(logs, "[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s", day, mois, an, h, min, s, message);
-    fprintf(logs, "\n");
-    fprintf(logs, "ok");
-
-    printf("[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s\n", day, mois, an, h, min, s, message);
-}
-
 void utilisationJSON(const char *json_str, Configuration configFinal) {
     Configuration config;
 
