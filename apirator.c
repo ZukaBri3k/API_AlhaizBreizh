@@ -4,7 +4,7 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <time.h>
-/* #include "bdd_apirator.h" */
+#include "bdd_apirator.h"
 
 typedef struct {
     char *cle_api;
@@ -28,6 +28,7 @@ void ecrireLogs(FILE *logs, char *message) {
 
     fprintf(logs, "[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s", day, mois, an, h, min, s, message);
     fprintf(logs, "\n");
+    fprintf(logs, "ok");
 
     printf("[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s\n", day, mois, an, h, min, s, message);
 }
@@ -157,7 +158,7 @@ int main(int argc, char *argv[]) {
 
     int requete = 0;
 
-    /* if(!verifCle(cle, config.chemin_logs)) {
+    if(!verifCle(cle, config.chemin_logs)) {
         ecrireLogs(logs, "Clé API incorrecte");
         return 1;
     } else {
@@ -172,7 +173,7 @@ int main(int argc, char *argv[]) {
         ecrireLogs(logs, "Requête effectuée avec succès");
     } else {
         ecrireLogs(logs, "Erreur lors de la requête");
-    } */
+    }
     
 
     return 0;
