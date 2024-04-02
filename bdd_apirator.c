@@ -27,6 +27,7 @@ void ecrireLogs(char *chemin, char *message) {
         an = local->tm_year + 1900;
 
     FILE *logs = fopen(chemin, "a");
+    printf("Le chemin est : %s\n", chemin);
 
     fprintf(logs, "[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s", day, mois, an, h, min, s, message);
     fprintf(logs, "\n");
