@@ -158,7 +158,7 @@ int main(int argc, char *argv[]) {
 
     int requete = 0;
 
-    if(!verifCle(cle, config.chemin_logs)) {
+    if(!verifCle(cle, logs)) {
         ecrireLogs(logs, "Clé API incorrecte");
         return 1;
     } else {
@@ -166,7 +166,7 @@ int main(int argc, char *argv[]) {
         int id_logement = atoi(config.id_logement);
         FILE *json = fopen(config.chemin_donnee, "w");
 
-        requete = getDispo(cle, id_logement, dateDebut, buffer, config.chemin_logs, config.chemin_donnee);
+        requete = getDispo(cle, id_logement, dateDebut, buffer, logs, json);
     }
 
     if (requete == 1) {
