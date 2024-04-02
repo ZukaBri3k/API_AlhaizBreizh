@@ -13,7 +13,7 @@
 #define BUFFSIZE 100
 #define DATE 10
 
-bool verifCle(char cle[15], char *chemin_logs) {
+bool verifCle(char cle[15], FILE *logs) {
     //******************************************************************//
     //************************Connexion a la bdd************************//
     //******************************************************************//
@@ -28,9 +28,6 @@ bool verifCle(char cle[15], char *chemin_logs) {
             pghost, pgport, dbName, login, pwd);
 
     PGconn *conn = PQconnectdb(conninfo);
-
-    FILE *logs = fopen(chemin_logs, "w");
-    printf("chemin vers les logs : %s\n", chemin_logs);
 
     ecrireLogs(logs, "Connexion à la base de données");
     
@@ -80,7 +77,7 @@ bool verifCle(char cle[15], char *chemin_logs) {
 //******************************************************************//
 //**********************Code pour getDispo**********************//
 //******************************************************************//
-int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12], char *chemin_logs, char *chemin_donnee) {
+int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12], FILE *logs, FILE *json) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
@@ -98,9 +95,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
         PQfinish(conn);
         return 0;
     }
-
-    FILE *logs = fopen(chemin_logs, "w");
-    FILE *json = fopen(chemin_donnee, "w");
+    
 //****Création des variables****//
     char query[256];
 
