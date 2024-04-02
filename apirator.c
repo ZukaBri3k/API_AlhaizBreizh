@@ -142,12 +142,12 @@ int main(int argc, char *argv[]) {
 
     char buffer[256];
     char dateDebut[12];
-    strftime(buffer, sizeof(buffer), "%Y-%m-%d", &temp_tm);
-    printf("La date de fin de la période est : %s\n", buffer);
-    ecrireLogs(logs, ("La date de fin de la période est : %s\n", buffer));
     strftime(dateDebut, sizeof(dateDebut), "%Y-%m-%d", tm);
     printf("La date de début de la période est : %s\n", dateDebut);
     ecrireLogs(logs, ("La date de début de la période est : %s\n", dateDebut));
+    strftime(buffer, sizeof(buffer), "%Y-%m-%d", &temp_tm);
+    printf("La date de fin de la période est : %s\n", buffer);
+    ecrireLogs(logs, ("La date de fin de la période est : %s\n", buffer));
     
     fclose(file);
 
