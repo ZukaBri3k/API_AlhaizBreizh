@@ -165,7 +165,7 @@ int main(int argc, char *argv[]) {
         int id_logement = atoi(config.id_logement);
         FILE *json = fopen(config.chemin_donnee, "w");
 
-        requete = getDispo(cle, id_logement, dateDebut, buffer, logs, json);
+        requete = getDispo(cle, id_logement, dateDebut, buffer, config.chemin_logs, config.chemin_json);
     }
 
     if (requete == 1) {
