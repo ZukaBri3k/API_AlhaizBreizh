@@ -34,7 +34,7 @@ void ecrireLogs(FILE *logs, char *message) {
 }
 
 
-bool verifCle(char cle[15], FILE *logs) {
+bool verifCle(char cle[15], char *chemin_logs) {
     //******************************************************************//
     //************************Connexion a la bdd************************//
     //******************************************************************//
@@ -49,6 +49,8 @@ bool verifCle(char cle[15], FILE *logs) {
             pghost, pgport, dbName, login, pwd);
 
     PGconn *conn = PQconnectdb(conninfo);
+
+    FILE *logs = fopen(chemin_logs, "w");
 
     ecrireLogs(logs, "Connexion à la base de données");
     
@@ -117,7 +119,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
         return 0;
     }
 
-    FILE *logs = fopen(chemin_logs, "a");
+    FILE *logs = fopen(chemin_logs, "w");
     FILE *json = fopen(chemin_donnee, "w");
 //****Création des variables****//
     char query[256];

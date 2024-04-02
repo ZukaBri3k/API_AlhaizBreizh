@@ -157,7 +157,7 @@ int main(int argc, char *argv[]) {
 
     int requete = 0;
 
-    if(!verifCle(cle, logs)) {
+    if(!verifCle(cle, config.chemin_logs)) {
         ecrireLogs(logs, "Clé API incorrecte");
         return 1;
     } else {
