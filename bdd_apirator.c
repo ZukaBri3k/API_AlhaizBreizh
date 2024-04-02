@@ -98,7 +98,7 @@ bool verifCle(char cle[15], FILE *logs) {
 //******************************************************************//
 //**********************Code pour getDispo**********************//
 //******************************************************************//
-int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12], FILE *logs, FILE *json) {
+int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12], char *chemin_logs, char *chemin_donnee) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
@@ -116,6 +116,9 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
         PQfinish(conn);
         return 0;
     }
+
+    FILE *logs = fopen(chemin_logs, "a");
+    FILE *json = fopen(chemin_donnee, "w");
 //****Création des variables****//
     char query[256];
 
