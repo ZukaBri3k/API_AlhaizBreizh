@@ -32,6 +32,8 @@ void ecrireLogs(char *chemin, char *message) {
     fprintf(logs, "\n");
 
     printf("[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s\n", day, mois, an, h, min, s, message);
+
+    fclose(logs);
 }
 
 bool verifCle(char cle[15], char *logs) {
