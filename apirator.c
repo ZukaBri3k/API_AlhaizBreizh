@@ -104,15 +104,15 @@ int main(int argc, char *argv[]) {
         ecrireLogs(logs, "Données récupérées avec succès");
     }
     
-    ecrireLogs(logs, ("La clé API est : %s\n",config.cle_api));
-    ecrireLogs(logs, ("L'id du logement est : %s\n",config.id_logement));
-    ecrireLogs(logs, ("Le chemin vers les logs est : %s\n",config.chemin_logs));
-    ecrireLogs(logs, ("Le chemin vers le fichier de données est : %s\n",config.chemin_donnee));
+    ecrireLogs(config.chemin_logs, ("La clé API est : %s\n",config.cle_api));
+    ecrireLogs(config.chemin_logs, ("L'id du logement est : %s\n",config.id_logement));
+    ecrireLogs(config.chemin_logs, ("Le chemin vers les logs est : %s\n",config.chemin_logs));
+    ecrireLogs(config.chemin_logs, ("Le chemin vers le fichier de données est : %s\n",config.chemin_donnee));
 
 
     if (sscanf(argv[2], "%d%c", &N, &X) != 2) {
         printf("Erreur : le format de la période est incorrect.\n");
-        ecrireLogs(logs, "Erreur : le format de la période est incorrect.");
+        ecrireLogs(config.chemin_logs, "Erreur : le format de la période est incorrect.");
         return 1;
     }
 
@@ -124,21 +124,21 @@ int main(int argc, char *argv[]) {
         case 'D':
             temp_tm.tm_mday += N;
             sprintf(message, "La période est de : %d jour", N);
-            ecrireLogs(logs, message);
+            ecrireLogs(config.chemin_logs, message);
             break;
         case 'W':
             temp_tm.tm_mday += N * 7;
             sprintf(message, "La période est de : %d semaine", N);
-            ecrireLogs(logs, message);
+            ecrireLogs(config.chemin_logs, message);
             break;
         case 'M':
             temp_tm.tm_mon += N;
             sprintf(message, "La période est de : %d mois", N);
-            ecrireLogs(logs, message);
+            ecrireLogs(config.chemin_logs, message);
             break;
         default:
             printf("Erreur : le format de la période est incorrect.\n");
-            ecrireLogs(logs, "Erreur : le format de la période est incorrect.");
+            ecrireLogs(config.chemin_logs, "Erreur : le format de la période est incorrect.");
             return 1;
     }
 
@@ -148,10 +148,10 @@ int main(int argc, char *argv[]) {
     char dateDebut[12];
     strftime(dateDebut, sizeof(dateDebut), "%Y-%m-%d", tm);
     printf("La date de début de la période est : %s\n", dateDebut);
-    ecrireLogs(logs, ("La date de début de la période est : %s\n", dateDebut));
+    ecrireLogs(config.chemin_logs, ("La date de début de la période est : %s\n", dateDebut));
     strftime(buffer, sizeof(buffer), "%Y-%m-%d", &temp_tm);
     printf("La date de fin de la période est : %s\n", buffer);
-    ecrireLogs(logs, ("La date de fin de la période est : %s\n", buffer));
+    ecrireLogs(config.chemin_logs, ("La date de fin de la période est : %s\n", buffer));
     
     fclose(file);
 
@@ -161,21 +161,21 @@ int main(int argc, char *argv[]) {
 
     int requete = 0;
 
-    if(!verifCle(cle, logs)) {
-        ecrireLogs(logs, "Clé API incorrecte");
+    if(!verifCle(cle, config.chemin_logs)) {
+        ecrireLogs(config.chemin_logs, "Clé API incorrecte");
         return 1;
     } else {
-        ecrireLogs(logs, "Clé API correcte");
+        ecrireLogs(config.chemin_logs, "Clé API correcte");
         int id_logement = atoi(config.id_logement);
         FILE *json = fopen(config.chemin_donnee, "w");
 
-        requete = getDispo(cle, id_logement, dateDebut, buffer, logs, json);
+        requete = getDispo(cle, id_logement, dateDebut, buffer, config.chemin_logs, json);
     }
 
     if (requete == 1) {
-        ecrireLogs(logs, "Requête effectuée avec succès");
+        ecrireLogs(config.chemin_logs, "Requête effectuée avec succès");
     } else {
-        ecrireLogs(logs, "Erreur lors de la requête");
+        ecrireLogs(config.chemin_logs, "Erreur lors de la requête");
     }
     
 
