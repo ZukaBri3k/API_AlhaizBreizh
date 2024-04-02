@@ -13,7 +13,7 @@
 #define BUFFSIZE 100
 #define DATE 10
 
-void ecrireLogs(FILE *logs, char *message) {
+void ecrireLogsBDD(FILE *logs, char *message) {
 
     int h, min, s, day, mois, an;
     time_t now = time(NULL);
@@ -51,11 +51,11 @@ bool verifCle(char cle[15], FILE *logs) {
 
     PGconn *conn = PQconnectdb(conninfo);
 
-    ecrireLogs(logs, "Connexion à la base de données");
+    ecrireLogsBDD(logs, "Connexion à la base de données");
     
     if (PQstatus(conn) != CONNECTION_OK) {
         fprintf(stderr, "Erreur lors de la connexion à la base de données : %s\n", PQerrorMessage(conn));
-        ecrireLogs(logs, "Erreur lors de la connexion à la base de données");
+        ecrireLogsBDD(logs, "Erreur lors de la connexion à la base de données");
         PQfinish(conn);
         return 1;
     }
@@ -72,8 +72,8 @@ bool verifCle(char cle[15], FILE *logs) {
     //**********************Code pour verif la cle**********************//
     //******************************************************************//
 
-    ecrireLogs(logs, "Vérification de la clé");
-    ecrireLogs(logs, ("La clé reçu est : %s", cle));
+    ecrireLogsBDD(logs, "Vérification de la clé");
+    ecrireLogsBDD(logs, ("La clé reçu est : %s", cle));
 
         //Ici je vais chercher l'id de la personne qui a la clé
         sprintf(query, "SELECT id_personnes FROM cle WHERE cle = '%s'", cle);
@@ -82,10 +82,10 @@ bool verifCle(char cle[15], FILE *logs) {
             sleep(1);
             clebool = true;
             printf("La clé reçu est bonne\n");
-            ecrireLogs(logs, "La clé reçu est bonne");
+            ecrireLogsBDD(logs, "La clé reçu est bonne");
         } else {
             printf("La clé reçu est mauvaise\n");
-            ecrireLogs(logs, "La clé reçu est mauvaise");
+            ecrireLogsBDD(logs, "La clé reçu est mauvaise");
         }
         //Je verifie si il y a une personne avec cette clé
         //Si il n'y a pas de personne avec cette clé alors on envoie false
@@ -129,7 +129,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
         sprintf(query, "SELECT * FROM logement WHERE id_logement = %d", idLogement);
         PGresult *id_logement = PQexec(conn, query);
         
-        ecrireLogs(logs, ("L'id du logement est : %d", idLogement));
+        ecrireLogsBDD(logs, ("L'id du logement est : %d", idLogement));
 
         if (PQntuples(id_logement) > 0) {
 
@@ -161,7 +161,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
 
             printf("\n-------------------------Début de la création du JSON------------------------\n");
 
-            ecrireLogs(logs, "Début de la création du JSON");
+            ecrireLogsBDD(logs, "Début de la création du JSON");
 
             fprintf(json, "[\n");
 
@@ -245,7 +245,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
             PQclear(calendrier_Debut);
             PQclear(date_Debut);
             PQclear(cle_dispo);
-            ecrireLogs(logs, "Fin de la création du JSON");
+            ecrireLogsBDD(logs, "Fin de la création du JSON");
             printf("\n--------------------------Fin de la création du JSON-------------------------\n");
             PQfinish(conn);
             return 1;
@@ -253,7 +253,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
         } else {
             printf("\nLa personne n'a pas de logement\n");
             fprintf(json, "La personne n'a pas de logement\n");
-            ecrireLogs(logs, "La personne n'a pas de logement");
+            ecrireLogsBDD(logs, "La personne n'a pas de logement");
             PQclear(id_logement);
             PQfinish(conn);
             return 0;
@@ -261,7 +261,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
     } else {
         printf("\nVous n'avez pas les droits pour effectuer cette action\n");
         fprintf(json, "Vous n'avez pas les droits pour effectuer cette action\n");
-        ecrireLogs(logs, "Vous n'avez pas les droits pour effectuer cette action");
+        ecrireLogsBDD(logs, "Vous n'avez pas les droits pour effectuer cette action");
         PQclear(cle_dispo);
         PQfinish(conn);
         return 0;
