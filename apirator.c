@@ -28,6 +28,7 @@ void ecrireLogs(FILE *logs, char *message) {
 
     fprintf(logs, "[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s", day, mois, an, h, min, s, message);
     fprintf(logs, "\n");
+    fprintf(logs, "ok");
 
     printf("[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s\n", day, mois, an, h, min, s, message);
 }
