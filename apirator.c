@@ -93,7 +93,7 @@ int main(int argc, char *argv[]) {
         length = 0;
     }
 
-    char *logs = malloc(256);
+    char logs[256];
     strcpy(config.chemin_logs, logs);
 
 
