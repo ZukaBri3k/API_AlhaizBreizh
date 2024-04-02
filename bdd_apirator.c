@@ -122,6 +122,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
 
 //****Création des variables****//
     char query[256];
+    char *message = malloc(256);
 
     sprintf(query, "SELECT disponibilite FROM cle WHERE cle = '%s'", cle);
     PGresult *cle_dispo = PQexec(conn, query);
@@ -131,7 +132,8 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
         sprintf(query, "SELECT * FROM logement WHERE id_logement = %d", idLogement);
         PGresult *id_logement = PQexec(conn, query);
         
-        ecrireLogs(logs, ("L'id du logement est : %d", idLogement));
+        sprintf(message, "L'id du logement est : %d", idLogement);
+        ecrireLogs(logs, message);
 
         if (PQntuples(id_logement) > 0) {
 
