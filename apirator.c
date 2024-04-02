@@ -13,7 +13,7 @@ typedef struct {
     char *chemin_donnee;
 } Configuration;
 
-void ecrireLogs(FILE *logs, char *message) {
+/* void ecrireLogs(FILE *logs, char *message) {
 
     int h, min, s, day, mois, an;
     time_t now = time(NULL);
@@ -30,7 +30,7 @@ void ecrireLogs(FILE *logs, char *message) {
     fprintf(logs, "\n");
 
     printf("[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s\n", day, mois, an, h, min, s, message);
-}
+} */
 
 void utilisationJSON(const char *json_str, Configuration configFinal) {
     Configuration config;
