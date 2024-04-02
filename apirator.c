@@ -4,7 +4,29 @@
 #include <unistd.h>
 #include <sys/types.h>
 #include <time.h>
-#include "bdd_apirator.h"
+/* #include "bdd_apirator.h" */
+
+void ecrireLogs(FILE *logs, char *message) {
+
+    int h, min, s, day, mois, an;
+    time_t now = time(NULL);
+
+    struct tm *local = localtime(&now);   
+        h = local->tm_hour;
+        min = local->tm_min;
+        s = local->tm_sec;
+        day = local->tm_mday;
+        mois = local->tm_mon + 1;
+        an = local->tm_year + 1900;
+
+    printf("Le fichier logs est : %p\n", logs);
+
+    fprintf(logs, "[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s", day, mois, an, h, min, s, message);
+    fprintf(logs, "\n");
+    fprintf(logs, "ok");
+
+    printf("[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s\n", day, mois, an, h, min, s, message);
+}
 
 typedef struct {
     char *cle_api;
@@ -92,6 +114,7 @@ int main(int argc, char *argv[]) {
 
     if (sscanf(argv[2], "%d%c", &N, &X) != 2) {
         printf("Erreur : le format de la période est incorrect.\n");
+        ecrireLogs(logs, "Erreur : le format de la période est incorrect.");
         return 1;
     }
 
@@ -140,7 +163,7 @@ int main(int argc, char *argv[]) {
 
     int requete = 0;
 
-    if(!verifCle(cle, logs)) {
+    /* if(!verifCle(cle, logs)) {
         ecrireLogs(logs, "Clé API incorrecte");
         return 1;
     } else {
@@ -155,7 +178,7 @@ int main(int argc, char *argv[]) {
         ecrireLogs(logs, "Requête effectuée avec succès");
     } else {
         ecrireLogs(logs, "Erreur lors de la requête");
-    }
+    } */
     
 
     return 0;
