@@ -30,6 +30,7 @@ bool verifCle(char cle[15], char *chemin_logs) {
     PGconn *conn = PQconnectdb(conninfo);
 
     FILE *logs = fopen(chemin_logs, "w");
+    printf("chemin vers les logs : %s\n", chemin_logs);
 
     ecrireLogs(logs, "Connexion à la base de données");
     
