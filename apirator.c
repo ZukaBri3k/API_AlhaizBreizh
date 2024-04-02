@@ -93,9 +93,8 @@ int main(int argc, char *argv[]) {
         length = 0;
     }
 
-    FILE *logs = fopen(config.chemin_logs, "a");
-    printf("Le fichier logs est : %p\n", logs);
-    printf("Son chemin est : %s\n", config.chemin_logs);
+    char *logs;
+    strcpy(config.chemin_logs, logs);
 
 
     if (config.cle_api == NULL || config.id_logement == NULL || config.chemin_logs == NULL || config.chemin_donnee == NULL) {

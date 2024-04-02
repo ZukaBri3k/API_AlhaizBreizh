@@ -13,7 +13,7 @@
 #define BUFFSIZE 100
 #define DATE 10
 
-void ecrireLogs(FILE *logs, char *message) {
+void ecrireLogs(char *chemin, char *message) {
 
     int h, min, s, day, mois, an;
     time_t now = time(NULL);
@@ -26,16 +26,17 @@ void ecrireLogs(FILE *logs, char *message) {
         mois = local->tm_mon + 1;
         an = local->tm_year + 1900;
 
-    printf("Le fichier logs est : %p\n", logs);
+    FILE *logs = fopen(chemin, "a");
 
     fprintf(logs, "[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s", day, mois, an, h, min, s, message);
     fprintf(logs, "\n");
-    fprintf(logs, "ok");
 
     printf("[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s\n", day, mois, an, h, min, s, message);
+
+    fclose(logs);
 }
 
-bool verifCle(char cle[15], FILE *logs) {
+bool verifCle(char cle[15], char *logs) {
     //******************************************************************//
     //************************Connexion a la bdd************************//
     //******************************************************************//
@@ -99,7 +100,7 @@ bool verifCle(char cle[15], FILE *logs) {
 //******************************************************************//
 //**********************Code pour getDispo**********************//
 //******************************************************************//
-int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12], FILE *logs, FILE *json) {
+int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12], char *logs, FILE *json) {
     const char *pghost = "127.0.0.1";
     const char *pgport = "5432";
     const char *dbName = "sae";
