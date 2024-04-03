@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
 
     if (argc != 3) {
         printf("Nombre d'arguments : %d \n", argc);
-        printf("Erreur : nombre d'arguments incorrect.\n");
+        printf("Usage : <cle_api> <id_logement> <période>\n", argv[0]);
         return 1;
     }
 
@@ -74,7 +74,7 @@ int main(int argc, char* argv[]) {
     fclose(fichier);
 
     char command[64];
-    sprintf(command, "./apirator %s %s", "json/json_donnee.json", "3D");
+    sprintf(command, "./apirator %s %s", "json/json_donnee.json", argv[3]);
     system(command);
 
 
