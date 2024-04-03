@@ -174,14 +174,14 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
             struct tm date_actuelle_tm = dateDebut_tm;
 
             while (i < num_days && strcmp(date_actuelle, dateFin) != 0) {
-
-
+                printf("i : %d\n", i);
+                printf("num_days : %d\n", num_days);
+                printf("PQntuples(date_Debut) : %d\n", PQntuples(date_Debut));
+                if(i < PQntuples(date_Debut)) {
                     //Ici je vais chercher les jour que je parcours actuellement
                     sprintf(query, "SELECT jour FROM calendrier WHERE id_logement = %d AND jour = '%s'", idLogement, PQgetvalue(date_Debut, i, 0));
                     PGresult *jour_check = PQexec(conn, query);
                     strcpy(date_actuelle, PQgetvalue(jour_check, 0, 0));
-
-                if(i < PQntuples(jour_check)) {
 
                     if (strcmp(PQgetvalue(calendrier_Debut, i, 2), "t") == 0) {
 
