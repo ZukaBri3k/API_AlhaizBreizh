@@ -27,7 +27,6 @@ void ecrireLogs(char *chemin, char *message) {
         an = local->tm_year + 1900;
 
     FILE *logs = fopen(chemin, "a");
-    printf("Le chemin est : %s\n", chemin);
 
     fprintf(logs, "[%02d-%02d-%d]--[%02d:%02d:%02d]--> %s", day, mois, an, h, min, s, message);
     fprintf(logs, "\n");
@@ -190,7 +189,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
                             //Ici je transforme les t en true et f en false car quand je souhiate récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
                             if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
                                 fprintf(json, "\"true\"");
-                            } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), NULL) == 0) {
+                            } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), "") == 0) {
                                 fprintf(json, "\"null\"");
                             } else {
                                 fprintf(json, ("\"%s\"", PQgetvalue(calendrier_Debut, i, j)));
