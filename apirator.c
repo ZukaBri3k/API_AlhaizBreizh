@@ -94,7 +94,7 @@ int main(int argc, char *argv[]) {
     }
 
     char logs[256];
-    strcpy(config.chemin_logs, logs);
+    strcpy(logs, config.chemin_logs);
 
 
     if (config.cle_api == NULL || config.id_logement == NULL || config.chemin_logs == NULL || config.chemin_donnee == NULL) {
