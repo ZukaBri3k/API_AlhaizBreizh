@@ -205,7 +205,6 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
                                 fprintf(json, ",");
                             }
                             fprintf(json, "\n");
-                            jour_passer++;
                         } 
                         fprintf(json, "  }");
                         if (i < num_days - 1) {
@@ -214,10 +213,10 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
                         
                         fprintf(json, "\n");
                         fprintf(json, "");
+                        jour_passer++;
                     }
                     PQclear(jour_check);
                 } else {
-                    printf("jour passer : %d\n", jour_passer);
                     for (int m = 0; m < jour_passer; m++)
                     {
                         date_actuelle_tm.tm_mday++;
