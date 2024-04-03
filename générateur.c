@@ -10,7 +10,7 @@ typedef struct {
     char chemin_donnee[256];
 } Configuration;
 
-char *creationLogs() {
+char *creationLogs(char *chemin_logs) {
 
     int day, mois, an;
     time_t now = time(NULL);
@@ -21,13 +21,13 @@ char *creationLogs() {
         an = local->tm_year + 1900;
 
     char *filename = malloc(256);
-    sprintf(filename, "logs/logs-%02d_%02d_%d.log", day, mois, an);
+    sprintf(filename, "%s/logs-%02d_%02d_%d.log", chemin_logs, day, mois, an);
     fopen(filename, "a");
 
     return filename;
 }
 
-char *creationJson() {
+char *creationJson(char *chemin_json) {
 
     int day, mois, an, h, min, s;
     time_t now = time(NULL);
@@ -41,7 +41,7 @@ char *creationJson() {
         an = local->tm_year + 1900;
 
     char *filename = malloc(256);
-    sprintf(filename, "json/apirator-%02d_%02d_%d_%02d_%02d_%02d.json", day, mois, an, h, min, s);
+    sprintf(filename, "%s/apirator-%02d_%02d_%d_%02d_%02d_%02d.json", chemin_json, day, mois, an, h, min, s);
     fopen(filename, "a");
 
     return filename;
@@ -49,8 +49,8 @@ char *creationJson() {
 
 int main(int argc, char* argv[]) {
 
-    if (argc != 4) {
-        printf("Usage : <cle_api> <id_logement> <période>\n", argv[0]);
+    if (argc != 6) {
+        printf("Usage : <cle_api> <id_logement> <période> <chemin vers les logs> <chemin pour le retour des données>\n", argv[0]);
         return 1;
     }
 
@@ -58,8 +58,8 @@ int main(int argc, char* argv[]) {
 
     strcpy(config.cle_api, argv[1]);
     strcpy(config.id_logement, argv[2]);
-    strcpy(config.chemin_logs, creationLogs());
-    strcpy(config.chemin_donnee, creationJson());
+    strcpy(config.chemin_logs, creationLogs(argv[4]));
+    strcpy(config.chemin_donnee, creationJson(argv[5]));
 
     FILE *fichier = fopen("json/json_donnee.json", "w");
 
