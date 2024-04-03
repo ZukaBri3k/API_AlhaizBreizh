@@ -217,7 +217,8 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
                     }
                     PQclear(jour_check);
                 } else {
-                    for (int i = 0; i < jour_passer; i++)
+                    printf("jour passer : %d\n", jour_passer);
+                    for (int m = 0; m < jour_passer; m++)
                     {
                         date_actuelle_tm.tm_mday++;
                     }
