@@ -49,8 +49,7 @@ char *creationJson() {
 
 int main(int argc, char* argv[]) {
 
-    if (argc != 3) {
-        printf("Nombre d'arguments : %d \n", argc);
+    if (argc != 4) {
         printf("Usage : <cle_api> <id_logement> <période>\n", argv[0]);
         return 1;
     }
