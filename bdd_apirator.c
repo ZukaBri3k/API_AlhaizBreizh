@@ -185,8 +185,10 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
 
                         fprintf(json, "  {\n");
                         for (int j = 0; j < cols; j++) {
-                            fprintf(json, ("    \"%s\" : ", PQfname(calendrier_Debut, j)));
-                            //Ici je transforme les t en true et f en false car quand je souhiate récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
+                            fprintf(json, "    \"");
+                            fprintf(json, ("%s\"", PQfname(calendrier_Debut, j)));
+                            fprintf(json, " : ");
+                            //Ici je transforme les t en true car quand je souhaite récupérer les valeurs je récupère le boolean mais la fonction récupère que le 1er caractère du mot
                             if (strcmp(PQgetvalue(calendrier_Debut, i, j), "t") == 0) {
                                 fprintf(json, "\"true\"");
                             } else if (strcmp(PQgetvalue(calendrier_Debut, i, j), "") == 0) {
