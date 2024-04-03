@@ -162,6 +162,8 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
 
             int num_days = (end - start) / (24 * 60 * 60);
 
+            int jour_passer = 0;
+
             printf("\n-------------------------Début de la création du JSON------------------------\n");
 
             ecrireLogs(logs, "Début de la création du JSON");
@@ -203,6 +205,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
                                 fprintf(json, ",");
                             }
                             fprintf(json, "\n");
+                            jour_passer++;
                         } 
                         fprintf(json, "  }");
                         if (i < num_days - 1) {
@@ -214,6 +217,11 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
                     }
                     PQclear(jour_check);
                 } else {
+                    for (int i = 0; i < jour_passer; i++)
+                    {
+                        date_actuelle_tm.tm_mday++;
+                    }
+                    
                     strftime(date_actuelle, sizeof(date_actuelle), "%Y-%m-%d", &date_actuelle_tm);
                     date_actuelle_tm.tm_mday++;
                     mktime(&date_actuelle_tm);
