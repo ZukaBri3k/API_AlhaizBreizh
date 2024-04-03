@@ -160,7 +160,7 @@ int getDispo(char cle[15], int idLogement, char dateDebut[12], char dateFin[12],
             time_t start = mktime(&dateDebut_tm);
             time_t end = mktime(&dateFin_tm);
 
-            int num_days = (end - start) / (24 * 60 * 60) + 1;
+            int num_days = (end - start) / (24 * 60 * 60);
 
             printf("\n-------------------------Début de la création du JSON------------------------\n");
 
